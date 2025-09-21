@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - Agenda VTA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset e configurações básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Paleta de cores VTA */
+        :root {
+            --vta-green: #52B788;
+            --vta-green-light: #74C69D;
+            --vta-green-dark: #40916C;
+            --vta-blue: #2E86AB;
+            --vta-blue-light: #48A3C7;
+            --vta-blue-dark: #1B5E7A;
+            --vta-orange: #F77F00;
+            --vta-orange-light: #FCBF49;
+            --vta-orange-dark: #D62828;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --gray-medium: #6C757D;
+            --gray-dark: #343A40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        /* Layout Principal */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-mini {
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-size: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(15deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--gray-dark);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        /* Clients Content */
+        .clients-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-title i {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--vta-blue), var(--vta-blue-light));
+            color: var(--white);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray-medium);
+            font-size: 1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+            border: 1px solid var(--gray-medium);
+        }
+
+        .btn-secondary:hover {
+            background: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Search and Filters */
+        .search-filters {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--vta-green);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .search-input {
+            position: relative;
+        }
+
+        .search-input input {
+            padding-left: 3rem;
+        }
+
+        .search-input i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-medium);
+            font-size: 1.1rem;
+        }
+
+        /* Clients Table */
+        .clients-table {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .table-stats {
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--gray-light);
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .data-table tr:hover {
+            background: rgba(82, 183, 136, 0.05);
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .client-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .client-details h4 {
+            margin-bottom: 2px;
+            font-size: 0.95rem;
+        }
+
+        .client-email {
+            color: var(--gray-medium);
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(82, 183, 136, 0.1);
+            color: var(--vta-green-dark);
+        }
+
+        .status-inactive {
+            background: rgba(214, 40, 40, 0.1);
+            color: var(--vta-orange-dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            min-width: auto;
+        }
+
+        .btn-edit {
+            background: rgba(46, 134, 171, 0.1);
+            color: var(--vta-blue-dark);
+            border: 1px solid rgba(46, 134, 171, 0.2);
+        }
+
+        .btn-edit:hover {
+            background: var(--vta-blue);
+            color: var(--white);
+        }
+
+        .btn-delete {
+            background: rgba(214, 40, 40, 0.1);
+            color: var(--vta-orange-dark);
+            border: 1px solid rgba(214, 40, 40, 0.2);
+        }
+
+        .btn-delete:hover {
+            background: var(--vta-orange-dark);
+            color: var(--white);
+        }
+
+        /* Pagination */
+        .pagination {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-light);
+            background: var(--white);
+            color: var(--gray-dark);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: var(--vta-green);
+            color: var(--white);
+            border-color: var(--vta-green);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-medium);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+
+            .search-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-container {
+                overflow-x: scroll;
+            }
+
+            .data-table {
+                min-width: 600px;
+            }
+
+            .user-details {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-mini">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="header-title">
+                        <h1>Agenda VTA</h1>
+                        <p class="header-subtitle">Sistema de Agendamento Veterinário</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">A</div>
+                        <div class="user-details">
+                            <h3>Administrador</h3>
+                            <p class="user-role">admin@vta.com</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Sair do sistema">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Menu Principal</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="2.%20dashboard_vta.html" class="nav-link">
+                                <i class="fas fa-chart-pie"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="3.%20agenda_vta.html" class="nav-link">
+                                <i class="fas fa-calendar"></i>
+                                Agenda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="4.%20agendamento_vta.html" class="nav-link">
+                                <i class="fas fa-plus-circle"></i>
+                                Novo Agendamento
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="5.%20clientes_vta.html" class="nav-link active">
+                                <i class="fas fa-users"></i>
+                                Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="6.%20pets_vta.html" class="nav-link">
+                                <i class="fas fa-paw"></i>
+                                Pets
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="8.%20salas_vta.html" class="nav-link">
+                                <i class="fas fa-door-open"></i>
+                                Salas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Relatórios</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="9.%20relatorios_dashboard.html" class="nav-link">
+                                <i class="fas fa-chart-bar"></i>
+                                Relatórios ADM
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="10.%20relatorios_pets.html" class="nav-link">
+                                <i class="fas fa-file-medical"></i>
+                                Histórico Pets
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Clients Content -->
+            <div class="clients-content">
+                <!-- Page Header -->
+                <section class="page-header">
+                    <div class="page-title">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <h1>Gerenciamento de Clientes</h1>
+                            <p class="page-subtitle">Cadastre e gerencie informações dos clientes</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="exportClients()">
+                            <i class="fas fa-download"></i>
+                            Exportar
+                        </button>
+                        <button class="btn btn-primary" onclick="openClientModal('new')">
+                            <i class="fas fa-plus"></i>
+                            Novo Cliente
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Search and Filters -->
+                <section class="search-filters">
+                    <div class="search-row">
+                        <div class="form-group">
+                            <label class="form-label">Buscar Cliente</label>
+                            <div class="search-input">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="form-input" placeholder="Nome, e-mail ou telefone..." id="searchInput">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select class="form-input" id="statusFilter">
+                                <option value="">Todos</option>
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary" onclick="clearFilters()">
+                            <i class="fas fa-filter"></i>
+                            Limpar Filtros
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Clients Table -->
+                <section class="clients-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Lista de Clientes</h3>
+                        <p class="table-stats">Total: <strong>156</strong> clientes</p>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Telefone</th>
+                                    <th>CPF</th>
+                                    <th>Pets</th>
+                                    <th>Status</th>
+                                    <th>Cadastro</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody">
+                                <tr>
+                                    <td>
+                                        <div class="client-info">
+                                            <div class="client-avatar">MS</div>
+                                            <div class="client-details">
+                                                <h4>Maria Santos</h4>
+                                                <p class="client-email">maria.santos@email.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>(11) 99999-9999</td>
+                                    <td>123.456.789-00</td>
+                                    <td>2</td>
+                                    <td><span class="status-badge status-active">Ativo</span></td>
+                                    <td>15/01/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-edit" onclick="openClientModal('edit', 1)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-small btn-delete" onclick="deleteClient(1)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="client-info">
+                                            <div class="client-avatar">JP</div>
+                                            <div class="client-details">
+                                                <h4>João Pedro</h4>
+                                                <p class="client-email">joao.pedro@email.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>(11) 88888-8888</td>
+                                    <td>987.654.321-00</td>
+                                    <td>1</td>
+                                    <td><span class="status-badge status-active">Ativo</span></td>
+                                    <td>22/01/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-edit" onclick="openClientModal('edit', 2)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-small btn-delete" onclick="deleteClient(2)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="client-info">
+                                            <div class="client-avatar">AC</div>
+                                            <div class="client-details">
+                                                <h4>Ana Clara</h4>
+                                                <p class="client-email">ana.clara@email.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>(11) 77777-7777</td>
+                                    <td>456.789.123-00</td>
+                                    <td>3</td>
+                                    <td><span class="status-badge status-active">Ativo</span></td>
+                                    <td>05/02/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-edit" onclick="openClientModal('edit', 3)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-small btn-delete" onclick="deleteClient(3)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="client-info">
+                                            <div class="client-avatar">CL</div>
+                                            <div class="client-details">
+                                                <h4>Carlos Lima</h4>
+                                                <p class="client-email">carlos.lima@email.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>(11) 66666-6666</td>
+                                    <td>789.123.456-00</td>
+                                    <td>1</td>
+                                    <td><span class="status-badge status-inactive">Inativo</span></td>
+                                    <td>12/02/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-edit" onclick="openClientModal('edit', 4)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-small btn-delete" onclick="deleteClient(4)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="client-info">
+                                            <div class="client-avatar">LM</div>
+                                            <div class="client-details">
+                                                <h4>Luiza Martins</h4>
+                                                <p class="client-email">luiza.martins@email.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>(11) 55555-5555</td>
+                                    <td>321.654.987-00</td>
+                                    <td>2</td>
+                                    <td><span class="status-badge status-active">Ativo</span></td>
+                                    <td>18/02/2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-small btn-edit" onclick="openClientModal('edit', 5)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-small btn-delete" onclick="deleteClient(5)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <div class="pagination-info">
+                            Mostrando 1-5 de 156 clientes
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="page-btn" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">...</button>
+                            <button class="page-btn">32</button>
+                            <button class="page-btn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Client Modal -->
+    <div class="modal" id="clientModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Novo Cliente</h2>
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="clientForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Nome Completo *</label>
+                        <input type="text" class="form-input" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CPF *</label>
+                        <input type="text" class="form-input" id="clientCPF" placeholder="000.000.000-00" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">E-mail *</label>
+                        <input type="email" class="form-input" id="clientEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone *</label>
+                        <input type="text" class="form-input" id="clientPhone" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data de Nascimento</label>
+                        <input type="date" class="form-input" id="clientBirthDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-input" id="clientStatus">
+                            <option value="active">Ativo</option>
+                            <option value="inactive">Inativo</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Endereço Completo</label>
+                        <input type="text" class="form-input" id="clientAddress" placeholder="Rua, número, bairro, cidade - CEP">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-input" id="clientNotes" rows="3" placeholder="Informações adicionais sobre o cliente..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                        <i class="fas fa-save"></i>
+                        Salvar Cliente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Dados mockados dos clientes
+        const clientsData = [
+            {
+                id: 1,
+                name: 'Maria Santos',
+                email: 'maria.santos@email.com',
+                phone: '(11) 99999-9999',
+                cpf: '123.456.789-00',
+                pets: 2,
+                status: 'active',
+                createdAt: '15/01/2024',
+                address: 'Rua das Flores, 123, Centro, São Paulo - 01234-567',
+                birthDate: '1985-05-15',
+                notes: 'Cliente preferencial, possui 2 gatos'
+            },
+            {
+                id: 2,
+                name: 'João Pedro',
+                email: 'joao.pedro@email.com',
+                phone: '(11) 88888-8888',
+                cpf: '987.654.321-00',
+                pets: 1,
+                status: 'active',
+                createdAt: '22/01/2024',
+                address: 'Av. Paulista, 456, Bela Vista, São Paulo - 01310-100',
+                birthDate: '1990-08-22',
+                notes: 'Dono do cachorro Mimi'
+            },
+            {
+                id: 3,
+                name: 'Ana Clara',
+                email: 'ana.clara@email.com',
+                phone: '(11) 77777-7777',
+                cpf: '456.789.123-00',
+                pets: 3,
+                status: 'active',
+                createdAt: '05/02/2024',
+                address: 'Rua Augusta, 789, Consolação, São Paulo - 01305-000',
+                birthDate: '1992-12-03',
+                notes: 'Possui 3 pets: Thor, Luna e Bolt'
+            },
+            {
+                id: 4,
+                name: 'Carlos Lima',
+                email: 'carlos.lima@email.com',
+                phone: '(11) 66666-6666',
+                cpf: '789.123.456-00',
+                pets: 1,
+                status: 'inactive',
+                createdAt: '12/02/2024',
+                address: 'Rua Oscar Freire, 321, Jardins, São Paulo - 01426-001',
+                birthDate: '1988-03-10',
+                notes: 'Cliente inativo desde março'
+            },
+            {
+                id: 5,
+                name: 'Luiza Martins',
+                email: 'luiza.martins@email.com',
+                phone: '(11) 55555-5555',
+                cpf: '321.654.987-00',
+                pets: 2,
+                status: 'active',
+                createdAt: '18/02/2024',
+                address: 'Alameda Santos, 654, Cerqueira César, São Paulo - 01418-002',
+                birthDate: '1995-07-28',
+                notes: 'Novos pets recentemente adotados'
+            }
+        ];
+
+        let currentEditingId = null;
+
+        // Função para renderizar a tabela
+        function renderTable(data = clientsData) {
+            const tbody = document.getElementById('clientsTableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(client => {
+                const initials = client.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                const statusClass = client.status === 'active' ? 'status-active' : 'status-inactive';
+                const statusText = client.status === 'active' ? 'Ativo' : 'Inativo';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="client-info">
+                            <div class="client-avatar">${initials}</div>
+                            <div class="client-details">
+                                <h4>${client.name}</h4>
+                                <p class="client-email">${client.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${client.phone}</td>
+                    <td>${client.cpf}</td>
+                    <td>${client.pets}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${client.createdAt}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-edit" onclick="openClientModal('edit', ${client.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-small btn-delete" onclick="deleteClient(${client.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Função para abrir o modal
+        function openClientModal(mode, clientId = null) {
+            const modal = document.getElementById('clientModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const form = document.getElementById('clientForm');
+            const saveBtn = document.getElementById('saveBtn');
+
+            currentEditingId = clientId;
+
+            if (mode === 'new') {
+                modalTitle.textContent = 'Novo Cliente';
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Salvar Cliente';
+                form.reset();
+                document.getElementById('clientStatus').value = 'active';
+            } else {
+                modalTitle.textContent = 'Editar Cliente';
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Atualizar Cliente';
+                
+                const client = clientsData.find(c => c.id === clientId);
+                if (client) {
+                    document.getElementById('clientName').value = client.name;
+                    document.getElementById('clientEmail').value = client.email;
+                    document.getElementById('clientPhone').value = client.phone;
+                    document.getElementById('clientCPF').value = client.cpf;
+                    document.getElementById('clientStatus').value = client.status;
+                    document.getElementById('clientAddress').value = client.address;
+                    document.getElementById('clientBirthDate').value = client.birthDate;
+                    document.getElementById('clientNotes').value = client.notes;
+                }
+            }
+
+            modal.classList.add('active');
+        }
+
+        // Função para fechar o modal
+        function closeModal() {
+            const modal = document.getElementById('clientModal');
+            modal.classList.remove('active');
+            currentEditingId = null;
+        }
+
+        // Função para deletar cliente
+        function deleteClient(clientId) {
+            const client = clientsData.find(c => c.id === clientId);
+            if (confirm(`Tem certeza que deseja excluir o cliente ${client.name}?`)) {
+                const index = clientsData.findIndex(c => c.id === clientId);
+                clientsData.splice(index, 1);
+                renderTable();
+                alert('Cliente excluído com sucesso!');
+            }
+        }
+
+        // Função para exportar clientes
+        function exportClients() {
+            alert('Exportação de clientes em desenvolvimento...');
+        }
+
+        // Função para limpar filtros
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            renderTable();
+        }
+
+        // Função de busca
+        function searchClients() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filteredData = clientsData;
+
+            if (searchTerm) {
+                filteredData = filteredData.filter(client =>
+                    client.name.toLowerCase().includes(searchTerm) ||
+                    client.email.toLowerCase().includes(searchTerm) ||
+                    client.phone.includes(searchTerm)
+                );
+            }
+
+            if (statusFilter) {
+                filteredData = filteredData.filter(client => client.status === statusFilter);
+            }
+
+            renderTable(filteredData);
+        }
+
+        // Função de logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                alert('Logout realizado com sucesso!');
+            }
+        }
+
+        // Formatação de CPF
+        function formatCPF(cpf) {
+            return cpf.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        // Formatação de telefone
+        function formatPhone(phone) {
+            return phone.replace(/\D/g, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTable();
+
+            // Busca em tempo real
+            document.getElementById('searchInput').addEventListener('input', searchClients);
+            document.getElementById('statusFilter').addEventListener('change', searchClients);
+
+            // Formatação de campos
+            document.getElementById('clientCPF').addEventListener('input', function(e) {
+                e.target.value = formatCPF(e.target.value);
+            });
+
+            document.getElementById('clientPhone').addEventListener('input', function(e) {
+                e.target.value = formatPhone(e.target.value);
+            });
+
+            // Submit do formulário
+            document.getElementById('clientForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('clientName').value,
+                    email: document.getElementById('clientEmail').value,
+                    phone: document.getElementById('clientPhone').value,
+                    cpf: document.getElementById('clientCPF').value,
+                    status: document.getElementById('clientStatus').value,
+                    address: document.getElementById('clientAddress').value,
+                    birthDate: document.getElementById('clientBirthDate').value,
+                    notes: document.getElementById('clientNotes').value
+                };
+
+                if (currentEditingId) {
+                    // Editar cliente existente
+                    const clientIndex = clientsData.findIndex(c => c.id === currentEditingId);
+                    clientsData[clientIndex] = { ...clientsData[clientIndex], ...formData };
+                    alert('Cliente atualizado com sucesso!');
+                } else {
+                    // Novo cliente
+                    const newClient = {
+                        ...formData,
+                        id: clientsData.length + 1,
+                        pets: 0,
+                        createdAt: new Date().toLocaleDateString('pt-BR')
+                    };
+                    clientsData.push(newClient);
+                    alert('Cliente cadastrado com sucesso!');
+                }
+
+                closeModal();
+                renderTable();
+            });
+
+            // Fechar modal ao clicar fora
+            document.getElementById('clientModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+
+        // Navegação do menu
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                const linkText = link.querySelector('i').nextElementSibling.textContent.trim();
+                if (linkText !== 'Clientes') {
+                    alert(`Navegando para: ${linkText}`);
+                }
+            });
+        });
+
+        // Animação dos cards ao carregar
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.clients-table, .search-filters, .page-header').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'all 0.6s ease';
+            observer.observe(element);
+        });
+    </script>
+    <!-- Navegação e controle de sessão -->
+    <script src="assets/js/vta-nav.js" defer></script>
+</body>
+</html>

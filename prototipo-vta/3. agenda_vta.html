@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda - Agenda VTA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.10/index.global.min.css" rel="stylesheet">
+    <style>
+        /* Reset e configurações básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Paleta de cores VTA */
+        :root {
+            --vta-green: #52B788;
+            --vta-green-light: #74C69D;
+            --vta-green-dark: #40916C;
+            --vta-blue: #2E86AB;
+            --vta-blue-light: #48A3C7;
+            --vta-blue-dark: #1B5E7A;
+            --vta-orange: #F77F00;
+            --vta-orange-light: #FCBF49;
+            --vta-orange-dark: #D62828;
+            --vta-purple: #9D4EDD;
+            --vta-purple-light: #C77DFF;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --gray-medium: #6C757D;
+            --gray-dark: #343A40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        /* Layout Principal */
+        .agenda-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-mini {
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-size: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .back-btn, .logout-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover, .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(15deg);
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .sidebar-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Filtros */
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--gray-medium);
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--vta-green);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        /* Salas */
+        .salas-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sala-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sala-item:hover {
+            background: var(--gray-light);
+        }
+
+        .sala-item.active {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            color: var(--white);
+        }
+
+        .sala-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .sala-color.sala1 { background: var(--vta-green); }
+        .sala-color.sala2 { background: var(--vta-blue); }
+        .sala-color.sala3 { background: var(--vta-orange); }
+        .sala-color.sala4 { background: var(--vta-purple); }
+        .sala-color.sala5 { background: var(--vta-orange-dark); }
+
+        .sala-info {
+            flex: 1;
+        }
+
+        .sala-nome {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .sala-status {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--gray-light);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--vta-green);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+        }
+
+        /* Calendar Area */
+        .calendar-area {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .calendar-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--gray-light);
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: var(--gray-medium);
+        }
+
+        .view-btn.active {
+            background: var(--white);
+            color: var(--vta-green);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--vta-green);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--vta-green-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-medium);
+            color: var(--white);
+        }
+
+        /* FullCalendar Customizations */
+        .fc {
+            font-family: inherit;
+        }
+
+        .fc-toolbar {
+            margin-bottom: 1.5rem !important;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.3rem !important;
+            font-weight: 600 !important;
+            color: var(--gray-dark) !important;
+        }
+
+        .fc-button {
+            background: var(--vta-green) !important;
+            border-color: var(--vta-green) !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 1rem !important;
+            font-weight: 500 !important;
+        }
+
+        .fc-button:hover {
+            background: var(--vta-green-dark) !important;
+            border-color: var(--vta-green-dark) !important;
+        }
+
+        .fc-button:focus {
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3) !important;
+        }
+
+        .fc-daygrid-day-number {
+            font-weight: 500 !important;
+            color: var(--gray-dark) !important;
+        }
+
+        .fc-col-header-cell {
+            background: var(--gray-light) !important;
+            border-color: #dee2e6 !important;
+        }
+
+        .fc-daygrid-day {
+            border-color: #dee2e6 !important;
+        }
+
+        .fc-day-today {
+            background: rgba(82, 183, 136, 0.1) !important;
+        }
+
+        .fc-event {
+            border: none !important;
+            border-radius: 6px !important;
+            padding: 2px 6px !important;
+            font-size: 0.85rem !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+        }
+
+        .fc-event:hover {
+            opacity: 0.8 !important;
+            transform: scale(1.02) !important;
+        }
+
+        .fc-event.sala1 { background: var(--vta-green) !important; }
+        .fc-event.sala2 { background: var(--vta-blue) !important; }
+        .fc-event.sala3 { background: var(--vta-orange) !important; }
+        .fc-event.sala4 { background: var(--vta-purple) !important; }
+        .fc-event.sala5 { background: var(--vta-orange-dark) !important; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 280px 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1rem;
+            }
+
+            .calendar-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .calendar-controls {
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-details {
+                display: none;
+            }
+
+            .btn {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .btn span {
+                display: none;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--white);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-medium);
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .event-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .event-detail i {
+            width: 20px;
+            color: var(--vta-green);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="agenda-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="back-btn" onclick="goBack()" title="Voltar ao Dashboard">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="logo-mini">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="header-title">
+                        <h1>Agenda VTA</h1>
+                        <p class="header-subtitle">Visualização da Agenda</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">A</div>
+                        <div class="user-details">
+                            <h3>Administrador</h3>
+                            <p class="user-role">admin@vta.com</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Sair do sistema">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Filtros -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-filter"></i>
+                        Filtros
+                    </h3>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Data</label>
+                        <input type="date" class="filter-input" id="dateFilter" value="">
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Veterinário</label>
+                        <select class="filter-select" id="vetFilter">
+                            <option value="">Todos</option>
+                            <option value="dr-silva">Dr. Silva</option>
+                            <option value="dr-costa">Dr. Costa</option>
+                            <option value="dra-santos">Dra. Santos</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Tipo de Consulta</label>
+                        <select class="filter-select" id="typeFilter">
+                            <option value="">Todos</option>
+                            <option value="consulta">Consulta</option>
+                            <option value="vacina">Vacinação</option>
+                            <option value="cirurgia">Cirurgia</option>
+                            <option value="retorno">Retorno</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Salas -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-door-open"></i>
+                        Salas
+                    </h3>
+                    
+                    <div class="salas-list">
+                        <div class="sala-item active" data-sala="all">
+                            <div class="sala-color" style="background: linear-gradient(45deg, var(--vta-green), var(--vta-blue), var(--vta-orange))"></div>
+                            <div class="sala-info">
+                                <div class="sala-nome">Todas as Salas</div>
+                                <div class="sala-status">Ver todas</div>
+                            </div>
+                        </div>
+                        
+                        <div class="sala-item" data-sala="sala1">
+                            <div class="sala-color sala1"></div>
+                            <div class="sala-info">
+                                <div class="sala-nome">Sala 1</div>
+                                <div class="sala-status">Disponível</div>
+                            </div>
+                        </div>
+                        
+                        <div class="sala-item" data-sala="sala2">
+                            <div class="sala-color sala2"></div>
+                            <div class="sala-info">
+                                <div class="sala-nome">Sala 2</div>
+                                <div class="sala-status">Ocupada</div>
+                            </div>
+                        </div>
+                        
+                        <div class="sala-item" data-sala="sala3">
+                            <div class="sala-color sala3"></div>
+                            <div class="sala-info">
+                                <div class="sala-nome">Sala 3 - Cirurgia</div>
+                                <div class="sala-status">Ocupada</div>
+                            </div>
+                        </div>
+                        
+                        <div class="sala-item" data-sala="sala4">
+                            <div class="sala-color sala4"></div>
+                            <div class="sala-info">
+                                <div class="sala-nome">Sala 4</div>
+                                <div class="sala-status">Disponível</div>
+                            </div>
+                        </div>
+                        
+                        <div class="sala-item" data-sala="sala5">
+                            <div class="sala-color sala5"></div>
+                            <div class="sala-info">
+                                <div class="sala-nome">Sala 5</div>
+                                <div class="sala-status">Manutenção</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="sidebar-card">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Estatísticas Rápidas
+                    </h3>
+                    
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">24</div>
+                            <div class="stat-label">Hoje</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Pendentes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">156</div>
+                            <div class="stat-label">Este Mês</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">89%</div>
+                            <div class="stat-label">Presença</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Calendar Area -->
+            <div class="calendar-area">
+                <div class="calendar-header">
+                    <div class="calendar-title">Agenda de Consultas</div>
+                    
+                    <div class="calendar-controls">
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="dayGridMonth">Mês</button>
+                            <button class="view-btn" data-view="timeGridWeek">Semana</button>
+                            <button class="view-btn" data-view="timeGridDay">Dia</button>
+                            <button class="view-btn" data-view="listWeek">Lista</button>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" onclick="printCalendar()">
+                                <i class="fas fa-print"></i>
+                                <span>Imprimir</span>
+                            </button>
+                            <button class="btn btn-primary" onclick="newAppointment()">
+                                <i class="fas fa-plus"></i>
+                                <span>Novo Agendamento</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Container -->
+                <div id="calendar"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para detalhes do evento -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes da Consulta</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="event-details" id="eventDetailsContent">
+                <!-- Conteúdo será preenchido dinamicamente -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Fechar</button>
+                <button class="btn btn-primary" onclick="editEvent()">Editar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.10/index.global.min.js"></script>
+    <script>
+        let calendar;
+        let currentEvent = null;
+
+        // Dados de exemplo
+        const sampleEvents = [
+            {
+                id: '1',
+                title: 'Rex - Consulta de Rotina',
+                start: new Date().toISOString().split('T')[0] + 'T09:00:00',
+                end: new Date().toISOString().split('T')[0] + 'T09:30:00',
+                className: 'sala1',
+                extendedProps: {
+                    pet: 'Rex',
+                    client: 'Maria Santos',
+                    vet: 'Dr. Silva',
+                    sala: 'Sala 1',
+                    tipo: 'Consulta',
+                    phone: '(51) 99999-9999',
+                    obs: 'Consulta de rotina'
+                }
+            },
+            {
+                id: '2',
+                title: 'Mimi - Vacinação',
+                start: new Date().toISOString().split('T')[0] + 'T10:30:00',
+                end: new Date().toISOString().split('T')[0] + 'T11:00:00',
+                className: 'sala2',
+                extendedProps: {
+                    pet: 'Mimi',
+                    client: 'João Pedro',
+                    vet: 'Dr. Silva',
+                    sala: 'Sala 2',
+                    tipo: 'Vacinação',
+                    phone: '(51) 88888-8888',
+                    obs: 'Vacina antirrábica'
+                }
+            },
+            {
+                id: '3',
+                title: 'Thor - Cirurgia',
+                start: new Date().toISOString().split('T')[0] + 'T14:00:00',
+                end: new Date().toISOString().split('T')[0] + 'T16:00:00',
+                className: 'sala3',
+                extendedProps: {
+                    pet: 'Thor',
+                    client: 'Ana Clara',
+                    vet: 'Dr. Costa',
+                    sala: 'Sala 3 - Cirurgia',
+                    tipo: 'Cirurgia',
+                    phone: '(51) 77777-7777',
+                    obs: 'Castração'
+                }
+            },
+            {
+                id: '4',
+                title: 'Luna - Retorno',
+                start: new Date().toISOString().split('T')[0] + 'T15:30:00',
+                end: new Date().toISOString().split('T')[0] + 'T16:00:00',
+                className: 'sala1',
+                extendedProps: {
+                    pet: 'Luna',
+                    client: 'Carlos Lima',
+                    vet: 'Dr. Silva',
+                    sala: 'Sala 1',
+                    tipo: 'Retorno',
+                    phone: '(51) 66666-6666',
+                    obs: 'Retorno pós-cirúrgico'
+                }
+            }
+        ];
+
+        // Inicialização do calendário
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Definir data atual no filtro
+            document.getElementById('dateFilter').value = today;
+            
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
+                firstDay: 0, // Domingo como primeiro dia
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                buttonText: {
+                    today: 'Hoje',
+                    month: 'Mês',
+                    week: 'Semana',
+                    day: 'Dia',
+                    list: 'Lista'
+                },
+                height: 'auto',
+                eventClick: function(info) {
+                    showEventDetails(info.event);
+                },
+                dateClick: function(info) {
+                    // Ao clicar em uma data, sugere novo agendamento
+                    if (confirm(`Deseja criar um novo agendamento para ${info.dateStr}?`)) {
+                        newAppointment(info.dateStr);
+                    }
+                },
+                events: sampleEvents,
+                eventDidMount: function(info) {
+                    // Tooltip nos eventos
+                    info.el.title = `${info.event.extendedProps.pet} - ${info.event.extendedProps.client}\n${info.event.extendedProps.vet} • ${info.event.extendedProps.sala}`;
+                }
+            });
+            
+            calendar.render();
+            
+            // Event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Filtro de data
+            document.getElementById('dateFilter').addEventListener('change', function() {
+                const selectedDate = this.value;
+                if (selectedDate) {
+                    calendar.gotoDate(selectedDate);
+                }
+            });
+
+            // Filtros
+            document.getElementById('vetFilter').addEventListener('change', filterEvents);
+            document.getElementById('typeFilter').addEventListener('change', filterEvents);
+
+            // Toggle de visualização
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    calendar.changeView(this.dataset.view);
+                });
+            });
+
+            // Seleção de salas
+            document.querySelectorAll('.sala-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.sala-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    filterEventsBySala(this.dataset.sala);
+                });
+            });
+
+            // Modal
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('eventModal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        function filterEvents() {
+            const vetFilter = document.getElementById('vetFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            
+            let filteredEvents = sampleEvents;
+            
+            if (vetFilter) {
+                filteredEvents = filteredEvents.filter(event => 
+                    event.extendedProps.vet.toLowerCase().includes(vetFilter.replace('dr-', 'dr. ').replace('dra-', 'dra. '))
+                );
+            }
+            
+            if (typeFilter) {
+                filteredEvents = filteredEvents.filter(event => 
+                    event.extendedProps.tipo.toLowerCase() === typeFilter
+                );
+            }
+            
+            calendar.removeAllEvents();
+            calendar.addEventSource(filteredEvents);
+        }
+
+        function filterEventsBySala(sala) {
+            if (sala === 'all') {
+                calendar.removeAllEvents();
+                calendar.addEventSource(sampleEvents);
+                return;
+            }
+            
+            const salaClass = sala;
+            const filteredEvents = sampleEvents.filter(event => 
+                event.className === salaClass
+            );
+            
+            calendar.removeAllEvents();
+            calendar.addEventSource(filteredEvents);
+        }
+
+        function showEventDetails(event) {
+            currentEvent = event;
+            const props = event.extendedProps;
+            
+            const detailsHTML = `
+                <div class="event-detail">
+                    <i class="fas fa-paw"></i>
+                    <div>
+                        <strong>Pet:</strong> ${props.pet}<br>
+                        <small>Tipo: ${props.tipo}</small>
+                    </div>
+                </div>
+                <div class="event-detail">
+                    <i class="fas fa-user"></i>
+                    <div>
+                        <strong>Cliente:</strong> ${props.client}<br>
+                        <small>Telefone: ${props.phone}</small>
+                    </div>
+                </div>
+                <div class="event-detail">
+                    <i class="fas fa-user-md"></i>
+                    <div><strong>Veterinário:</strong> ${props.vet}</div>
+                </div>
+                <div class="event-detail">
+                    <i class="fas fa-door-open"></i>
+                    <div><strong>Local:</strong> ${props.sala}</div>
+                </div>
+                <div class="event-detail">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <strong>Horário:</strong><br>
+                        ${formatDateTime(event.start)} - ${formatTime(event.end)}
+                    </div>
+                </div>
+                ${props.obs ? `
+                <div class="event-detail">
+                    <i class="fas fa-sticky-note"></i>
+                    <div><strong>Observações:</strong><br>${props.obs}</div>
+                </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('eventDetailsContent').innerHTML = detailsHTML;
+            document.getElementById('eventModal').style.display = 'block';
+        }
+
+        function formatDateTime(date) {
+            return new Date(date).toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatTime(date) {
+            return new Date(date).toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('eventModal').style.display = 'none';
+            currentEvent = null;
+        }
+
+        function editEvent() {
+            if (currentEvent) {
+                alert(`Editando consulta: ${currentEvent.extendedProps.pet}\n\nEsta funcionalidade será implementada na tela de agendamento.`);
+                closeModal();
+            }
+        }
+
+        // Funções de navegação
+        function goBack() {
+            if (confirm('Deseja voltar ao dashboard?')) {
+                alert('Voltando ao dashboard...');
+                // window.location.href = 'dashboard.html';
+            }
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                alert('Logout realizado com sucesso!');
+                // window.location.href = 'login.html';
+            }
+        }
+
+        function newAppointment(selectedDate = null) {
+            let message = 'Redirecionando para nova consulta...';
+            if (selectedDate) {
+                message += `\n\nData sugerida: ${new Date(selectedDate).toLocaleDateString('pt-BR')}`;
+            }
+            alert(message);
+            // window.location.href = 'agendamento.html' + (selectedDate ? '?date=' + selectedDate : '');
+        }
+
+        function printCalendar() {
+            // Função simplificada de impressão
+            const printContent = `
+                <html>
+                <head>
+                    <title>Agenda VTA - ${calendar.view.title}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #52B788; text-align: center; }
+                        .event { margin: 10px 0; padding: 10px; border-left: 4px solid #52B788; background: #f9f9f9; }
+                        .date { font-weight: bold; color: #2E86AB; }
+                        .details { margin-top: 5px; font-size: 0.9em; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Agenda VTA - ${calendar.view.title}</h1>
+                    ${generatePrintableEvents()}
+                </body>
+                </html>
+            `;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function generatePrintableEvents() {
+            const events = calendar.getEvents();
+            const sortedEvents = events.sort((a, b) => new Date(a.start) - new Date(b.start));
+            
+            return sortedEvents.map(event => `
+                <div class="event">
+                    <div class="date">${formatDateTime(event.start)} - ${formatTime(event.end)}</div>
+                    <div class="details">
+                        <strong>${event.extendedProps.pet}</strong> - ${event.extendedProps.tipo}<br>
+                        Cliente: ${event.extendedProps.client}<br>
+                        Veterinário: ${event.extendedProps.vet}<br>
+                        Local: ${event.extendedProps.sala}
+                        ${event.extendedProps.obs ? `<br>Obs: ${event.extendedProps.obs}` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Simulação de atualização em tempo real
+        function updateCalendarStats() {
+            // Simula mudanças nas estatísticas
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                if (Math.random() > 0.9) {
+                    const currentValue = parseInt(stat.textContent);
+                    const change = Math.floor(Math.random() * 3) - 1;
+                    const newValue = Math.max(0, currentValue + change);
+                    
+                    if (newValue !== currentValue) {
+                        stat.textContent = newValue;
+                        stat.style.transform = 'scale(1.1)';
+                        stat.style.color = 'var(--vta-green)';
+                        
+                        setTimeout(() => {
+                            stat.style.transform = 'scale(1)';
+                            stat.style.color = '';
+                        }, 300);
+                    }
+                }
+            });
+        }
+
+        // Atualização automática das estatísticas
+        setInterval(updateCalendarStats, 30000);
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch(event.key) {
+                    case 'n':
+                        event.preventDefault();
+                        newAppointment();
+                        break;
+                    case 'p':
+                        event.preventDefault();
+                        printCalendar();
+                        break;
+                    case 'f':
+                        event.preventDefault();
+                        document.getElementById('dateFilter').focus();
+                        break;
+                }
+            }
+            
+            // ESC para fechar modal
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Responsividade adicional
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                calendar.setOption('height', 'auto');
+                calendar.setOption('aspectRatio', 1);
+            } else {
+                calendar.setOption('height', 'auto');
+                calendar.setOption('aspectRatio', 1.8);
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        
+        // Animações de entrada
+        function animateElements() {
+            const sidebarCards = document.querySelectorAll('.sidebar-card');
+            const calendarArea = document.querySelector('.calendar-area');
+            
+            sidebarCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(-30px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateX(0)';
+                }, 100 * index);
+            });
+            
+            calendarArea.style.opacity = '0';
+            calendarArea.style.transform = 'translateY(30px)';
+            calendarArea.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                calendarArea.style.opacity = '1';
+                calendarArea.style.transform = 'translateY(0)';
+            }, 300);
+        }
+
+        // Executar animações quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(animateElements, 100);
+        });
+    </script>
+    <!-- Navegação e controle de sessão -->
+    <script src="assets/js/vta-nav.js" defer></script>
+</body>
+</html>

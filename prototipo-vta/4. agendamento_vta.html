@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Agendamentos - VTA</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Reset e configurações básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Paleta de cores VTA */
+        :root {
+            --vta-green: #52B788;
+            --vta-green-light: #74C69D;
+            --vta-green-dark: #40916C;
+            --vta-blue: #2E86AB;
+            --vta-blue-light: #48A3C7;
+            --vta-blue-dark: #1B5E7A;
+            --vta-orange: #F77F00;
+            --vta-orange-light: #FCBF49;
+            --vta-orange-dark: #D62828;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --gray-medium: #6C757D;
+            --gray-dark: #343A40;
+        }
+
+        body {
+            background: var(--gray-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--gray-dark);
+        }
+
+        /* Layout Principal */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-mini {
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-size: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(15deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--gray-dark);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        /* Page Content */
+        .page-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .page-header {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: var(--gray-medium);
+            margin: 0;
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--vta-green-dark), var(--vta-green));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+            color: var(--white);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            border: none;
+            border-radius: 12px;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--vta-orange), var(--vta-orange-light));
+            border: none;
+            border-radius: 12px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--vta-orange-dark), var(--vta-orange));
+            border: none;
+            border-radius: 12px;
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--vta-green);
+            color: var(--vta-green);
+            border-radius: 12px;
+            font-weight: 600;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--vta-green);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            color: var(--white);
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        /* Search and Filters */
+        .search-filters {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Forms */
+        .form-label {
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid var(--gray-light);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--vta-green);
+            box-shadow: 0 0 0 0.2rem rgba(82, 183, 136, 0.15);
+            background: var(--white);
+        }
+
+        /* Table */
+        .table {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: var(--gray-light);
+            border: none;
+            font-weight: 600;
+            color: var(--gray-dark);
+            padding: 1rem 1.5rem;
+        }
+
+        .table td {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-bottom: 1px solid var(--gray-light);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(82, 183, 136, 0.05);
+        }
+
+        /* Status badges */
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .status-agendado {
+            background: linear-gradient(135deg, var(--vta-blue), var(--vta-blue-light));
+            color: var(--white);
+        }
+
+        .status-confirmado {
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            color: var(--white);
+        }
+
+        .status-realizado {
+            background: linear-gradient(135deg, #6f42c1, #8B5CF6);
+            color: var(--white);
+        }
+
+        .status-cancelado {
+            background: linear-gradient(135deg, var(--vta-orange-dark), var(--vta-orange));
+            color: var(--white);
+        }
+
+        /* Quick actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            border-radius: 10px;
+        }
+
+        /* Modal customization */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            color: var(--white);
+            border-radius: 15px 15px 0 0;
+            border: none;
+        }
+
+        .modal-footer {
+            border: none;
+            padding: 1.5rem;
+        }
+
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        /* Input groups */
+        .input-group .form-control {
+            border-right: none;
+        }
+
+        .input-group .btn {
+            border-left: none;
+            border-color: var(--gray-light);
+        }
+
+        /* Pagination */
+        .pagination {
+            --bs-pagination-color: var(--vta-green);
+            --bs-pagination-hover-color: var(--white);
+            --bs-pagination-hover-bg: var(--vta-green);
+            --bs-pagination-active-bg: var(--vta-green);
+            --bs-pagination-active-border-color: var(--vta-green);
+        }
+
+        .page-link {
+            border-radius: 8px;
+            margin: 0 2px;
+            border: none;
+        }
+
+        /* Dropdown menus */
+        .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--vta-green);
+            color: var(--white);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation for loading states */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-light);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--vta-green);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--vta-green-dark);
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            z-index: 9999 !important;
+        }
+
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(247, 127, 0, 0.1), rgba(252, 191, 73, 0.1));
+            color: var(--vta-orange-dark);
+            border-left: 4px solid var(--vta-orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-mini">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="header-title">
+                        <h1>VTA - Vet Assistance</h1>
+                        <p class="header-subtitle">Sistema de Agendamento Veterinário</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">J</div>
+                        <div class="user-details">
+                            <h3>Dr. João Silva</h3>
+                            <p class="user-role">Veterinário</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Sair do sistema">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Menu Principal</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="2.%20dashboard_vta.html" class="nav-link">
+                                <i class="fas fa-chart-pie"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="3.%20agenda_vta.html" class="nav-link">
+                                <i class="fas fa-calendar-alt"></i>
+                                Agenda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="4.%20agendamento_vta.html" class="nav-link active">
+                                <i class="fas fa-calendar-plus"></i>
+                                Agendamentos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="5.%20clientes_vta.html" class="nav-link">
+                                <i class="fas fa-users"></i>
+                                Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="6.%20pets_vta.html" class="nav-link">
+                                <i class="fas fa-paw"></i>
+                                Pets
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="7.%20usuarios_vta.html" class="nav-link">
+                                <i class="fas fa-user-cog"></i>
+                                Usuários
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="8.%20salas_vta.html" class="nav-link">
+                                <i class="fas fa-door-open"></i>
+                                Salas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Relatórios</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="9.%20relatorios_dashboard.html" class="nav-link">
+                                <i class="fas fa-chart-bar"></i>
+                                Relatórios ADM
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="10.%20relatorios_pets.html" class="nav-link">
+                                <i class="fas fa-file-medical"></i>
+                                Histórico Pets
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title">Gerenciamento de Agendamentos</h2>
+                        <p class="page-subtitle">Gerencie consultas, exames e procedimentos</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agendamentoModal">
+                        <i class="fas fa-plus me-2"></i>Novo Agendamento
+                    </button>
+                </div>
+
+                <!-- Search and Filters -->
+                <div class="search-filters">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Buscar</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Cliente, pet ou serviço..." id="searchInput">
+                                <button class="btn btn-outline-primary" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="statusFilter">
+                                <option value="">Todos</option>
+                                <option value="agendado">Agendado</option>
+                                <option value="confirmado">Confirmado</option>
+                                <option value="realizado">Realizado</option>
+                                <option value="cancelado">Cancelado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Sala</label>
+                            <select class="form-select" id="salaFilter">
+                                <option value="">Todas</option>
+                                <option value="1">Consultório 1</option>
+                                <option value="2">Consultório 2</option>
+                                <option value="3">Cirurgia</option>
+                                <option value="4">Raio-X</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Data Inicial</label>
+                            <input type="date" class="form-control" id="dataInicio">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Data Final</label>
+                            <input type="date" class="form-control" id="dataFim">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="quick-actions">
+                                <button class="btn btn-outline-primary btn-sm" onclick="filtrarHoje()">
+                                    <i class="fas fa-calendar-day me-1"></i>Hoje
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="filtrarSemana()">
+                                    <i class="fas fa-calendar-week me-1"></i>Esta Semana
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="filtrarMes()">
+                                    <i class="fas fa-calendar me-1"></i>Este Mês
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="limparFiltros()">
+                                    <i class="fas fa-times me-1"></i>Limpar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agendamentos Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>Lista de Agendamentos
+                            </h5>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-light btn-sm" onclick="exportarAgendamentos()">
+                                    <i class="fas fa-download me-1"></i>Exportar
+                                </button>
+                                <button class="btn btn-outline-light btn-sm" onclick="atualizarLista()">
+                                    <i class="fas fa-sync-alt me-1"></i>Atualizar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="agendamentosTable">
+                                <thead>
+                                    <tr>
+                                        <th>Data/Hora</th>
+                                        <th>Cliente</th>
+                                        <th>Pet</th>
+                                        <th>Serviço</th>
+                                        <th>Veterinário</th>
+                                        <th>Sala</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="agendamentosTableBody">
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <strong>15/08/2025</strong><br>
+                                                <small class="text-muted">09:00</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>Maria Silva</strong><br>
+                                                <small class="text-muted">(51) 99999-9999</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>Rex</strong><br>
+                                                <small class="text-muted">Golden Retriever</small>
+                                            </div>
+                                        </td>
+                                        <td>Consulta Geral</td>
+                                        <td>Dr. João Silva</td>
+                                        <td>Consultório 1</td>
+                                        <td><span class="badge status-confirmado">Confirmado</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                                    Ações
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="visualizarAgendamento(1)">
+                                                        <i class="fas fa-eye me-2"></i>Visualizar
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="editarAgendamento(1)">
+                                                        <i class="fas fa-edit me-2"></i>Editar
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="confirmarAgendamento(1)">
+                                                        <i class="fas fa-check me-2"></i>Confirmar
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="realizarAgendamento(1)">
+                                                        <i class="fas fa-user-md me-2"></i>Realizar
+                                                    </a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="cancelarAgendamento(1)">
+                                                        <i class="fas fa-times me-2"></i>Cancelar
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <strong>15/08/2025</strong><br>
+                                                <small class="text-muted">10:30</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>João Santos</strong><br>
+                                                <small class="text-muted">(51) 88888-8888</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>Mimi</strong><br>
+                                                <small class="text-muted">Persa</small>
+                                            </div>
+                                        </td>
+                                        <td>Vacinação</td>
+                                        <td>Dra. Ana Costa</td>
+                                        <td>Consultório 2</td>
+                                        <td><span class="badge status-agendado">Agendado</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                                    Ações
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="visualizarAgendamento(2)">
+                                                        <i class="fas fa-eye me-2"></i>Visualizar
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="editarAgendamento(2)">
+                                                        <i class="fas fa-edit me-2"></i>Editar
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="confirmarAgendamento(2)">
+                                                        <i class="fas fa-check me-2"></i>Confirmar
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="realizarAgendamento(2)">
+                                                        <i class="fas fa-user-md me-2"></i>Realizar
+                                                    </a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#" onclick="cancelarAgendamento(2)">
+                                                        <i class="fas fa-times me-2"></i>Cancelar
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <strong>14/08/2025</strong><br>
+                                                <small class="text-muted">14:00</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>Carlos Oliveira</strong><br>
+                                                <small class="text-muted">(51) 77777-7777</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>Bolt</strong><br>
+                                                <small class="text-muted">Labrador</small>
+                                            </div>
+                                        </td>
+                                        <td>Cirurgia</td>
+                                        <td>Dr. Pedro Lima</td>
+                                        <td>Cirurgia</td>
+                                        <td><span class="badge status-realizado">Realizado</span></td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                                    Ações
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#" onclick="visualizarAgendamento(3)">
+                                                        <i class="fas fa-eye me-2"></i>Visualizar
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="#" onclick="gerarRelatorio(3)">
+                                                        <i class="fas fa-file-medical me-2"></i>Relatório
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paginação -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <small class="text-muted">Mostrando 1-3 de 15 agendamentos</small>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Anterior</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Próximo</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Novo/Editar Agendamento -->
+    <div class="modal fade" id="agendamentoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-calendar-plus me-2"></i>
+                        <span id="modalTitle">Novo Agendamento</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="agendamentoForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Cliente *</label>
+                                <select class="form-select" id="cliente" required>
+                                    <option value="">Selecione o cliente...</option>
+                                    <option value="1">Maria Silva</option>
+                                    <option value="2">João Santos</option>
+                                    <option value="3">Carlos Oliveira</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Pet *</label>
+                                <select class="form-select" id="pet" required>
+                                    <option value="">Selecione o pet...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Data *</label>
+                                <input type="date" class="form-control" id="data" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Horário *</label>
+                                <input type="time" class="form-control" id="horario" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Serviço *</label>
+                                <select class="form-select" id="servico" required>
+                                    <option value="">Selecione o serviço...</option>
+                                    <option value="consulta">Consulta Geral</option>
+                                    <option value="vacinacao">Vacinação</option>
+                                    <option value="cirurgia">Cirurgia</option>
+                                    <option value="exame">Exames</option>
+                                    <option value="banho">Banho e Tosa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Veterinário *</label>
+                                <select class="form-select" id="veterinario" required>
+                                    <option value="">Selecione o veterinário...</option>
+                                    <option value="1">Dr. João Silva</option>
+                                    <option value="2">Dra. Ana Costa</option>
+                                    <option value="3">Dr. Pedro Lima</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Sala *</label>
+                                <select class="form-select" id="sala" required>
+                                    <option value="">Selecione a sala...</option>
+                                    <option value="1">Consultório 1</option>
+                                    <option value="2">Consultório 2</option>
+                                    <option value="3">Cirurgia</option>
+                                    <option value="4">Raio-X</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Status</label>
+                                <select class="form-select" id="status">
+                                    <option value="agendado">Agendado</option>
+                                    <option value="confirmado">Confirmado</option>
+                                    <option value="realizado">Realizado</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Observações</label>
+                                <textarea class="form-control" id="observacoes" rows="3" placeholder="Observações adicionais sobre o agendamento..."></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarAgendamento()">
+                        <i class="fas fa-save me-2"></i>Salvar Agendamento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Visualizar Agendamento -->
+    <div class="modal fade" id="visualizarModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-eye me-2"></i>Detalhes do Agendamento
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-dark"><i class="fas fa-user me-2"></i>Informações do Cliente</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <strong>Nome:</strong> <span id="viewCliente">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Telefone:</strong> <span id="viewTelefone">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Email:</strong> <span id="viewEmail">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-dark"><i class="fas fa-paw me-2"></i>Informações do Pet</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <strong>Nome:</strong> <span id="viewPet">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Espécie:</strong> <span id="viewEspecie">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Raça:</strong> <span id="viewRaca">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Idade:</strong> <span id="viewIdade">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-dark"><i class="fas fa-calendar me-2"></i>Agendamento</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <strong>Data:</strong> <span id="viewData">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Horário:</strong> <span id="viewHorario">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Duração:</strong> <span id="viewDuracao">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Status:</strong> <span id="viewStatus">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-dark"><i class="fas fa-user-md me-2"></i>Atendimento</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <strong>Serviço:</strong> <span id="viewServico">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Veterinário:</strong> <span id="viewVeterinario">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Sala:</strong> <span id="viewSala">-</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Valor:</strong> <span id="viewValor">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0 text-dark"><i class="fas fa-sticky-note me-2"></i>Observações</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p id="viewObservacoes" class="mb-0">Nenhuma observação registrada.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-warning" onclick="editarAgendamento()">
+                        <i class="fas fa-edit me-2"></i>Editar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmação de Exclusão -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, var(--vta-orange-dark), var(--vta-orange)); color: white;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Cancelamento
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja cancelar este agendamento?</p>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Atenção:</strong> Esta ação não pode ser desfeita. O cliente será notificado automaticamente sobre o cancelamento.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Motivo do cancelamento:</label>
+                        <textarea class="form-control" id="motivoCancelamento" rows="3" placeholder="Descreva o motivo do cancelamento..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Manter Agendamento</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarCancelamento()">
+                        <i class="fas fa-times me-2"></i>Cancelar Agendamento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Função para simular logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                alert('Logout realizado com sucesso!');
+                // window.location.href = 'login.html';
+            }
+        }
+
+        // Dados mockados para demonstração
+        let agendamentos = [
+            {
+                id: 1,
+                data: '2025-08-15',
+                horario: '09:00',
+                cliente: { nome: 'Maria Silva', telefone: '(51) 99999-9999', email: 'maria@email.com' },
+                pet: { nome: 'Rex', especie: 'Cão', raca: 'Golden Retriever', idade: '3 anos' },
+                servico: 'Consulta Geral',
+                veterinario: 'Dr. João Silva',
+                sala: 'Consultório 1',
+                status: 'confirmado',
+                observacoes: 'Pet apresentou sintomas de alergia na última semana.',
+                valor: 'R$ 80,00',
+                duracao: '30 minutos'
+            },
+            {
+                id: 2,
+                data: '2025-08-15',
+                horario: '10:30',
+                cliente: { nome: 'João Santos', telefone: '(51) 88888-8888', email: 'joao@email.com' },
+                pet: { nome: 'Mimi', especie: 'Gato', raca: 'Persa', idade: '2 anos' },
+                servico: 'Vacinação',
+                veterinario: 'Dra. Ana Costa',
+                sala: 'Consultório 2',
+                status: 'agendado',
+                observacoes: 'Primeira dose da vacina múltipla.',
+                valor: 'R$ 45,00',
+                duracao: '15 minutos'
+            },
+            {
+                id: 3,
+                data: '2025-08-14',
+                horario: '14:00',
+                cliente: { nome: 'Carlos Oliveira', telefone: '(51) 77777-7777', email: 'carlos@email.com' },
+                pet: { nome: 'Bolt', especie: 'Cão', raca: 'Labrador', idade: '5 anos' },
+                servico: 'Cirurgia',
+                veterinario: 'Dr. Pedro Lima',
+                sala: 'Cirurgia',
+                status: 'realizado',
+                observacoes: 'Cirurgia de remoção de tumor realizada com sucesso.',
+                valor: 'R$ 350,00',
+                duracao: '2 horas'
+            }
+        ];
+
+        let agendamentoEditando = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarAgendamentos();
+            configurarFiltros();
+            configurarFormulario();
+            definirDataAtual();
+        });
+
+        // Definir data atual no formulário
+        function definirDataAtual() {
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data').value = hoje;
+            document.getElementById('dataInicio').value = hoje;
+        }
+
+        // Configurar filtros
+        function configurarFiltros() {
+            document.getElementById('searchInput').addEventListener('input', filtrarAgendamentos);
+            document.getElementById('statusFilter').addEventListener('change', filtrarAgendamentos);
+            document.getElementById('salaFilter').addEventListener('change', filtrarAgendamentos);
+            document.getElementById('dataInicio').addEventListener('change', filtrarAgendamentos);
+            document.getElementById('dataFim').addEventListener('change', filtrarAgendamentos);
+        }
+
+        // Configurar formulário
+        function configurarFormulario() {
+            document.getElementById('cliente').addEventListener('change', function() {
+                carregarPetsDoCliente(this.value);
+            });
+        }
+
+        // Carregar pets do cliente selecionado
+        function carregarPetsDoCliente(clienteId) {
+            const petSelect = document.getElementById('pet');
+            petSelect.innerHTML = '<option value="">Selecione o pet...</option>';
+            
+            // Mock data - em produção, fazer requisição à API
+            const petsData = {
+                '1': [
+                    { id: 1, nome: 'Rex', especie: 'Cão' },
+                    { id: 2, nome: 'Buddy', especie: 'Cão' }
+                ],
+                '2': [
+                    { id: 3, nome: 'Mimi', especie: 'Gato' }
+                ],
+                '3': [
+                    { id: 4, nome: 'Bolt', especie: 'Cão' }
+                ]
+            };
+
+            if (petsData[clienteId]) {
+                petsData[clienteId].forEach(pet => {
+                    const option = document.createElement('option');
+                    option.value = pet.id;
+                    option.textContent = `${pet.nome} (${pet.especie})`;
+                    petSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Carregar agendamentos na tabela
+        function carregarAgendamentos(dados = agendamentos) {
+            const tbody = document.getElementById('agendamentosTableBody');
+            tbody.innerHTML = '';
+
+            dados.forEach(agendamento => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div>
+                            <strong>${formatarData(agendamento.data)}</strong><br>
+                            <small class="text-muted">${agendamento.horario}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${agendamento.cliente.nome}</strong><br>
+                            <small class="text-muted">${agendamento.cliente.telefone}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <strong>${agendamento.pet.nome}</strong><br>
+                            <small class="text-muted">${agendamento.pet.raca}</small>
+                        </div>
+                    </td>
+                    <td>${agendamento.servico}</td>
+                    <td>${agendamento.veterinario}</td>
+                    <td>${agendamento.sala}</td>
+                    <td><span class="badge status-${agendamento.status}">${formatarStatus(agendamento.status)}</span></td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                Ações
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="visualizarAgendamento(${agendamento.id})">
+                                    <i class="fas fa-eye me-2"></i>Visualizar
+                                </a></li>
+                                ${agendamento.status !== 'realizado' && agendamento.status !== 'cancelado' ? `
+                                <li><a class="dropdown-item" href="#" onclick="editarAgendamento(${agendamento.id})">
+                                    <i class="fas fa-edit me-2"></i>Editar
+                                </a></li>
+                                ${agendamento.status === 'agendado' ? `
+                                <li><a class="dropdown-item" href="#" onclick="confirmarAgendamento(${agendamento.id})">
+                                    <i class="fas fa-check me-2"></i>Confirmar
+                                </a></li>` : ''}
+                                ${agendamento.status === 'confirmado' ? `
+                                <li><a class="dropdown-item" href="#" onclick="realizarAgendamento(${agendamento.id})">
+                                    <i class="fas fa-user-md me-2"></i>Realizar
+                                </a></li>` : ''}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="cancelarAgendamento(${agendamento.id})">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a></li>` : ''}
+                                ${agendamento.status === 'realizado' ? `
+                                <li><a class="dropdown-item" href="#" onclick="gerarRelatorio(${agendamento.id})">
+                                    <i class="fas fa-file-medical me-2"></i>Relatório
+                                </a></li>` : ''}
+                            </ul>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filtrar agendamentos
+        function filtrarAgendamentos() {
+            const busca = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const sala = document.getElementById('salaFilter').value;
+            const dataInicio = document.getElementById('dataInicio').value;
+            const dataFim = document.getElementById('dataFim').value;
+
+            let agendamentosFiltrados = agendamentos.filter(agendamento => {
+                let passa = true;
+
+                // Filtro de busca
+                if (busca) {
+                    const textoBusca = `${agendamento.cliente.nome} ${agendamento.pet.nome} ${agendamento.servico}`.toLowerCase();
+                    passa = passa && textoBusca.includes(busca);
+                }
+
+                // Filtro de status
+                if (status) {
+                    passa = passa && agendamento.status === status;
+                }
+
+                // Filtro de sala
+                if (sala) {
+                    passa = passa && agendamento.sala.includes(sala);
+                }
+
+                // Filtro de data
+                if (dataInicio) {
+                    passa = passa && agendamento.data >= dataInicio;
+                }
+                if (dataFim) {
+                    passa = passa && agendamento.data <= dataFim;
+                }
+
+                return passa;
+            });
+
+            carregarAgendamentos(agendamentosFiltrados);
+        }
+
+        // Funções de filtros rápidos
+        function filtrarHoje() {
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('dataInicio').value = hoje;
+            document.getElementById('dataFim').value = hoje;
+            filtrarAgendamentos();
+        }
+
+        function filtrarSemana() {
+            const hoje = new Date();
+            const inicioSemana = new Date(hoje.setDate(hoje.getDate() - hoje.getDay()));
+            const fimSemana = new Date(hoje.setDate(hoje.getDate() - hoje.getDay() + 6));
+            
+            document.getElementById('dataInicio').value = inicioSemana.toISOString().split('T')[0];
+            document.getElementById('dataFim').value = fimSemana.toISOString().split('T')[0];
+            filtrarAgendamentos();
+        }
+
+        function filtrarMes() {
+            const hoje = new Date();
+            const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+            const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+            
+            document.getElementById('dataInicio').value = inicioMes.toISOString().split('T')[0];
+            document.getElementById('dataFim').value = fimMes.toISOString().split('T')[0];
+            filtrarAgendamentos();
+        }
+
+        function limparFiltros() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('salaFilter').value = '';
+            document.getElementById('dataInicio').value = '';
+            document.getElementById('dataFim').value = '';
+            carregarAgendamentos();
+        }
+
+        // Visualizar agendamento
+        function visualizarAgendamento(id) {
+            const agendamento = agendamentos.find(a => a.id === id);
+            if (!agendamento) return;
+
+            // Preencher modal de visualização
+            document.getElementById('viewCliente').textContent = agendamento.cliente.nome;
+            document.getElementById('viewTelefone').textContent = agendamento.cliente.telefone;
+            document.getElementById('viewEmail').textContent = agendamento.cliente.email;
+            document.getElementById('viewPet').textContent = agendamento.pet.nome;
+            document.getElementById('viewEspecie').textContent = agendamento.pet.especie;
+            document.getElementById('viewRaca').textContent = agendamento.pet.raca;
+            document.getElementById('viewIdade').textContent = agendamento.pet.idade;
+            document.getElementById('viewData').textContent = formatarData(agendamento.data);
+            document.getElementById('viewHorario').textContent = agendamento.horario;
+            document.getElementById('viewDuracao').textContent = agendamento.duracao;
+            document.getElementById('viewStatus').innerHTML = `<span class="badge status-${agendamento.status}">${formatarStatus(agendamento.status)}</span>`;
+            document.getElementById('viewServico').textContent = agendamento.servico;
+            document.getElementById('viewVeterinario').textContent = agendamento.veterinario;
+            document.getElementById('viewSala').textContent = agendamento.sala;
+            document.getElementById('viewValor').textContent = agendamento.valor;
+            document.getElementById('viewObservacoes').textContent = agendamento.observacoes || 'Nenhuma observação registrada.';
+
+            new bootstrap.Modal(document.getElementById('visualizarModal')).show();
+        }
+
+        // Editar agendamento
+        function editarAgendamento(id) {
+            const agendamento = agendamentos.find(a => a.id === id);
+            if (!agendamento) return;
+
+            agendamentoEditando = id;
+
+            // Preencher formulário
+            document.getElementById('cliente').value = '1'; // Mock
+            document.getElementById('data').value = agendamento.data;
+            document.getElementById('horario').value = agendamento.horario;
+            document.getElementById('servico').value = agendamento.servico.toLowerCase().replace(' ', '');
+            document.getElementById('veterinario').value = '1'; // Mock
+            document.getElementById('sala').value = '1'; // Mock
+            document.getElementById('status').value = agendamento.status;
+            document.getElementById('observacoes').value = agendamento.observacoes;
+
+            document.getElementById('modalTitle').textContent = 'Editar Agendamento';
+            new bootstrap.Modal(document.getElementById('agendamentoModal')).show();
+        }
+
+        // Confirmar agendamento
+        function confirmarAgendamento(id) {
+            const agendamento = agendamentos.find(a => a.id === id);
+            if (agendamento) {
+                agendamento.status = 'confirmado';
+                carregarAgendamentos();
+                mostrarToast('Agendamento confirmado com sucesso!', 'success');
+                
+                // Simular envio de notificação
+                enviarNotificacao(agendamento, 'confirmacao');
+            }
+        }
+
+        // Realizar agendamento
+        function realizarAgendamento(id) {
+            const agendamento = agendamentos.find(a => a.id === id);
+            if (agendamento) {
+                agendamento.status = 'realizado';
+                carregarAgendamentos();
+                mostrarToast('Agendamento marcado como realizado!', 'success');
+            }
+        }
+
+        // Cancelar agendamento
+        function cancelarAgendamento(id) {
+            agendamentoEditando = id;
+            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+        }
+
+        // Confirmar cancelamento
+        function confirmarCancelamento() {
+            const agendamento = agendamentos.find(a => a.id === agendamentoEditando);
+            const motivo = document.getElementById('motivoCancelamento').value;
+            
+            if (agendamento) {
+                agendamento.status = 'cancelado';
+                agendamento.motivoCancelamento = motivo;
+                carregarAgendamentos();
+                
+                // Fechar modal
+                bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+                
+                mostrarToast('Agendamento cancelado com sucesso!', 'warning');
+                
+                // Simular envio de notificação
+                enviarNotificacao(agendamento, 'cancelamento');
+            }
+        }
+
+        // Salvar agendamento (novo/edição)
+        function salvarAgendamento() {
+            const form = document.getElementById('agendamentoForm');
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const dados = {
+                cliente: document.getElementById('cliente').value,
+                pet: document.getElementById('pet').value,
+                data: document.getElementById('data').value,
+                horario: document.getElementById('horario').value,
+                servico: document.getElementById('servico').value,
+                veterinario: document.getElementById('veterinario').value,
+                sala: document.getElementById('sala').value,
+                status: document.getElementById('status').value,
+                observacoes: document.getElementById('observacoes').value
+            };
+
+            if (agendamentoEditando) {
+                // Editar agendamento existente
+                const agendamento = agendamentos.find(a => a.id === agendamentoEditando);
+                if (agendamento) {
+                    Object.assign(agendamento, dados);
+                    mostrarToast('Agendamento atualizado com sucesso!', 'success');
+                }
+                agendamentoEditando = null;
+            } else {
+                // Criar novo agendamento
+                const novoId = Math.max(...agendamentos.map(a => a.id)) + 1;
+                const novoAgendamento = {
+                    id: novoId,
+                    ...dados,
+                    // Mock data
+                    cliente: { nome: 'Novo Cliente', telefone: '(51) 99999-9999', email: 'novo@email.com' },
+                    pet: { nome: 'Novo Pet', especie: 'Cão', raca: 'SRD', idade: '1 ano' },
+                    veterinario: 'Dr. João Silva',
+                    sala: 'Consultório 1',
+                    valor: 'R$ 80,00',
+                    duracao: '30 minutos'
+                };
+                agendamentos.unshift(novoAgendamento);
+                mostrarToast('Agendamento criado com sucesso!', 'success');
+            }
+
+            // Fechar modal e recarregar tabela
+            bootstrap.Modal.getInstance(document.getElementById('agendamentoModal')).hide();
+            carregarAgendamentos();
+            limparFormulario();
+        }
+
+        // Limpar formulário
+        function limparFormulario() {
+            document.getElementById('agendamentoForm').reset();
+            document.getElementById('modalTitle').textContent = 'Novo Agendamento';
+            definirDataAtual();
+        }
+
+        // Gerar relatório
+        function gerarRelatorio(id) {
+            const agendamento = agendamentos.find(a => a.id === id);
+            if (agendamento) {
+                mostrarToast('Relatório sendo gerado...', 'info');
+                // Simular geração de relatório
+                setTimeout(() => {
+                    mostrarToast('Relatório gerado com sucesso!', 'success');
+                }, 2000);
+            }
+        }
+
+        // Exportar agendamentos
+        function exportarAgendamentos() {
+            mostrarToast('Exportação iniciada...', 'info');
+            // Simular exportação
+            setTimeout(() => {
+                mostrarToast('Agendamentos exportados com sucesso!', 'success');
+            }, 2000);
+        }
+
+        // Atualizar lista
+        function atualizarLista() {
+            const btn = event.target.closest('button');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Atualizando...';
+            
+            setTimeout(() => {
+                carregarAgendamentos();
+                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Atualizar';
+                mostrarToast('Lista atualizada!', 'success');
+            }, 1500);
+        }
+
+        // Enviar notificação (simulado)
+        function enviarNotificacao(agendamento, tipo) {
+            const mensagens = {
+                confirmacao: `Agendamento confirmado para ${agendamento.cliente.nome} - ${formatarData(agendamento.data)} às ${agendamento.horario}`,
+                cancelamento: `Agendamento cancelado para ${agendamento.cliente.nome} - ${formatarData(agendamento.data)} às ${agendamento.horario}`
+            };
+            
+            console.log(`📧 Notificação enviada: ${mensagens[tipo]}`);
+        }
+
+        // Funções utilitárias
+        function formatarData(data) {
+            return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+        }
+
+        function formatarStatus(status) {
+            const statusMap = {
+                agendado: 'Agendado',
+                confirmado: 'Confirmado',
+                realizado: 'Realizado',
+                cancelado: 'Cancelado'
+            };
+            return statusMap[status] || status;
+        }
+
+        function mostrarToast(mensagem, tipo = 'info') {
+            // Criar toast dinamicamente
+            const toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+            toastContainer.style.zIndex = '9999';
+            
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${tipo === 'success' ? 'success' : tipo === 'warning' ? 'warning' : tipo === 'error' ? 'danger' : 'info'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'warning' ? 'exclamation-triangle' : tipo === 'error' ? 'times-circle' : 'info-circle'} me-2"></i>
+                        ${mensagem}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            document.body.appendChild(toastContainer);
+            
+            const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+            bsToast.show();
+            
+            // Remover container após o toast desaparecer
+            toast.addEventListener('hidden.bs.toast', () => {
+                document.body.removeChild(toastContainer);
+            });
+        }
+
+        // Event listeners para quando o modal for fechado
+        document.getElementById('agendamentoModal').addEventListener('hidden.bs.modal', function() {
+            limparFormulario();
+            agendamentoEditando = null;
+        });
+
+        document.getElementById('confirmDeleteModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('motivoCancelamento').value = '';
+            agendamentoEditando = null;
+        });
+
+        // Validações adicionais
+        function validarConflitosHorario(data, horario, sala, agendamentoId = null) {
+            const conflitos = agendamentos.filter(a => 
+                a.data === data && 
+                a.horario === horario && 
+                a.sala === sala && 
+                a.id !== agendamentoId &&
+                a.status !== 'cancelado'
+            );
+            
+            return conflitos.length === 0;
+        }
+
+        // Validar disponibilidade do veterinário
+        function validarDisponibilidadeVeterinario(data, horario, veterinario, agendamentoId = null) {
+            const conflitos = agendamentos.filter(a => 
+                a.data === data && 
+                a.horario === horario && 
+                a.veterinario === veterinario && 
+                a.id !== agendamentoId &&
+                a.status !== 'cancelado'
+            );
+            
+            return conflitos.length === 0;
+        }
+
+        // Adicionar validações no formulário
+        document.getElementById('data').addEventListener('change', validarFormulario);
+        document.getElementById('horario').addEventListener('change', validarFormulario);
+        document.getElementById('sala').addEventListener('change', validarFormulario);
+        document.getElementById('veterinario').addEventListener('change', validarFormulario);
+
+        function validarFormulario() {
+            const data = document.getElementById('data').value;
+            const horario = document.getElementById('horario').value;
+            const sala = document.getElementById('sala').value;
+            const veterinario = document.getElementById('veterinario').value;
+
+            if (data && horario && sala && veterinario) {
+                const salaTexto = document.getElementById('sala').selectedOptions[0]?.textContent;
+                const veterinarioTexto = document.getElementById('veterinario').selectedOptions[0]?.textContent;
+                
+                // Verificar conflitos de sala
+                if (!validarConflitosHorario(data, horario, salaTexto, agendamentoEditando)) {
+                    mostrarToast(`Conflito detectado! A ${salaTexto} já está ocupada neste horário.`, 'warning');
+                }
+                
+                // Verificar disponibilidade do veterinário
+                if (!validarDisponibilidadeVeterinario(data, horario, veterinarioTexto, agendamentoEditando)) {
+                    mostrarToast(`Conflito detectado! ${veterinarioTexto} já possui agendamento neste horário.`, 'warning');
+                }
+            }
+        }
+
+        // Função para verificar agendamentos próximos ao vencimento
+        function verificarAgendamentosProximos() {
+            const agora = new Date();
+            const proximaHora = new Date(agora.getTime() + 60 * 60 * 1000); // Próxima hora
+            
+            const agendamentosProximos = agendamentos.filter(a => {
+                if (a.status !== 'confirmado') return false;
+                
+                const dataHoraAgendamento = new Date(`${a.data}T${a.horario}:00`);
+                return dataHoraAgendamento >= agora && dataHoraAgendamento <= proximaHora;
+            });
+            
+            agendamentosProximos.forEach(agendamento => {
+                mostrarToast(
+                    `Lembrete: ${agendamento.cliente.nome} tem consulta em breve (${agendamento.horario})`,
+                    'info'
+                );
+            });
+        }
+
+        // Verificar agendamentos próximos a cada 5 minutos
+        setInterval(verificarAgendamentosProximos, 5 * 60 * 1000);
+
+        // Configurar validação de data mínima (não permitir agendar no passado)
+        document.getElementById('data').addEventListener('input', function() {
+            const hoje = new Date().toISOString().split('T')[0];
+            if (this.value < hoje) {
+                this.setCustomValidity('Não é possível agendar para uma data passada.');
+                mostrarToast('Não é possível agendar para uma data passada.', 'warning');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Configurar horário de funcionamento
+        document.getElementById('horario').addEventListener('input', function() {
+            const horario = this.value;
+            const hora = parseInt(horario.split(':')[0]);
+            
+            if (hora < 8 || hora >= 18) {
+                this.setCustomValidity('Horário deve ser entre 08:00 e 17:59.');
+                mostrarToast('Clínica funciona das 08:00 às 18:00.', 'warning');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Função para calcular estatísticas rápidas
+        function calcularEstatisticas() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const estatisticas = {
+                hoje: agendamentos.filter(a => a.data === hoje).length,
+                pendentes: agendamentos.filter(a => a.status === 'agendado').length,
+                confirmados: agendamentos.filter(a => a.status === 'confirmado').length,
+                realizados: agendamentos.filter(a => a.status === 'realizado').length,
+                cancelados: agendamentos.filter(a => a.status === 'cancelado').length
+            };
+            
+            return estatisticas;
+        }
+
+        // Mostrar estatísticas no console para desenvolvimento
+        console.log('📊 Estatísticas dos Agendamentos:', calcularEstatisticas());
+
+        // Função para backup dos dados (localStorage simulation)
+        function salvarBackup() {
+            try {
+                // Em um ambiente real, isso seria enviado para o servidor
+                console.log('💾 Backup dos agendamentos salvo:', {
+                    timestamp: new Date().toISOString(),
+                    total: agendamentos.length,
+                    dados: agendamentos
+                });
+            } catch (error) {
+                console.error('Erro ao salvar backup:', error);
+            }
+        }
+
+        // Salvar backup a cada mudança importante
+        window.addEventListener('beforeunload', salvarBackup);
+
+        // Adicionar funcionalidade de impressão
+        function imprimirAgendamentos() {
+            const printContent = `
+                <html>
+                <head>
+                    <title>Relatório de Agendamentos - VTA</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; color: #343A40; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .logo { font-size: 24px; font-weight: bold; color: #52B788; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f8f9fa; font-weight: bold; color: #343A40; }
+                        .status-agendado { background: #2E86AB; color: white; padding: 2px 6px; border-radius: 3px; }
+                        .status-confirmado { background: #52B788; color: white; padding: 2px 6px; border-radius: 3px; }
+                        .status-realizado { background: #6f42c1; color: white; padding: 2px 6px; border-radius: 3px; }
+                        .status-cancelado { background: #D62828; color: white; padding: 2px 6px; border-radius: 3px; }
+                        .footer { margin-top: 30px; text-align: center; color: #6C757D; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">🩺 VTA - Vet Assistance</div>
+                        <h2>Relatório de Agendamentos</h2>
+                        <p>Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Cliente</th>
+                                <th>Pet</th>
+                                <th>Serviço</th>
+                                <th>Veterinário</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${agendamentos.map(a => `
+                                <tr>
+                                    <td>${formatarData(a.data)} ${a.horario}</td>
+                                    <td>${a.cliente.nome}</td>
+                                    <td>${a.pet.nome} (${a.pet.raca})</td>
+                                    <td>${a.servico}</td>
+                                    <td>${a.veterinario}</td>
+                                    <td><span class="status-${a.status}">${formatarStatus(a.status)}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div class="footer">
+                        <p>Total de agendamentos: ${agendamentos.length}</p>
+                        <p>VTA - Vet Assistance | Sistema de Gestão Veterinária</p>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Adicionar botão de impressão (pode ser chamado externamente)
+        window.imprimirAgendamentos = imprimirAgendamentos;
+
+        // Navegação do menu
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                link.classList.add('active');
+                
+                // Simulate navigation
+                const linkText = link.textContent.trim();
+                if (linkText !== 'Agendamentos') {
+                    alert(`Navegando para: ${linkText}`);
+                }
+            });
+        });
+    </script>
+    <!-- Navegação e controle de sessão -->
+    <script src="assets/js/vta-nav.js" defer></script>
+</body>
+</html>

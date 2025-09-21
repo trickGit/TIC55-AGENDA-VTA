@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Salas - Agenda VTA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset e configurações básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Paleta de cores VTA */
+        :root {
+            --vta-green: #52B788;
+            --vta-green-light: #74C69D;
+            --vta-green-dark: #40916C;
+            --vta-blue: #2E86AB;
+            --vta-blue-light: #48A3C7;
+            --vta-blue-dark: #1B5E7A;
+            --vta-orange: #F77F00;
+            --vta-orange-light: #FCBF49;
+            --vta-orange-dark: #D62828;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --gray-medium: #6C757D;
+            --gray-dark: #343A40;
+            --success: #28A745;
+            --warning: #FFC107;
+            --danger: #DC3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        /* Layout Principal */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-mini {
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-size: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(15deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--gray-dark);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        /* Content Area */
+        .content-area {
+            display: grid;
+            gap: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-title i {
+            font-size: 2rem;
+            color: var(--vta-green);
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-medium);
+            color: var(--white);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vta-green), var(--vta-blue));
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--white);
+        }
+
+        .stat-icon.green { background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light)); }
+        .stat-icon.blue { background: linear-gradient(135deg, var(--vta-blue), var(--vta-blue-light)); }
+        .stat-icon.orange { background: linear-gradient(135deg, var(--vta-orange), var(--vta-orange-light)); }
+        .stat-icon.red { background: linear-gradient(135deg, var(--danger), #ff6b8a); }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+
+        /* Salas Grid */
+        .salas-container {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .salas-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--vta-green);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .salas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .sala-card {
+            background: var(--gray-light);
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .sala-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .sala-card.disponivel {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+        }
+
+        .sala-card.ocupada {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+        }
+
+        .sala-card.bloqueada {
+            border-color: var(--danger);
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+        }
+
+        .sala-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .sala-info h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--gray-dark);
+        }
+
+        .sala-tipo {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+
+        .sala-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-disponivel {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .status-ocupada {
+            background: var(--warning);
+            color: var(--gray-dark);
+        }
+
+        .status-bloqueada {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .sala-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-item i {
+            width: 20px;
+            color: var(--vta-green);
+        }
+
+        .sala-ocupacao {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .ocupacao-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .ocupacao-info {
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+        }
+
+        .sala-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray-medium);
+            cursor: pointer;
+            padding: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--vta-green);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--vta-green);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .salas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .salas-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-mini">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="header-title">
+                        <h1>Agenda VTA</h1>
+                        <p class="header-subtitle">Sistema de Agendamento Veterinário</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">A</div>
+                        <div class="user-details">
+                            <h3>Administrador</h3>
+                            <p class="user-role">admin@vta.com</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Sair do sistema">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Menu Principal</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="2.%20dashboard_vta.html" class="nav-link">
+                                <i class="fas fa-chart-pie"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="3.%20agenda_vta.html" class="nav-link">
+                                <i class="fas fa-calendar"></i>
+                                Agenda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="4.%20agendamento_vta.html" class="nav-link">
+                                <i class="fas fa-plus-circle"></i>
+                                Novo Agendamento
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="5.%20clientes_vta.html" class="nav-link">
+                                <i class="fas fa-users"></i>
+                                Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="6.%20pets_vta.html" class="nav-link">
+                                <i class="fas fa-paw"></i>
+                                Pets
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="8.%20salas_vta.html" class="nav-link active">
+                                <i class="fas fa-door-open"></i>
+                                Salas
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Relatórios</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="9.%20relatorios_dashboard.html" class="nav-link">
+                                <i class="fas fa-chart-bar"></i>
+                                Relatórios ADM
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="10.%20relatorios_pets.html" class="nav-link">
+                                <i class="fas fa-file-medical"></i>
+                                Histórico Pets
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-title">
+                        <i class="fas fa-door-open"></i>
+                        <div>
+                            <h1>Gerenciamento de Salas</h1>
+                            <p class="page-subtitle">Controle de salas, disponibilidade e bloqueios</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('addSalaModal')">
+                        <i class="fas fa-plus"></i>
+                        Nova Sala
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">Total de Salas</div>
+                            </div>
+                            <div class="stat-icon green">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">Disponíveis</div>
+                            </div>
+                            <div class="stat-icon blue">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value">2</div>
+                                <div class="stat-label">Em Uso</div>
+                            </div>
+                            <div class="stat-icon orange">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">Bloqueadas</div>
+                            </div>
+                            <div class="stat-icon red">
+                                <i class="fas fa-ban"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Salas Container -->
+                <div class="salas-container">
+                    <div class="salas-header">
+                        <h2>Lista de Salas</h2>
+                        <div class="search-container">
+                            <input type="text" id="searchSalas" class="search-input" placeholder="Buscar salas..." onkeyup="filtrarSalas()">
+                        </div>
+                    </div>
+
+                    <div class="salas-grid" id="salasGrid">
+                        <!-- Salas serão carregadas aqui -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Nova Sala -->
+    <div class="modal" id="addSalaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Nova Sala</h2>
+                <button class="close-modal" onclick="closeModal('addSalaModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="adicionarSala(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome da Sala</label>
+                    <input type="text" id="nomeSala" class="form-input" required placeholder="Ex: Sala de Cirurgia 1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Sala</label>
+                    <select id="tipoSala" class="form-select" required>
+                        <option value="">Selecione o tipo</option>
+                        <option value="consulta">Consulta</option>
+                        <option value="cirurgia">Cirurgia</option>
+                        <option value="emergencia">Emergência</option>
+                        <option value="internacao">Internação</option>
+                        <option value="exame">Exames</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Capacidade</label>
+                    <input type="number" id="capacidadeSala" class="form-input" required min="1" max="20" value="1" placeholder="Número de pacientes">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" id="descricaoSala" class="form-input" placeholder="Equipamentos e características especiais">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addSalaModal')">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Salvar Sala
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Sala -->
+    <div class="modal" id="editSalaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Editar Sala</h2>
+                <button class="close-modal" onclick="closeModal('editSalaModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="editarSala(event)">
+                <input type="hidden" id="editSalaId">
+                <div class="form-group">
+                    <label class="form-label">Nome da Sala</label>
+                    <input type="text" id="editNomeSala" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Sala</label>
+                    <select id="editTipoSala" class="form-select" required>
+                        <option value="consulta">Consulta</option>
+                        <option value="cirurgia">Cirurgia</option>
+                        <option value="emergencia">Emergência</option>
+                        <option value="internacao">Internação</option>
+                        <option value="exame">Exames</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Capacidade</label>
+                    <input type="number" id="editCapacidadeSala" class="form-input" required min="1" max="20">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" id="editDescricaoSala" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select id="editStatusSala" class="form-select" required>
+                        <option value="disponivel">Disponível</option>
+                        <option value="ocupada">Ocupada</option>
+                        <option value="bloqueada">Bloqueada</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editSalaModal')">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Bloqueio/Desbloqueio -->
+    <div class="modal" id="bloqueioModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="bloqueioModalTitle">Bloquear Sala</h2>
+                <button class="close-modal" onclick="closeModal('bloqueioModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="bloqueioModalContent">
+                <div class="form-group">
+                    <label class="form-label">Motivo do Bloqueio</label>
+                    <select id="motivoBloqueio" class="form-select" required>
+                        <option value="">Selecione o motivo</option>
+                        <option value="manutencao">Manutenção</option>
+                        <option value="limpeza">Limpeza Profunda</option>
+                        <option value="reforma">Reforma</option>
+                        <option value="equipamento">Problema no Equipamento</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Observações</label>
+                    <input type="text" id="observacoesBloqueio" class="form-input" placeholder="Detalhes adicionais...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Previsão de Liberação</label>
+                    <input type="datetime-local" id="previsaoLiberacao" class="form-input">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('bloqueioModal')">
+                    Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmarBloqueioBtn" onclick="confirmarBloqueio()">
+                    <i class="fas fa-ban"></i>
+                    Bloquear Sala
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados das salas (simulação)
+        let salas = [
+            {
+                id: 1,
+                nome: "Sala de Consulta 1",
+                tipo: "consulta",
+                capacidade: 1,
+                status: "ocupada",
+                descricao: "Mesa de exame, balança digital, armário com medicamentos",
+                ocupacaoAtual: {
+                    cliente: "Maria Santos",
+                    pet: "Rex",
+                    veterinario: "Dr. Silva",
+                    inicio: "09:00",
+                    fim: "09:30"
+                },
+                dataCriacao: "2024-01-15"
+            },
+            {
+                id: 2,
+                nome: "Sala de Cirurgia",
+                tipo: "cirurgia",
+                capacidade: 2,
+                status: "disponivel",
+                descricao: "Mesa cirúrgica, equipamentos de anestesia, monitores",
+                ocupacaoAtual: null,
+                dataCriacao: "2024-01-15"
+            },
+            {
+                id: 3,
+                nome: "Sala de Emergência",
+                tipo: "emergencia",
+                capacidade: 1,
+                status: "disponivel",
+                descricao: "Equipamentos de emergência, desfibrilador, oxigênio",
+                ocupacaoAtual: null,
+                dataCriacao: "2024-01-20"
+            },
+            {
+                id: 4,
+                nome: "Sala de Consulta 2",
+                tipo: "consulta",
+                capacidade: 1,
+                status: "ocupada",
+                descricao: "Mesa de exame, balança, equipamentos básicos",
+                ocupacaoAtual: {
+                    cliente: "João Pedro",
+                    pet: "Mimi",
+                    veterinario: "Dr. Costa",
+                    inicio: "10:30",
+                    fim: "11:00"
+                },
+                dataCriacao: "2024-02-01"
+            },
+            {
+                id: 5,
+                nome: "Sala de Exames",
+                tipo: "exame",
+                capacidade: 1,
+                status: "disponivel",
+                descricao: "Ultrassom, raio-X, equipamentos de diagnóstico",
+                ocupacaoAtual: null,
+                dataCriacao: "2024-02-10"
+            }
+        ];
+
+        let salaParaBloqueio = null;
+
+        // Função para carregar as salas
+        function carregarSalas() {
+            const salasGrid = document.getElementById('salasGrid');
+            salasGrid.innerHTML = '';
+
+            salas.forEach(sala => {
+                const salaCard = criarSalaCard(sala);
+                salasGrid.appendChild(salaCard);
+            });
+
+            atualizarEstatisticas();
+        }
+
+        // Função para criar card da sala
+        function criarSalaCard(sala) {
+            const card = document.createElement('div');
+            card.className = `sala-card ${sala.status}`;
+            card.innerHTML = `
+                <div class="sala-header">
+                    <div class="sala-info">
+                        <h3>${sala.nome}</h3>
+                        <p class="sala-tipo">${formatarTipo(sala.tipo)}</p>
+                    </div>
+                    <span class="sala-status status-${sala.status}">
+                        ${formatarStatus(sala.status)}
+                    </span>
+                </div>
+                
+                <div class="sala-details">
+                    <div class="detail-item">
+                        <i class="fas fa-users"></i>
+                        <span>Capacidade: ${sala.capacidade} paciente(s)</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>${sala.descricao}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Criada em: ${formatarData(sala.dataCriacao)}</span>
+                    </div>
+                </div>
+
+                ${sala.ocupacaoAtual ? `
+                    <div class="sala-ocupacao">
+                        <div class="ocupacao-title">Ocupação Atual:</div>
+                        <div class="ocupacao-info">
+                            <strong>${sala.ocupacaoAtual.cliente}</strong> - ${sala.ocupacaoAtual.pet}<br>
+                            ${sala.ocupacaoAtual.veterinario} • ${sala.ocupacaoAtual.inicio} - ${sala.ocupacaoAtual.fim}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div class="sala-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="editarSalaModal(${sala.id})">
+                        <i class="fas fa-edit"></i>
+                        Editar
+                    </button>
+                    ${sala.status !== 'bloqueada' ? `
+                        <button class="btn btn-danger btn-sm" onclick="bloquearSalaModal(${sala.id})">
+                            <i class="fas fa-ban"></i>
+                            Bloquear
+                        </button>
+                    ` : `
+                        <button class="btn btn-primary btn-sm" onclick="desbloquearSala(${sala.id})">
+                            <i class="fas fa-unlock"></i>
+                            Desbloquear
+                        </button>
+                    `}
+                    <button class="btn btn-danger btn-sm" onclick="excluirSala(${sala.id})" 
+                            ${sala.status === 'ocupada' ? 'disabled title="Não é possível excluir sala ocupada"' : ''}>
+                        <i class="fas fa-trash"></i>
+                        Excluir
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // Funções de formatação
+        function formatarTipo(tipo) {
+            const tipos = {
+                'consulta': 'Consulta',
+                'cirurgia': 'Cirurgia',
+                'emergencia': 'Emergência',
+                'internacao': 'Internação',
+                'exame': 'Exames'
+            };
+            return tipos[tipo] || tipo;
+        }
+
+        function formatarStatus(status) {
+            const statusMap = {
+                'disponivel': 'Disponível',
+                'ocupada': 'Em Uso',
+                'bloqueada': 'Bloqueada'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatarData(data) {
+            return new Date(data).toLocaleDateString('pt-BR');
+        }
+
+        // Função para atualizar estatísticas
+        function atualizarEstatisticas() {
+            const total = salas.length;
+            const disponiveis = salas.filter(s => s.status === 'disponivel').length;
+            const ocupadas = salas.filter(s => s.status === 'ocupada').length;
+            const bloqueadas = salas.filter(s => s.status === 'bloqueada').length;
+
+            document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = total;
+            document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = disponiveis;
+            document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = ocupadas;
+            document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = bloqueadas;
+        }
+
+        // Função para filtrar salas
+        function filtrarSalas() {
+            const searchTerm = document.getElementById('searchSalas').value.toLowerCase();
+            const salasCards = document.querySelectorAll('.sala-card');
+            
+            salasCards.forEach(card => {
+                const texto = card.textContent.toLowerCase();
+                if (texto.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Funções de modal
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Limpar formulários
+            if (modalId === 'addSalaModal') {
+                document.querySelector('#addSalaModal form').reset();
+            }
+        }
+
+        // Função para adicionar nova sala
+        function adicionarSala(event) {
+            event.preventDefault();
+            
+            const nome = document.getElementById('nomeSala').value;
+            const tipo = document.getElementById('tipoSala').value;
+            const capacidade = parseInt(document.getElementById('capacidadeSala').value);
+            const descricao = document.getElementById('descricaoSala').value;
+
+            // Verificar se nome já existe
+            if (salas.some(s => s.nome.toLowerCase() === nome.toLowerCase())) {
+                alert('Já existe uma sala com este nome!');
+                return;
+            }
+
+            const novaSala = {
+                id: Math.max(...salas.map(s => s.id)) + 1,
+                nome: nome,
+                tipo: tipo,
+                capacidade: capacidade,
+                status: 'disponivel',
+                descricao: descricao,
+                ocupacaoAtual: null,
+                dataCriacao: new Date().toISOString().split('T')[0]
+            };
+
+            salas.push(novaSala);
+            carregarSalas();
+            closeModal('addSalaModal');
+            
+            // Feedback visual
+            alert('Sala criada com sucesso!');
+        }
+
+        // Função para abrir modal de edição
+        function editarSalaModal(id) {
+            const sala = salas.find(s => s.id === id);
+            if (!sala) return;
+
+            document.getElementById('editSalaId').value = sala.id;
+            document.getElementById('editNomeSala').value = sala.nome;
+            document.getElementById('editTipoSala').value = sala.tipo;
+            document.getElementById('editCapacidadeSala').value = sala.capacidade;
+            document.getElementById('editDescricaoSala').value = sala.descricao;
+            document.getElementById('editStatusSala').value = sala.status;
+
+            openModal('editSalaModal');
+        }
+
+        // Função para editar sala
+        function editarSala(event) {
+            event.preventDefault();
+            
+            const id = parseInt(document.getElementById('editSalaId').value);
+            const nome = document.getElementById('editNomeSala').value;
+            const tipo = document.getElementById('editTipoSala').value;
+            const capacidade = parseInt(document.getElementById('editCapacidadeSala').value);
+            const descricao = document.getElementById('editDescricaoSala').value;
+            const status = document.getElementById('editStatusSala').value;
+
+            const sala = salas.find(s => s.id === id);
+            if (!sala) return;
+
+            // Verificar se nome já existe em outra sala
+            if (salas.some(s => s.id !== id && s.nome.toLowerCase() === nome.toLowerCase())) {
+                alert('Já existe uma sala com este nome!');
+                return;
+            }
+
+            sala.nome = nome;
+            sala.tipo = tipo;
+            sala.capacidade = capacidade;
+            sala.descricao = descricao;
+            sala.status = status;
+
+            // Se status mudou para disponível, remover ocupação
+            if (status === 'disponivel') {
+                sala.ocupacaoAtual = null;
+            }
+
+            carregarSalas();
+            closeModal('editSalaModal');
+            
+            alert('Sala atualizada com sucesso!');
+        }
+
+        // Função para abrir modal de bloqueio
+        function bloquearSalaModal(id) {
+            salaParaBloqueio = id;
+            
+            // Configurar modal para bloqueio
+            document.getElementById('bloqueioModalTitle').textContent = 'Bloquear Sala';
+            document.getElementById('bloqueioModalContent').style.display = 'block';
+            document.getElementById('confirmarBloqueioBtn').innerHTML = '<i class="fas fa-ban"></i> Bloquear Sala';
+            document.getElementById('confirmarBloqueioBtn').className = 'btn btn-danger';
+            
+            // Limpar campos
+            document.getElementById('motivoBloqueio').value = '';
+            document.getElementById('observacoesBloqueio').value = '';
+            document.getElementById('previsaoLiberacao').value = '';
+            
+            openModal('bloqueioModal');
+        }
+
+        // Função para confirmar bloqueio
+        function confirmarBloqueio() {
+            if (!salaParaBloqueio) return;
+            
+            const motivo = document.getElementById('motivoBloqueio').value;
+            if (!motivo) {
+                alert('Por favor, selecione um motivo para o bloqueio.');
+                return;
+            }
+
+            const sala = salas.find(s => s.id === salaParaBloqueio);
+            if (!sala) return;
+
+            sala.status = 'bloqueada';
+            sala.ocupacaoAtual = null; // Remove ocupação se houver
+            sala.motivoBloqueio = motivo;
+            sala.observacoesBloqueio = document.getElementById('observacoesBloqueio').value;
+            sala.previsaoLiberacao = document.getElementById('previsaoLiberacao').value;
+            sala.dataBloqueio = new Date().toISOString();
+
+            carregarSalas();
+            closeModal('bloqueioModal');
+            salaParaBloqueio = null;
+            
+            alert('Sala bloqueada com sucesso!');
+        }
+
+        // Função para desbloquear sala
+        function desbloquearSala(id) {
+            if (confirm('Tem certeza que deseja desbloquear esta sala?')) {
+                const sala = salas.find(s => s.id === id);
+                if (sala) {
+                    sala.status = 'disponivel';
+                    delete sala.motivoBloqueio;
+                    delete sala.observacoesBloqueio;
+                    delete sala.previsaoLiberacao;
+                    delete sala.dataBloqueio;
+                    
+                    carregarSalas();
+                    alert('Sala desbloqueada com sucesso!');
+                }
+            }
+        }
+
+        // Função para excluir sala
+        function excluirSala(id) {
+            const sala = salas.find(s => s.id === id);
+            if (!sala) return;
+
+            if (sala.status === 'ocupada') {
+                alert('Não é possível excluir uma sala que está ocupada!');
+                return;
+            }
+
+            if (confirm(`Tem certeza que deseja excluir a sala "${sala.nome}"?\n\nEsta ação não pode ser desfeita.`)) {
+                salas = salas.filter(s => s.id !== id);
+                carregarSalas();
+                alert('Sala excluída com sucesso!');
+            }
+        }
+
+        // Função de logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                alert('Logout realizado com sucesso!');
+                // window.location.href = 'login.html';
+            }
+        }
+
+        // Navegação do menu
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                link.classList.add('active');
+                
+                // Simulate navigation
+                const linkText = link.querySelector('i').nextElementSibling.textContent.trim();
+                if (linkText !== 'Salas') {
+                    alert(`Navegando para: ${linkText}`);
+                }
+            });
+        });
+
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                const modalId = e.target.id;
+                closeModal(modalId);
+            }
+        });
+
+        // Carregar salas quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarSalas();
+        });
+
+        // Simulação de atualizações em tempo real
+        setInterval(() => {
+            // Simular mudanças de status aleatórias
+            if (Math.random() > 0.95) {
+                const salasDisponiveis = salas.filter(s => s.status === 'disponivel');
+                const salasOcupadas = salas.filter(s => s.status === 'ocupada');
+                
+                if (salasDisponiveis.length > 0 && Math.random() > 0.5) {
+                    // Ocupar uma sala disponível
+                    const sala = salasDisponiveis[Math.floor(Math.random() * salasDisponiveis.length)];
+                    sala.status = 'ocupada';
+                    sala.ocupacaoAtual = {
+                        cliente: 'Cliente Exemplo',
+                        pet: 'Pet Exemplo',
+                        veterinario: 'Dr. Exemplo',
+                        inicio: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}),
+                        fim: new Date(Date.now() + 30*60000).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})
+                    };
+                    carregarSalas();
+                }
+                
+                if (salasOcupadas.length > 0 && Math.random() > 0.7) {
+                    // Liberar uma sala ocupada
+                    const sala = salasOcupadas[Math.floor(Math.random() * salasOcupadas.length)];
+                    sala.status = 'disponivel';
+                    sala.ocupacaoAtual = null;
+                    carregarSalas();
+                }
+            }
+        }, 10000); // Verificar a cada 10 segundos
+    </script>
+    <!-- Navegação e controle de sessão -->
+    <script src="assets/js/vta-nav.js" defer></script>
+</body>
+</html>

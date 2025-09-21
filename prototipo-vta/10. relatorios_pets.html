@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios de Clientes/Pets - Agenda VTA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset e configurações básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Paleta de cores VTA */
+        :root {
+            --vta-green: #52B788;
+            --vta-green-light: #74C69D;
+            --vta-green-dark: #40916C;
+            --vta-blue: #2E86AB;
+            --vta-blue-light: #48A3C7;
+            --vta-blue-dark: #1B5E7A;
+            --vta-orange: #F77F00;
+            --vta-orange-light: #FCBF49;
+            --vta-orange-dark: #D62828;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --gray-medium: #6C757D;
+            --gray-dark: #343A40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        /* Layout Principal */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-mini {
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-size: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(15deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--gray-dark);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        /* Content Area */
+        .content-area {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .page-header {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray-medium);
+            font-size: 1.1rem;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .filters-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--gray-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--gray-dark);
+        }
+
+        .filter-input {
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--vta-green);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light));
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-medium);
+            color: var(--white);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, var(--vta-blue), var(--vta-blue-light));
+            color: var(--white);
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(46, 134, 171, 0.3);
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .results-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .export-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .export-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-pdf {
+            background: var(--vta-orange);
+            color: var(--white);
+        }
+
+        .export-excel {
+            background: var(--vta-green);
+            color: var(--white);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .data-table th {
+            background: var(--gray-light);
+            font-weight: 600;
+            color: var(--gray-dark);
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table tr:hover {
+            background: rgba(82, 183, 136, 0.05);
+        }
+
+        .pet-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pet-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--vta-green-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .pet-details h4 {
+            margin-bottom: 2px;
+            font-size: 0.95rem;
+        }
+
+        .pet-details span {
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-ativo {
+            background: rgba(82, 183, 136, 0.1);
+            color: var(--vta-green-dark);
+        }
+
+        .status-inativo {
+            background: rgba(108, 117, 125, 0.1);
+            color: var(--gray-medium);
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .action-view {
+            background: var(--vta-blue-light);
+            color: var(--white);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Pagination */
+        .pagination {
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .page-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-light);
+            background: var(--white);
+            color: var(--gray-dark);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: var(--vta-green);
+            color: var(--white);
+            border-color: var(--vta-green);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-medium);
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--gray-dark);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            background: var(--gray-light);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        /* Histórico Timeline */
+        .history-timeline {
+            margin-top: 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: var(--gray-light);
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--white);
+            z-index: 1;
+        }
+
+        .timeline-icon.consulta { background: var(--vta-green); }
+        .timeline-icon.vacina { background: var(--vta-blue); }
+        .timeline-icon.cirurgia { background: var(--vta-orange); }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--gray-light);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-light);
+            border-top: 4px solid var(--vta-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .filter-actions {
+                justify-content: stretch;
+            }
+
+            .filter-actions .btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .export-options {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-mini">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="header-title">
+                        <h1>Agenda VTA</h1>
+                        <p class="header-subtitle">Relatórios de Clientes e Pets</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">A</div>
+                        <div class="user-details">
+                            <h3>Administrador</h3>
+                            <p class="user-role">admin@vta.com</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Sair do sistema">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Menu Principal</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="2.%20dashboard_vta.html" class="nav-link">
+                                <i class="fas fa-chart-pie"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="3.%20agenda_vta.html" class="nav-link">
+                                <i class="fas fa-calendar"></i>
+                                Agenda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="5.%20clientes_vta.html" class="nav-link">
+                                <i class="fas fa-users"></i>
+                                Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="6.%20pets_vta.html" class="nav-link">
+                                <i class="fas fa-paw"></i>
+                                Pets
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Relatórios</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="9.%20relatorios_dashboard.html" class="nav-link">
+                                <i class="fas fa-chart-bar"></i>
+                                Dashboard Gerencial
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="10.%20relatorios_pets.html" class="nav-link active">
+                                <i class="fas fa-file-medical"></i>
+                                Histórico Pets
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1 class="page-title">Relatórios de Clientes e Pets</h1>
+                    <p class="page-subtitle">Histórico detalhado de consultas, tratamentos e informações completas</p>
+                </div>
+
+                <!-- Filters Section -->
+                <div class="filters-section">
+                    <h2 class="filters-title">
+                        <i class="fas fa-filter"></i>
+                        Filtros de Busca
+                    </h2>
+                    
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label class="filter-label">Nome do Cliente</label>
+                            <input type="text" class="filter-input" id="clienteNome" placeholder="Digite o nome do cliente">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Nome do Pet</label>
+                            <input type="text" class="filter-input" id="petNome" placeholder="Digite o nome do pet">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Espécie</label>
+                            <select class="filter-input" id="especie">
+                                <option value="">Todas as espécies</option>
+                                <option value="cao">Cão</option>
+                                <option value="gato">Gato</option>
+                                <option value="ave">Ave</option>
+                                <option value="roedor">Roedor</option>
+                                <option value="reptil">Réptil</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Status</label>
+                            <select class="filter-input" id="status">
+                                <option value="">Todos os status</option>
+                                <option value="ativo">Ativo</option>
+                                <option value="inativo">Inativo</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Data Inicial</label>
+                            <input type="date" class="filter-input" id="dataInicial">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Data Final</label>
+                            <input type="date" class="filter-input" id="dataFinal">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button class="btn btn-secondary" onclick="limparFiltros()">
+                            <i class="fas fa-eraser"></i>
+                            Limpar
+                        </button>
+                        <button class="btn btn-primary" onclick="aplicarFiltros()">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section">
+                    <div class="results-header">
+                        <div class="results-info">
+                            <span class="results-count" id="resultsCount">Exibindo 12 de 47 registros</span>
+                        </div>
+                        <div class="export-options">
+                            <button class="export-btn export-pdf" onclick="exportarPDF()">
+                                <i class="fas fa-file-pdf"></i>
+                                PDF
+                            </button>
+                            <button class="export-btn export-excel" onclick="exportarExcel()">
+                                <i class="fas fa-file-excel"></i>
+                                Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Loading -->
+                    <div class="loading" id="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Carregando dados...</p>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-container">
+                        <table class="data-table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Pet / Cliente</th>
+                                    <th>Espécie / Raça</th>
+                                    <th>Idade</th>
+                                    <th>Última Consulta</th>
+                                    <th>Total Consultas</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Dados serão inseridos aqui via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination">
+                        <button class="page-btn" onclick="previousPage()">&lt;</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">4</button>
+                        <button class="page-btn" onclick="nextPage()">&gt;</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalhes do Pet</h2>
+                <button class="close-btn" onclick="fecharModal()">&times;</button>
+            </div>
+            
+            <div class="detail-grid" id="detailGrid">
+                <!-- Detalhes serão inseridos aqui -->
+            </div>
+            
+            <div class="history-timeline" id="historyTimeline">
+                <h3 style="margin-bottom: 1rem;">Histórico de Consultas</h3>
+                <!-- Timeline será inserida aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados mockados
+        const mockData = [
+            {
+                id: 1,
+                petNome: "Rex",
+                clienteNome: "Maria Santos",
+                especie: "Cão",
+                raca: "Golden Retriever",
+                idade: "3 anos",
+                ultimaConsulta: "2024-08-10",
+                totalConsultas: 15,
+                status: "ativo",
+                telefone: "(11) 99999-1234",
+                email: "maria.santos@email.com",
+                endereco: "Rua das Flores, 123",
+                peso: "28 kg",
+                nascimento: "2021-03-15",
+                historico: [
+                    { data: "2024-08-10", tipo: "consulta", titulo: "Consulta de Rotina", descricao: "Exame geral e vacinação anual" },
+                    { data: "2024-07-15", tipo: "vacina", titulo: "Vacinação V10", descricao: "Aplicação da vacina V10 e vermífugo" },
+                    { data: "2024-06-20", tipo: "consulta", titulo: "Consulta Dermatológica", descricao: "Tratamento para alergia de pele" }
+                ]
+            },
+            {
+                id: 2,
+                petNome: "Mimi",
+                clienteNome: "João Pedro",
+                especie: "Gato",
+                raca: "Persa",
+                idade: "2 anos",
+                ultimaConsulta: "2024-08-12",
+                totalConsultas: 8,
+                status: "ativo",
+                telefone: "(11) 88888-5678",
+                email: "joao.pedro@email.com",
+                endereco: "Av. Principal, 456",
+                peso: "4.5 kg",
+                nascimento: "2022-01-10",
+                historico: [
+                    { data: "2024-08-12", tipo: "consulta", titulo: "Check-up Geral", descricao: "Exames de rotina e limpeza dental" },
+                    { data: "2024-07-08", tipo: "vacina", titulo: "Vacinação Felina", descricao: "Vacina tríplice felina" },
+                    { data: "2024-05-30", tipo: "cirurgia", titulo: "Castração", descricao: "Procedimento de castração sem complicações" }
+                ]
+            },
+            {
+                id: 3,
+                petNome: "Thor",
+                clienteNome: "Ana Clara",
+                especie: "Cão",
+                raca: "Pastor Alemão",
+                idade: "5 anos",
+                ultimaConsulta: "2024-08-05",
+                totalConsultas: 22,
+                status: "ativo",
+                telefone: "(11) 77777-9012",
+                email: "ana.clara@email.com",
+                endereco: "Rua do Sol, 789",
+                peso: "35 kg",
+                nascimento: "2019-04-22",
+                historico: [
+                    { data: "2024-08-05", tipo: "cirurgia", titulo: "Cirurgia Ortopédica", descricao: "Correção de displasia coxofemoral" },
+                    { data: "2024-07-20", tipo: "consulta", titulo: "Pré-operatório", descricao: "Exames preparatórios para cirurgia" },
+                    { data: "2024-06-15", tipo: "consulta", titulo: "Consulta Ortopédica", descricao: "Avaliação de claudicação" }
+                ]
+            },
+            {
+                id: 4,
+                petNome: "Luna",
+                clienteNome: "Carlos Lima",
+                especie: "Gato",
+                raca: "SRD",
+                idade: "1 ano",
+                ultimaConsulta: "2024-08-14",
+                totalConsultas: 5,
+                status: "ativo",
+                telefone: "(11) 66666-3456",
+                email: "carlos.lima@email.com",
+                endereco: "Praça Central, 321",
+                peso: "3.2 kg",
+                nascimento: "2023-02-28",
+                historico: [
+                    { data: "2024-08-14", tipo: "consulta", titulo: "Primeira Consulta", descricao: "Exame inicial e vacinação" },
+                    { data: "2024-07-25", tipo: "vacina", titulo: "Segunda Dose", descricao: "Segunda dose da vacina múltipla" },
+                    { data: "2024-07-05", tipo: "vacina", titulo: "Primeira Dose", descricao: "Primeira dose da vacina múltipla" }
+                ]
+            },
+            {
+                id: 5,
+                petNome: "Buddy",
+                clienteNome: "Patricia Oliveira",
+                especie: "Cão",
+                raca: "Labrador",
+                idade: "7 anos",
+                ultimaConsulta: "2024-07-28",
+                totalConsultas: 35,
+                status: "inativo",
+                telefone: "(11) 55555-7890",
+                email: "patricia.oliveira@email.com",
+                endereco: "Rua Verde, 654",
+                peso: "30 kg",
+                nascimento: "2017-08-12",
+                historico: [
+                    { data: "2024-07-28", tipo: "consulta", titulo: "Consulta Geriátrica", descricao: "Acompanhamento de saúde do idoso" },
+                    { data: "2024-06-30", tipo: "consulta", titulo: "Exames de Sangue", descricao: "Coleta para exames laboratoriais" },
+                    { data: "2024-05-15", tipo: "consulta", titulo: "Consulta Cardiológica", descricao: "Avaliação cardíaca de rotina" }
+                ]
+            },
+            {
+                id: 6,
+                petNome: "Bella",
+                clienteNome: "Roberto Silva",
+                especie: "Cão",
+                raca: "Poodle",
+                idade: "4 anos",
+                ultimaConsulta: "2024-08-11",
+                totalConsultas: 18,
+                status: "ativo",
+                telefone: "(11) 44444-2468",
+                email: "roberto.silva@email.com",
+                endereco: "Av. das Águias, 987",
+                peso: "12 kg",
+                nascimento: "2020-05-18",
+                historico: [
+                    { data: "2024-08-11", tipo: "consulta", titulo: "Tosa e Banho Medicinal", descricao: "Higienização e tratamento de pele" },
+                    { data: "2024-07-22", tipo: "consulta", titulo: "Consulta Dermatológica", descricao: "Acompanhamento de dermatite" },
+                    { data: "2024-06-28", tipo: "vacina", titulo: "Reforço Anual", descricao: "Vacina antirrábica" }
+                ]
+            }
+        ];
+
+        let currentData = [...mockData];
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        // Função para renderizar a tabela
+        function renderTable(data = currentData) {
+            const tableBody = document.getElementById('tableBody');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedData = data.slice(startIndex, endIndex);
+
+            tableBody.innerHTML = '';
+
+            paginatedData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="pet-info">
+                            <div class="pet-avatar">${item.petNome.charAt(0)}</div>
+                            <div class="pet-details">
+                                <h4>${item.petNome}</h4>
+                                <span>${item.clienteNome}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <strong>${item.especie}</strong><br>
+                        <span style="color: var(--gray-medium);">${item.raca}</span>
+                    </td>
+                    <td>${item.idade}</td>
+                    <td>${formatDate(item.ultimaConsulta)}</td>
+                    <td>${item.totalConsultas}</td>
+                    <td>
+                        <span class="status-badge status-${item.status}">
+                            ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn action-view" onclick="verDetalhes(${item.id})" title="Ver detalhes">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Atualizar contador de resultados
+            const resultsCount = document.getElementById('resultsCount');
+            const totalItems = data.length;
+            const showingStart = startIndex + 1;
+            const showingEnd = Math.min(endIndex, totalItems);
+            resultsCount.textContent = `Exibindo ${showingStart}-${showingEnd} de ${totalItems} registros`;
+
+            updatePagination(data);
+        }
+
+        // Função para atualizar paginação
+        function updatePagination(data) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            
+            pagination.innerHTML = '';
+            
+            // Botão anterior
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.innerHTML = '&lt;';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable(data);
+                }
+            };
+            pagination.appendChild(prevBtn);
+            
+            // Botões de página
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    renderTable(data);
+                };
+                pagination.appendChild(pageBtn);
+            }
+            
+            // Botão próximo
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.innerHTML = '&gt;';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTable(data);
+                }
+            };
+            pagination.appendChild(nextBtn);
+        }
+
+        // Função para formatar data
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        // Função para aplicar filtros
+        function aplicarFiltros() {
+            const loading = document.getElementById('loading');
+            const dataTable = document.getElementById('dataTable');
+            
+            // Mostrar loading
+            loading.style.display = 'block';
+            dataTable.style.display = 'none';
+            
+            setTimeout(() => {
+                const clienteNome = document.getElementById('clienteNome').value.toLowerCase();
+                const petNome = document.getElementById('petNome').value.toLowerCase();
+                const especie = document.getElementById('especie').value;
+                const status = document.getElementById('status').value;
+                const dataInicial = document.getElementById('dataInicial').value;
+                const dataFinal = document.getElementById('dataFinal').value;
+
+                let filteredData = mockData.filter(item => {
+                    let matches = true;
+
+                    if (clienteNome && !item.clienteNome.toLowerCase().includes(clienteNome)) {
+                        matches = false;
+                    }
+                    if (petNome && !item.petNome.toLowerCase().includes(petNome)) {
+                        matches = false;
+                    }
+                    if (especie && item.especie.toLowerCase() !== especie) {
+                        matches = false;
+                    }
+                    if (status && item.status !== status) {
+                        matches = false;
+                    }
+                    if (dataInicial && item.ultimaConsulta < dataInicial) {
+                        matches = false;
+                    }
+                    if (dataFinal && item.ultimaConsulta > dataFinal) {
+                        matches = false;
+                    }
+
+                    return matches;
+                });
+
+                currentData = filteredData;
+                currentPage = 1;
+                
+                // Esconder loading e mostrar tabela
+                loading.style.display = 'none';
+                dataTable.style.display = 'table';
+                
+                renderTable(filteredData);
+            }, 1000);
+        }
+
+        // Função para limpar filtros
+        function limparFiltros() {
+            document.getElementById('clienteNome').value = '';
+            document.getElementById('petNome').value = '';
+            document.getElementById('especie').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('dataInicial').value = '';
+            document.getElementById('dataFinal').value = '';
+            
+            currentData = [...mockData];
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Função para ver detalhes
+        function verDetalhes(id) {
+            const pet = mockData.find(item => item.id === id);
+            if (!pet) return;
+
+            const modal = document.getElementById('detailModal');
+            const detailGrid = document.getElementById('detailGrid');
+            const historyTimeline = document.getElementById('historyTimeline');
+
+            // Preencher detalhes
+            detailGrid.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Nome do Pet</div>
+                    <div class="detail-value">${pet.petNome}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tutor</div>
+                    <div class="detail-value">${pet.clienteNome}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Espécie</div>
+                    <div class="detail-value">${pet.especie}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Raça</div>
+                    <div class="detail-value">${pet.raca}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Idade</div>
+                    <div class="detail-value">${pet.idade}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Peso</div>
+                    <div class="detail-value">${pet.peso}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Nascimento</div>
+                    <div class="detail-value">${formatDate(pet.nascimento)}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        <span class="status-badge status-${pet.status}">
+                            ${pet.status.charAt(0).toUpperCase() + pet.status.slice(1)}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Telefone</div>
+                    <div class="detail-value">${pet.telefone}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">${pet.email}</div>
+                </div>
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <div class="detail-label">Endereço</div>
+                    <div class="detail-value">${pet.endereco}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Total de Consultas</div>
+                    <div class="detail-value">${pet.totalConsultas}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Última Consulta</div>
+                    <div class="detail-value">${formatDate(pet.ultimaConsulta)}</div>
+                </div>
+            `;
+
+            // Preencher histórico
+            const timelineHtml = pet.historico.map(item => `
+                <div class="timeline-item">
+                    <div class="timeline-icon ${item.tipo}">
+                        <i class="fas fa-${item.tipo === 'consulta' ? 'stethoscope' : 
+                                           item.tipo === 'vacina' ? 'syringe' : 'cut'}"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">${formatDate(item.data)}</div>
+                        <div class="timeline-title">${item.titulo}</div>
+                        <div class="timeline-description">${item.descricao}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            historyTimeline.innerHTML = `
+                <h3 style="margin-bottom: 1rem;">Histórico de Consultas</h3>
+                ${timelineHtml}
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        // Função para fechar modal
+        function fecharModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // Função para exportar PDF
+        function exportarPDF() {
+            alert('Gerando relatório em PDF...\n\nEsta funcionalidade será implementada na versão final com biblioteca de geração de PDF.');
+        }
+
+        // Função para exportar Excel
+        function exportarExcel() {
+            alert('Gerando planilha Excel...\n\nEsta funcionalidade será implementada na versão final com biblioteca de exportação.');
+        }
+
+        // Função de logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                alert('Logout realizado com sucesso!');
+            }
+        }
+
+        // Navegação do menu
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (!link.classList.contains('active')) {
+                    const linkText = link.textContent.trim();
+                    alert(`Navegando para: ${linkText}`);
+                }
+            });
+        });
+
+        // Fechar modal clicando fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTable();
+            
+            // Definir data inicial como 30 dias atrás
+            const dataInicial = document.getElementById('dataInicial');
+            const dataAtual = new Date();
+            const dataPassada = new Date(dataAtual.setDate(dataAtual.getDate() - 30));
+            dataInicial.value = dataPassada.toISOString().split('T')[0];
+            
+            // Definir data final como hoje
+            const dataFinal = document.getElementById('dataFinal');
+            const hoje = new Date();
+            dataFinal.value = hoje.toISOString().split('T')[0];
+        });
+
+        // Busca em tempo real
+        document.getElementById('clienteNome').addEventListener('input', function() {
+            if (this.value.length >= 3 || this.value.length === 0) {
+                aplicarFiltros();
+            }
+        });
+
+        document.getElementById('petNome').addEventListener('input', function() {
+            if (this.value.length >= 3 || this.value.length === 0) {
+                aplicarFiltros();
+            }
+        });
+    </script>
+    <!-- Navegação e controle de sessão -->
+    <script src="assets/js/vta-nav.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Notificações - Agenda VTA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset e configurações básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Paleta de cores VTA */
+        :root {
+            --vta-green: #52B788;
+            --vta-green-light: #74C69D;
+            --vta-green-dark: #40916C;
+            --vta-blue: #2E86AB;
+            --vta-blue-light: #48A3C7;
+            --vta-blue-dark: #1B5E7A;
+            --vta-orange: #F77F00;
+            --vta-orange-light: #FCBF49;
+            --vta-orange-dark: #D62828;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --gray-medium: #6C757D;
+            --gray-dark: #343A40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+
+        /* Layout Principal */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+            color: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-mini {
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-size: 1.5rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vta-green);
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(15deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: var(--gray-dark);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        /* Content Area */
+        .content-area {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .page-header {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--gray-medium);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vta-green), var(--vta-blue));
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+
+        .stat-icon.green { background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light)); }
+        .stat-icon.blue { background: linear-gradient(135deg, var(--vta-blue), var(--vta-blue-light)); }
+        .stat-icon.orange { background: linear-gradient(135deg, var(--vta-orange), var(--vta-orange-light)); }
+        .stat-icon.red { background: linear-gradient(135deg, var(--vta-orange-dark), #FF6B6B); }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--gray-medium);
+            margin-bottom: 1rem;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .trend-positive { color: var(--vta-green); }
+        .trend-negative { color: var(--vta-orange-dark); }
+
+        /* Notifications Section */
+        .notifications-section {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .notifications-main {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .notifications-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Filters */
+        .filters-bar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--vta-green);
+        }
+
+        .refresh-btn {
+            background: var(--vta-green);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: var(--vta-green-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Notifications List */
+        .notifications-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--gray-light);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            background: var(--gray-light);
+        }
+
+        .notification-item.unread {
+            background: rgba(82, 183, 136, 0.05);
+            border-left: 4px solid var(--vta-green);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .notification-icon.email { background: var(--vta-blue); }
+        .notification-icon.sms { background: var(--vta-green); }
+        .notification-icon.system { background: var(--vta-orange); }
+        .notification-icon.error { background: var(--vta-orange-dark); }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--gray-dark);
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+            white-space: nowrap;
+        }
+
+        .notification-description {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .notification-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.25rem 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-view {
+            background: var(--vta-blue);
+            color: var(--white);
+        }
+
+        .action-retry {
+            background: var(--vta-orange);
+            color: var(--white);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-enviado {
+            background: rgba(82, 183, 136, 0.1);
+            color: var(--vta-green-dark);
+        }
+
+        .status-pendente {
+            background: rgba(247, 127, 0, 0.1);
+            color: var(--vta-orange-dark);
+        }
+
+        .status-erro {
+            background: rgba(214, 40, 40, 0.1);
+            color: var(--vta-orange-dark);
+        }
+
+        .status-processando {
+            background: rgba(46, 134, 171, 0.1);
+            color: var(--vta-blue-dark);
+        }
+
+        /* Quick Actions Panel */
+        .quick-actions-panel {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            height: fit-content;
+        }
+
+        .quick-action-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: var(--gray-light);
+            color: var(--gray-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--vta-green);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .quick-action-btn i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Email Templates */
+        .templates-section {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-top: 1rem;
+        }
+
+        .template-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .template-item:hover {
+            border-color: var(--vta-green);
+            background: rgba(82, 183, 136, 0.05);
+        }
+
+        .template-info h4 {
+            margin-bottom: 0.25rem;
+            color: var(--gray-dark);
+        }
+
+        .template-info p {
+            font-size: 0.8rem;
+            color: var(--gray-medium);
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-medium);
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--gray-dark);
+        }
+
+        .detail-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            background: var(--gray-light);
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--gray-dark);
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-light);
+            border-top: 4px solid var(--vta-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+
+            .notifications-section {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions-panel {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .filter-select, .refresh-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .user-details {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-mini">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="header-title">
+                        <h1>Agenda VTA</h1>
+                        <p class="header-subtitle">Centro de Notificações</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">A</div>
+                        <div class="user-details">
+                            <h3>Administrador</h3>
+                            <p class="user-role">admin@vta.com</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Sair do sistema">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Menu Principal</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="2.%20dashboard_vta.html" class="nav-link">
+                                <i class="fas fa-chart-pie"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="3.%20agenda_vta.html" class="nav-link">
+                                <i class="fas fa-calendar"></i>
+                                Agenda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="5.%20clientes_vta.html" class="nav-link">
+                                <i class="fas fa-users"></i>
+                                Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="6.%20pets_vta.html" class="nav-link">
+                                <i class="fas fa-paw"></i>
+                                Pets
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Sistema</h3>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="11.%20notificacoes_vta.html" class="nav-link active">
+                                <i class="fas fa-bell"></i>
+                                Notificações
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-cog"></i>
+                                Configurações
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1 class="page-title">Centro de Notificações</h1>
+                    <p class="page-subtitle">Monitore o status de envio de emails, SMS e notificações do sistema</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value" id="totalEnviados">247</div>
+                                <div class="stat-label">Emails Enviados</div>
+                            </div>
+                            <div class="stat-icon green">
+                                <i class="fas fa-envelope-open"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend trend-positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+23 hoje</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value" id="totalPendentes">12</div>
+                                <div class="stat-label">Pendentes</div>
+                            </div>
+                            <div class="stat-icon orange">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend trend-negative">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Requer atenção</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value" id="totalErros">3</div>
+                                <div class="stat-label">Falhas de Envio</div>
+                            </div>
+                            <div class="stat-icon red">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend trend-negative">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>-2 vs ontem</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-info">
+                                <div class="stat-value" id="taxaSucesso">95%</div>
+                                <div class="stat-label">Taxa de Sucesso</div>
+                            </div>
+                            <div class="stat-icon blue">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="stat-trend trend-positive">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Excelente</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+                <section class="notifications-section">
+                    <div class="notifications-main">
+                        <div class="notifications-header">
+                            <h2 class="section-title">
+                                <i class="fas fa-list"></i>
+                                Log de Notificações
+                            </h2>
+                            <div class="filters-bar">
+                                <select class="filter-select" id="tipoFilter">
+                                    <option value="">Todos os tipos</option>
+                                    <option value="email">Email</option>
+                                    <option value="sms">SMS</option>
+                                    <option value="system">Sistema</option>
+                                </select>
+                                <select class="filter-select" id="statusFilter">
+                                    <option value="">Todos os status</option>
+                                    <option value="enviado">Enviado</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="erro">Erro</option>
+                                    <option value="processando">Processando</option>
+                                </select>
+                                <button class="refresh-btn" onclick="atualizarNotificacoes()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Atualizar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Loading -->
+                        <div class="loading" id="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Carregando notificações...</p>
+                        </div>
+
+                        <!-- Notifications List -->
+                        <div class="notifications-list" id="notificationsList">
+                            <!-- Notificações serão inseridas aqui via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Panel -->
+                    <div class="quick-actions-panel">
+                        <h3 class="section-title">
+                            <i class="fas fa-bolt"></i>
+                            Ações Rápidas
+                        </h3>
+                        
+                        <button class="quick-action-btn" onclick="enviarLembrete()">
+                            <i class="fas fa-paper-plane"></i>
+                            <div>
+                                <strong>Enviar Lembrete</strong>
+                                <small>Lembretes de consulta</small>
+                            </div>
+                        </button>
+                        
+                        <button class="quick-action-btn" onclick="reenviarFalhas()">
+                            <i class="fas fa-redo"></i>
+                            <div>
+                                <strong>Reenviar Falhas</strong>
+                                <small>Tentar novamente</small>
+                            </div>
+                        </button>
+                        
+                        <button class="quick-action-btn" onclick="configurarTemplates()">
+                            <i class="fas fa-edit"></i>
+                            <div>
+                                <strong>Editar Templates</strong>
+                                <small>Personalizar emails</small>
+                            </div>
+                        </button>
+                        
+                        <button class="quick-action-btn" onclick="exportarRelatorio()">
+                            <i class="fas fa-download"></i>
+                            <div>
+                                <strong>Exportar Relatório</strong>
+                                <small>Log em PDF/Excel</small>
+                            </div>
+                        </button>
+
+                        <!-- Email Templates -->
+                        <div class="templates-section">
+                            <h4 style="margin-bottom: 1rem; color: var(--gray-dark);">Templates Ativos</h4>
+                            
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <h4>Lembrete de Consulta</h4>
+                                    <p>Enviado 24h antes da consulta</p>
+                                </div>
+                                <div class="template-actions">
+                                    <button class="action-btn action-view" onclick="editarTemplate('lembrete')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <h4>Confirmação de Agendamento</h4>
+                                    <p>Enviado após agendar</p>
+                                </div>
+                                <div class="template-actions">
+                                    <button class="action-btn action-view" onclick="editarTemplate('confirmacao')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <h4>Resultado de Exame</h4>
+                                    <p>Enviado com resultados</p>
+                                </div>
+                                <div class="template-actions">
+                                    <button class="action-btn action-view" onclick="editarTemplate('resultado')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalhes da Notificação</h2>
+                <button class="close-btn" onclick="fecharModal()">&times;</button>
+            </div>
+            
+            <div class="detail-grid" id="detailGrid">
+                <!-- Detalhes serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados mockados de notificações
+        const mockNotifications = [
+            {
+                id: 1,
+                tipo: "email",
+                titulo: "Lembrete de Consulta - Rex",
+                descricao: "Lembrete de consulta agendada para amanhã às 09:00",
+                destinatario: "maria.santos@email.com",
+                status: "enviado",
+                dataEnvio: "2024-08-15T08:30:00",
+                tentativas: 1,
+                erro: null,
+                template: "Lembrete de Consulta",
+                assunto: "Lembrete: Consulta do Rex amanhã às 09:00"
+            },
+            {
+                id: 2,
+                tipo: "sms",
+                titulo: "Confirmação de Agendamento - Mimi",
+                descricao: "SMS de confirmação de agendamento realizado",
+                destinatario: "(11) 88888-5678",
+                status: "enviado",
+                dataEnvio: "2024-08-15T14:20:00",
+                tentativas: 1,
+                erro: null,
+                template: "Confirmação SMS",
+                assunto: "Agendamento confirmado para Mimi"
+            },
+            {
+                id: 3,
+                tipo: "email",
+                titulo: "Resultado de Exame - Thor",
+                descricao: "Envio dos resultados dos exames pré-operatórios",
+                destinatario: "ana.clara@email.com",
+                status: "pendente",
+                dataEnvio: "2024-08-15T15:45:00",
+                tentativas: 0,
+                erro: null,
+                template: "Resultado de Exame",
+                assunto: "Resultados dos exames do Thor"
+            },
+            {
+                id: 4,
+                tipo: "email",
+                titulo: "Lembrete de Vacinação - Luna",
+                descricao: "Lembrete para segunda dose da vacina",
+                destinatario: "email_invalido@",
+                status: "erro",
+                dataEnvio: "2024-08-15T10:15:00",
+                tentativas: 3,
+                erro: "Endereço de email inválido",
+                template: "Lembrete de Vacinação",
+                assunto: "Hora da segunda dose da Luna!"
+            },
+            {
+                id: 5,
+                tipo: "system",
+                titulo: "Backup do Sistema",
+                descricao: "Notificação de backup automático realizado",
+                destinatario: "admin@vta.com",
+                status: "enviado",
+                dataEnvio: "2024-08-15T02:00:00",
+                tentativas: 1,
+                erro: null,
+                template: "Sistema",
+                assunto: "Backup realizado com sucesso"
+            },
+            {
+                id: 6,
+                tipo: "email",
+                titulo: "Cancelamento de Consulta - Buddy",
+                descricao: "Notificação de cancelamento de consulta",
+                destinatario: "patricia.oliveira@email.com",
+                status: "processando",
+                dataEnvio: "2024-08-15T16:30:00",
+                tentativas: 0,
+                erro: null,
+                template: "Cancelamento",
+                assunto: "Consulta do Buddy foi cancelada"
+            },
+            {
+                id: 7,
+                tipo: "email",
+                titulo: "Agendamento Confirmado - Bella",
+                descricao: "Confirmação de novo agendamento realizado",
+                destinatario: "roberto.silva@email.com",
+                status: "enviado",
+                dataEnvio: "2024-08-15T11:20:00",
+                tentativas: 1,
+                erro: null,
+                template: "Confirmação de Agendamento",
+                assunto: "Agendamento confirmado para Bella"
+            },
+            {
+                id: 8,
+                tipo: "sms",
+                titulo: "Lembrete Urgente - Medicação",
+                descricao: "Lembrete para administração de medicação",
+                destinatario: "(11) 99999-1234",
+                status: "erro",
+                dataEnvio: "2024-08-15T13:00:00",
+                tentativas: 2,
+                erro: "Número não encontrado",
+                template: "Lembrete Medicação",
+                assunto: "Hora do remédio do Rex"
+            }
+        ];
+
+        let currentNotifications = [...mockNotifications];
+
+        // Função para formatar data/hora
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('pt-BR');
+        }
+
+        // Função para obter tempo relativo
+        function getRelativeTime(dateString) {
+            const now = new Date();
+            const date = new Date(dateString);
+            const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+            
+            if (diffInMinutes < 1) return 'Agora';
+            if (diffInMinutes < 60) return `${diffInMinutes}m atrás`;
+            
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) return `${diffInHours}h atrás`;
+            
+            const diffInDays = Math.floor(diffInHours / 24);
+            return `${diffInDays}d atrás`;
+        }
+
+        // Função para renderizar notificações
+        function renderNotifications(notifications = currentNotifications) {
+            const notificationsList = document.getElementById('notificationsList');
+            
+            if (notifications.length === 0) {
+                notificationsList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--gray-medium);">
+                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>Nenhuma notificação encontrada</p>
+                    </div>
+                `;
+                return;
+            }
+
+            notificationsList.innerHTML = notifications.map(notification => `
+                <div class="notification-item ${notification.status === 'pendente' ? 'unread' : ''}" onclick="verDetalhes(${notification.id})">
+                    <div class="notification-icon ${notification.tipo}">
+                        <i class="fas fa-${getNotificationIcon(notification.tipo)}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-header">
+                            <div class="notification-title">${notification.titulo}</div>
+                            <div class="notification-time">${getRelativeTime(notification.dataEnvio)}</div>
+                        </div>
+                        <div class="notification-description">${notification.descricao}</div>
+                        <div class="notification-meta">
+                            <span><i class="fas fa-user"></i> ${notification.destinatario}</span>
+                            <span><i class="fas fa-tag"></i> ${notification.template}</span>
+                            ${notification.tentativas > 1 ? `<span><i class="fas fa-redo"></i> ${notification.tentativas} tentativas</span>` : ''}
+                        </div>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="status-badge status-${notification.status}">
+                                ${getStatusLabel(notification.status)}
+                            </span>
+                        </div>
+                        ${notification.status === 'erro' ? `
+                            <div class="notification-actions">
+                                <button class="action-btn action-retry" onclick="event.stopPropagation(); reenviarNotificacao(${notification.id})">
+                                    <i class="fas fa-redo"></i> Reenviar
+                                </button>
+                                <button class="action-btn action-view" onclick="event.stopPropagation(); verDetalhes(${notification.id})">
+                                    <i class="fas fa-eye"></i> Detalhes
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Função para obter ícone da notificação
+        function getNotificationIcon(tipo) {
+            const icons = {
+                email: 'envelope',
+                sms: 'sms',
+                system: 'cog',
+                error: 'exclamation-triangle'
+            };
+            return icons[tipo] || 'bell';
+        }
+
+        // Função para obter label do status
+        function getStatusLabel(status) {
+            const labels = {
+                enviado: 'Enviado',
+                pendente: 'Pendente',
+                erro: 'Erro',
+                processando: 'Processando'
+            };
+            return labels[status] || status;
+        }
+
+        // Função para aplicar filtros
+        function aplicarFiltros() {
+            const tipoFilter = document.getElementById('tipoFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filteredNotifications = mockNotifications.filter(notification => {
+                let matches = true;
+                
+                if (tipoFilter && notification.tipo !== tipoFilter) {
+                    matches = false;
+                }
+                if (statusFilter && notification.status !== statusFilter) {
+                    matches = false;
+                }
+                
+                return matches;
+            });
+
+            currentNotifications = filteredNotifications;
+            renderNotifications(filteredNotifications);
+            atualizarEstatisticas(filteredNotifications);
+        }
+
+        // Função para atualizar estatísticas
+        function atualizarEstatisticas(notifications = mockNotifications) {
+            const enviados = notifications.filter(n => n.status === 'enviado').length;
+            const pendentes = notifications.filter(n => n.status === 'pendente' || n.status === 'processando').length;
+            const erros = notifications.filter(n => n.status === 'erro').length;
+            const total = notifications.length;
+            const taxaSucesso = total > 0 ? Math.round((enviados / total) * 100) : 0;
+
+            document.getElementById('totalEnviados').textContent = enviados;
+            document.getElementById('totalPendentes').textContent = pendentes;
+            document.getElementById('totalErros').textContent = erros;
+            document.getElementById('taxaSucesso').textContent = `${taxaSucesso}%`;
+        }
+
+        // Função para atualizar notificações
+        function atualizarNotificacoes() {
+            const loading = document.getElementById('loading');
+            const notificationsList = document.getElementById('notificationsList');
+            
+            loading.style.display = 'block';
+            notificationsList.style.display = 'none';
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                notificationsList.style.display = 'block';
+                
+                // Simular atualizações
+                mockNotifications.forEach(notification => {
+                    if (notification.status === 'pendente' && Math.random() > 0.7) {
+                        notification.status = 'enviado';
+                        notification.dataEnvio = new Date().toISOString();
+                    }
+                    if (notification.status === 'processando' && Math.random() > 0.5) {
+                        notification.status = Math.random() > 0.8 ? 'erro' : 'enviado';
+                    }
+                });
+                
+                aplicarFiltros();
+                
+                // Mostrar toast de atualização
+                mostrarToast('Notificações atualizadas com sucesso!', 'success');
+            }, 1500);
+        }
+
+        // Função para ver detalhes
+        function verDetalhes(id) {
+            const notification = mockNotifications.find(n => n.id === id);
+            if (!notification) return;
+
+            const modal = document.getElementById('detailModal');
+            const detailGrid = document.getElementById('detailGrid');
+
+            detailGrid.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Tipo</div>
+                    <div class="detail-value">${notification.tipo.toUpperCase()}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        <span class="status-badge status-${notification.status}">
+                            ${getStatusLabel(notification.status)}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Destinatário</div>
+                    <div class="detail-value">${notification.destinatario}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Template Usado</div>
+                    <div class="detail-value">${notification.template}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Data de Envio</div>
+                    <div class="detail-value">${formatDateTime(notification.dataEnvio)}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tentativas</div>
+                    <div class="detail-value">${notification.tentativas}</div>
+                </div>
+                ${notification.erro ? `
+                    <div class="detail-item">
+                        <div class="detail-label">Erro</div>
+                        <div class="detail-value" style="color: var(--vta-orange-dark);">${notification.erro}</div>
+                    </div>
+                ` : ''}
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <div class="detail-label">Assunto</div>
+                    <div class="detail-value">${notification.assunto}</div>
+                </div>
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <div class="detail-label">Descrição</div>
+                    <div class="detail-value">${notification.descricao}</div>
+                </div>
+            `;
+
+            modal.style.display = 'block';
+        }
+
+        // Função para fechar modal
+        function fecharModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // Função para reenviar notificação
+        function reenviarNotificacao(id) {
+            const notification = mockNotifications.find(n => n.id === id);
+            if (!notification) return;
+
+            notification.status = 'processando';
+            notification.tentativas += 1;
+            notification.dataEnvio = new Date().toISOString();
+            
+            renderNotifications();
+            mostrarToast('Reenviando notificação...', 'info');
+            
+            // Simular reenvio
+            setTimeout(() => {
+                notification.status = Math.random() > 0.7 ? 'enviado' : 'erro';
+                if (notification.status === 'erro') {
+                    notification.erro = 'Falha na conexão com servidor de email';
+                } else {
+                    notification.erro = null;
+                }
+                renderNotifications();
+                atualizarEstatisticas();
+                
+                const statusMsg = notification.status === 'enviado' ? 'Enviado com sucesso!' : 'Falha no reenvio';
+                const type = notification.status === 'enviado' ? 'success' : 'error';
+                mostrarToast(statusMsg, type);
+            }, 2000);
+        }
+
+        // Funções das ações rápidas
+        function enviarLembrete() {
+            mostrarToast('Enviando lembretes de consulta...', 'info');
+            setTimeout(() => {
+                mostrarToast('Lembretes enviados com sucesso!', 'success');
+                atualizarNotificacoes();
+            }, 2000);
+        }
+
+        function reenviarFalhas() {
+            const falhas = mockNotifications.filter(n => n.status === 'erro');
+            if (falhas.length === 0) {
+                mostrarToast('Não há falhas para reenviar', 'info');
+                return;
+            }
+            
+            mostrarToast(`Reenviando ${falhas.length} notificações com falha...`, 'info');
+            falhas.forEach(notification => {
+                notification.status = 'processando';
+                notification.tentativas += 1;
+            });
+            
+            renderNotifications();
+            
+            setTimeout(() => {
+                falhas.forEach(notification => {
+                    notification.status = Math.random() > 0.6 ? 'enviado' : 'erro';
+                });
+                renderNotifications();
+                atualizarEstatisticas();
+                mostrarToast('Reenvio concluído!', 'success');
+            }, 3000);
+        }
+
+        function configurarTemplates() {
+            mostrarToast('Redirecionando para configuração de templates...', 'info');
+        }
+
+        function exportarRelatorio() {
+            mostrarToast('Gerando relatório de notificações...', 'info');
+            setTimeout(() => {
+                mostrarToast('Relatório gerado com sucesso!', 'success');
+            }, 2000);
+        }
+
+        function editarTemplate(tipo) {
+            mostrarToast(`Editando template: ${tipo}`, 'info');
+        }
+
+        // Função para mostrar toast
+        function mostrarToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'var(--vta-green)' : 
+                           type === 'error' ? 'var(--vta-orange-dark)' : 'var(--vta-blue)'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 10px;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            `;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // Função de logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                alert('Logout realizado com sucesso!');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('tipoFilter').addEventListener('change', aplicarFiltros);
+        document.getElementById('statusFilter').addEventListener('change', aplicarFiltros);
+
+        // Navegação do menu
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (!link.classList.contains('active')) {
+                    const linkText = link.textContent.trim();
+                    alert(`Navegando para: ${linkText}`);
+                }
+            });
+        });
+
+        // Fechar modal clicando fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                fecharModal();
+            }
+        }
+
+        // Adicionar animações CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            renderNotifications();
+            atualizarEstatisticas();
+            
+            // Atualizar notificações automaticamente a cada 30 segundos
+            setInterval(() => {
+                // Simular novas notificações ocasionalmente
+                if (Math.random() > 0.8) {
+                    const novaNotificacao = {
+                        id: Date.now(),
+                        tipo: "email",
+                        titulo: "Nova consulta agendada",
+                        descricao: "Confirmação automática de agendamento",
+                        destinatario: "cliente@email.com",
+                        status: "enviado",
+                        dataEnvio: new Date().toISOString(),
+                        tentativas: 1,
+                        erro: null,
+                        template: "Confirmação",
+                        assunto: "Agendamento confirmado"
+                    };
+                    
+                    mockNotifications.unshift(novaNotificacao);
+                    if (mockNotifications.length > 20) {
+                        mockNotifications.pop();
+                    }
+                    
+                    aplicarFiltros();
+                }
+            }, 30000);
+        });
+    </script>
+    <!-- Navegação e controle de sessão -->
+    <script src="assets/js/vta-nav.js" defer></script>
+</body>
+</html>
+                
