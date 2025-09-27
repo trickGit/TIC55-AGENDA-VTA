@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda - Agenda VTA</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.10/index.global.min.css" rel="stylesheet">
     <style>
         /* Reset e configurações básicas */
         * {
@@ -37,13 +36,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--gray-light);
             color: var(--gray-dark);
-        }
-
-        /* Layout Principal */
-        .agenda-container {
-            display: grid;
-            grid-template-rows: auto 1fr;
-            min-height: 100vh;
         }
 
         /* Header */
@@ -91,23 +83,19 @@
 
         .header-subtitle {
             font-size: 0.9rem;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            gap: 0.5rem;
         }
 
         .user-avatar {
@@ -119,43 +107,13 @@
             align-items: center;
             justify-content: center;
             color: var(--vta-green);
-            font-weight: bold;
+            font-size: 1rem;
         }
 
-        .user-details h3 {
-            font-size: 0.9rem;
-            margin-bottom: 2px;
-        }
-
-        .user-role {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .back-btn, .logout-btn {
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover, .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: rotate(15deg);
-        }
-
-        .back-btn:hover {
-            transform: translateX(-3px);
-        }
-
-        /* Main Content */
-        .main-content {
+        /* Main Container */
+        .main-container {
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 280px 1fr;
             gap: 2rem;
             padding: 2rem;
             max-width: 1600px;
@@ -166,112 +124,77 @@
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            height: fit-content;
-            position: sticky;
-            top: 120px;
+            gap: 2rem;
         }
 
-        .sidebar-card {
+        .nav-menu {
             background: var(--white);
             border-radius: 15px;
             padding: 1.5rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .sidebar-title {
+        .menu-title {
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--gray-dark);
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-light);
         }
 
-        /* Filtros */
-        .filter-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-label {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--gray-medium);
-            margin-bottom: 0.5rem;
-        }
-
-        .filter-select, .filter-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .filter-select:focus, .filter-input:focus {
-            outline: none;
-            border-color: var(--vta-green);
-            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
-        }
-
-        /* Salas */
-        .salas-list {
+        .menu-list {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
 
-        .sala-item {
+        .menu-item {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem;
             border-radius: 8px;
+            text-decoration: none;
+            color: var(--gray-medium);
+            font-weight: 500;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        .sala-item:hover {
+        .menu-item:hover {
             background: var(--gray-light);
+            color: var(--gray-dark);
+            transform: translateX(5px);
         }
 
-        .sala-item.active {
-            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+        .menu-item.active {
+            background: var(--vta-green);
             color: var(--white);
         }
 
-        .sala-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            flex-shrink: 0;
+        .menu-item i {
+            width: 18px;
+            text-align: center;
         }
 
-        .sala-color.sala1 { background: var(--vta-green); }
-        .sala-color.sala2 { background: var(--vta-blue); }
-        .sala-color.sala3 { background: var(--vta-orange); }
-        .sala-color.sala4 { background: var(--vta-purple); }
-        .sala-color.sala5 { background: var(--vta-orange-dark); }
-
-        .sala-info {
-            flex: 1;
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--gray-light);
         }
 
-        .sala-nome {
-            font-weight: 500;
-            margin-bottom: 2px;
+        /* Quick Stats Panel */
+        .quick-stats-panel {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .sala-status {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        /* Quick Stats */
-        .quick-stats {
+        .stat-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
@@ -294,35 +217,30 @@
         .stat-label {
             font-size: 0.8rem;
             color: var(--gray-medium);
+            font-weight: 500;
         }
 
-        /* Calendar Area */
-        .calendar-area {
+        /* Content Area */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Controles Superiores */
+        .controls-section {
             background: var(--white);
             border-radius: 15px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .calendar-header {
+        .view-controls {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            gap: 1rem;
             flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .calendar-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--gray-dark);
-        }
-
-        .calendar-controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
         }
 
         .view-toggle {
@@ -342,6 +260,7 @@
             font-weight: 500;
             transition: all 0.3s ease;
             color: var(--gray-medium);
+            min-width: 80px;
         }
 
         .view-btn.active {
@@ -350,16 +269,50 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
+        .date-navigation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--gray-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--gray-medium);
+        }
+
+        .nav-btn:hover {
+            background: var(--vta-green);
+            color: var(--white);
+        }
+
+        .current-period {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            min-width: 220px;
+            text-align: center;
+        }
+
         .action-buttons {
             display: flex;
             gap: 0.5rem;
+            align-items: center;
         }
 
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -375,8 +328,7 @@
 
         .btn-primary:hover {
             background: var(--vta-green-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -389,189 +341,320 @@
             color: var(--white);
         }
 
-        /* FullCalendar Customizations */
-        .fc {
-            font-family: inherit;
+        /* Grade de Agendamento */
+        .agenda-grid {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        .fc-toolbar {
-            margin-bottom: 1.5rem !important;
+        .grid-header {
+            display: grid;
+            grid-template-columns: 100px repeat(5, 1fr);
+            background: var(--vta-green);
+            color: var(--white);
+            font-weight: 600;
         }
 
-        .fc-toolbar-title {
-            font-size: 1.3rem !important;
-            font-weight: 600 !important;
-            color: var(--gray-dark) !important;
+        .grid-cell {
+            padding: 1rem;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .fc-button {
-            background: var(--vta-green) !important;
-            border-color: var(--vta-green) !important;
-            border-radius: 8px !important;
-            padding: 0.5rem 1rem !important;
-            font-weight: 500 !important;
+        .grid-cell:last-child {
+            border-right: none;
         }
 
-        .fc-button:hover {
-            background: var(--vta-green-dark) !important;
-            border-color: var(--vta-green-dark) !important;
+        .time-label {
+            background: var(--vta-green-dark);
         }
 
-        .fc-button:focus {
-            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.3) !important;
+        .sala-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
-        .fc-daygrid-day-number {
-            font-weight: 500 !important;
-            color: var(--gray-dark) !important;
+        .sala-nome {
+            font-size: 1rem;
         }
 
-        .fc-col-header-cell {
-            background: var(--gray-light) !important;
-            border-color: #dee2e6 !important;
+        .sala-status {
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
 
-        .fc-daygrid-day {
-            border-color: #dee2e6 !important;
+        /* Headers para visualização semanal */
+        .week-day-header {
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
-        .fc-day-today {
-            background: rgba(82, 183, 136, 0.1) !important;
+        .dia-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
-        .fc-event {
-            border: none !important;
-            border-radius: 6px !important;
-            padding: 2px 6px !important;
-            font-size: 0.85rem !important;
-            font-weight: 500 !important;
-            cursor: pointer !important;
+        .dia-nome {
+            font-size: 1rem;
         }
 
-        .fc-event:hover {
-            opacity: 0.8 !important;
-            transform: scale(1.02) !important;
+        .dia-data {
+            font-size: 0.8rem;
+            opacity: 0.8;
         }
 
-        .fc-event.sala1 { background: var(--vta-green) !important; }
-        .fc-event.sala2 { background: var(--vta-blue) !important; }
-        .fc-event.sala3 { background: var(--vta-orange) !important; }
-        .fc-event.sala4 { background: var(--vta-purple) !important; }
-        .fc-event.sala5 { background: var(--vta-orange-dark) !important; }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 280px 1fr;
-                gap: 1.5rem;
-            }
+        /* Visualização de semana sem horários */
+        .week-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--gray-light);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .sidebar {
-                position: static;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 1rem;
-            }
-
-            .calendar-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .calendar-controls {
-                justify-content: space-between;
-            }
+        .week-day-cell {
+            background: var(--white);
+            min-height: 300px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .sidebar {
-                grid-template-columns: 1fr;
-            }
-
-            .calendar-controls {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .action-buttons {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .btn {
-                flex: 1;
-                justify-content: center;
-            }
-
-            .quick-stats {
-                grid-template-columns: 1fr;
-            }
+        .week-day-cell:hover {
+            background: var(--gray-light);
         }
 
-        @media (max-width: 480px) {
-            .user-details {
-                display: none;
-            }
-
-            .btn {
-                padding: 0.5rem;
-                font-size: 0.8rem;
-            }
-
-            .btn span {
-                display: none;
-            }
+        .week-day-cell.today {
+            background: rgba(82, 183, 136, 0.1);
+            border: 2px solid var(--vta-green);
         }
 
-        /* Modal Styles */
+        .day-content {
+            height: 100%;
+        }
+
+        .agendamentos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .agendamento-item {
+            background: var(--vta-blue);
+            color: var(--white);
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .agendamento-item .hora {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .agendamento-item .info {
+            font-size: 0.8rem;
+        }
+
+        /* Headers para visualização mensal */
+        .calendar-day-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Visualização de calendário mensal */
+        .calendar-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--gray-light);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .calendar-week {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+        }
+
+        .calendar-day {
+            background: var(--white);
+            min-height: 100px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calendar-day:hover {
+            background: var(--gray-light);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+
+        .calendar-day.today {
+            background: rgba(82, 183, 136, 0.1);
+            border: 2px solid var(--vta-green);
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--gray-dark);
+        }
+
+        .day-events {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            margin-top: auto;
+        }
+
+        .event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-bottom: 2px;
+        }
+
+        .evento-consulta {
+            background: var(--vta-green);
+        }
+
+        .evento-cirurgia {
+            background: var(--vta-blue);
+        }
+
+        .evento-exame {
+            background: var(--vta-orange);
+        }
+
+        /* Grid Body */
+        .grid-body {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 100px repeat(5, 1fr);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .grid-row:hover {
+            background: rgba(82, 183, 136, 0.05);
+        }
+
+        .time-cell {
+            padding: 1rem;
+            text-align: center;
+            background: var(--gray-light);
+            font-weight: 500;
+            color: var(--gray-medium);
+            border-right: 1px solid var(--white);
+        }
+
+        .appointment-cell {
+            padding: 0.5rem;
+            border-right: 1px solid var(--gray-light);
+            position: relative;
+            min-height: 80px;
+            cursor: pointer;
+        }
+
+        .appointment-cell:last-child {
+            border-right: none;
+        }
+
+        .appointment-cell:hover {
+            background: rgba(82, 183, 136, 0.1);
+        }
+
+        /* Agendamento */
+        .appointment {
+            background: var(--vta-blue);
+            color: var(--white);
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .appointment:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .appointment.sala1 { background: var(--vta-green); }
+        .appointment.sala2 { background: var(--vta-blue); }
+        .appointment.sala3 { background: var(--vta-orange); }
+        .appointment.sala4 { background: var(--vta-purple); }
+        .appointment.sala5 { background: var(--vta-orange-dark); }
+
+        .appointment-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .appointment-details {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-agendado { background: var(--vta-orange); }
+        .status-confirmado { background: var(--vta-green); }
+        .status-realizado { background: var(--vta-blue); }
+        .status-cancelado { background: var(--vta-orange-dark); }
+
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
             background: var(--white);
-            margin: 5% auto;
-            padding: 2rem;
             border-radius: 15px;
-            width: 90%;
+            padding: 2rem;
             max-width: 500px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .modal-header {
@@ -582,700 +665,1003 @@
         }
 
         .modal-title {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 600;
             color: var(--gray-dark);
         }
 
-        .close {
+        .close-btn {
             background: none;
             border: none;
             font-size: 1.5rem;
-            cursor: pointer;
             color: var(--gray-medium);
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .close:hover {
-            background: var(--gray-light);
+        .close-btn:hover {
             color: var(--gray-dark);
         }
 
-        .event-details {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 250px 1fr;
+                gap: 1.5rem;
+            }
+            
+            .grid-header,
+            .grid-row {
+                grid-template-columns: 80px repeat(5, 1fr);
+            }
+
+            .week-row,
+            .calendar-week {
+                grid-template-columns: repeat(7, 1fr);
+            }
+
+            .week-day-cell {
+                min-height: 250px;
+                padding: 0.75rem;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+                padding: 0.25rem;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 0.25rem;
+            }
+
+            .action-buttons .btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.85rem;
+            }
         }
 
-        .event-detail {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .sidebar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .view-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .date-navigation {
+                justify-content: center;
+            }
+
+            .action-buttons {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .week-day-cell {
+                min-height: 200px;
+            }
+
+            .calendar-day {
+                min-height: 60px;
+            }
         }
 
-        .event-detail i {
-            width: 20px;
-            color: var(--vta-green);
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .view-toggle {
+                width: 100%;
+            }
+
+            .view-btn {
+                flex: 1;
+                font-size: 0.85rem;
+                padding: 0.5rem;
+            }
+
+            .grid-header,
+            .grid-row {
+                grid-template-columns: 60px repeat(3, 1fr);
+            }
+
+            .week-row,
+            .calendar-week {
+                grid-template-columns: repeat(7, 1fr);
+            }
+
+            .week-day-cell {
+                min-height: 150px;
+                padding: 0.5rem;
+            }
+
+            .calendar-day {
+                min-height: 50px;
+                padding: 0.25rem;
+            }
+
+            .day-number {
+                font-size: 0.9rem;
+            }
+
+            .sala-header, .dia-header {
+                font-size: 0.85rem;
+            }
+
+            .appointment {
+                font-size: 0.75rem;
+                padding: 0.25rem;
+            }
+
+            .current-period {
+                min-width: auto;
+                font-size: 1rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: repeat(2, 1fr);
+                display: grid;
+                gap: 0.5rem;
+            }
+
+            .action-buttons .btn {
+                justify-content: center;
+            }
+
+            .agendamento-item {
+                font-size: 0.75rem;
+                padding: 0.25rem;
+            }
         }
 
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            justify-content: flex-end;
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .grid-header,
+            .grid-row {
+                grid-template-columns: 50px repeat(2, 1fr);
+            }
+
+            .week-row,
+            .calendar-week {
+                grid-template-columns: repeat(7, 1fr);
+            }
+
+            .week-day-cell {
+                min-height: 120px;
+                padding: 0.25rem;
+            }
+
+            .calendar-day {
+                min-height: 40px;
+                padding: 0.15rem;
+            }
+
+            .day-number {
+                font-size: 0.8rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .date-navigation {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .current-period {
+                font-size: 0.9rem;
+            }
+
+            .view-btn {
+                font-size: 0.8rem;
+                padding: 0.4rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-day-header, .week-day-header {
+                font-size: 0.7rem;
+                padding: 0.5rem 0.25rem;
+            }
+
+            .dia-nome {
+                font-size: 0.8rem;
+            }
+
+            .dia-data {
+                font-size: 0.7rem;
+            }
+
+            .agendamento-item {
+                font-size: 0.7rem;
+                padding: 0.2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="agenda-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <div class="header-left">
-                    <button class="back-btn" onclick="goBack()" title="Voltar ao Dashboard">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <div class="logo-mini">
-                        <i class="fas fa-calendar"></i>
-                    </div>
-                    <div class="header-title">
-                        <h1>Agenda VTA</h1>
-                        <p class="header-subtitle">Visualização da Agenda</p>
-                    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-mini">
+                    <i class="fas fa-calendar-alt"></i>
                 </div>
-                
-                <div class="header-right">
-                    <div class="user-info">
-                        <div class="user-avatar">A</div>
-                        <div class="user-details">
-                            <h3>Administrador</h3>
-                            <p class="user-role">admin@vta.com</p>
-                        </div>
-                    </div>
-                    <button class="logout-btn" onclick="logout()" title="Sair do sistema">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                <div class="header-title">
+                    <h1>Agenda VTA</h1>
+                    <div class="header-subtitle">Sistema de Agendamento Veterinário</div>
                 </div>
             </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <!-- Filtros -->
-                <div class="sidebar-card">
-                    <h3 class="sidebar-title">
-                        <i class="fas fa-filter"></i>
-                        Filtros
-                    </h3>
-                    
-                    <div class="filter-group">
-                        <label class="filter-label">Data</label>
-                        <input type="date" class="filter-input" id="dateFilter" value="">
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
                     </div>
-
-                    <div class="filter-group">
-                        <label class="filter-label">Veterinário</label>
-                        <select class="filter-select" id="vetFilter">
-                            <option value="">Todos</option>
-                            <option value="dr-silva">Dr. Silva</option>
-                            <option value="dr-costa">Dr. Costa</option>
-                            <option value="dra-santos">Dra. Santos</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label class="filter-label">Tipo de Consulta</label>
-                        <select class="filter-select" id="typeFilter">
-                            <option value="">Todos</option>
-                            <option value="consulta">Consulta</option>
-                            <option value="vacina">Vacinação</option>
-                            <option value="cirurgia">Cirurgia</option>
-                            <option value="retorno">Retorno</option>
-                        </select>
-                    </div>
+                    <span>Dr. Veterinário</span>
                 </div>
+            </div>
+        </div>
+    </header>
 
-                <!-- Salas -->
-                <div class="sidebar-card">
-                    <h3 class="sidebar-title">
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="nav-menu">
+                <div class="menu-title">Menu Principal</div>
+                <nav class="menu-list">
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                    <a href="#" class="menu-item active">
+                        <i class="fas fa-calendar-alt"></i>
+                        Agenda
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-users"></i>
+                        Clientes
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-paw"></i>
+                        Pets
+                    </a>
+                    <a href="#" class="menu-item">
                         <i class="fas fa-door-open"></i>
                         Salas
-                    </h3>
-                    
-                    <div class="salas-list">
-                        <div class="sala-item active" data-sala="all">
-                            <div class="sala-color" style="background: linear-gradient(45deg, var(--vta-green), var(--vta-blue), var(--vta-orange))"></div>
-                            <div class="sala-info">
-                                <div class="sala-nome">Todas as Salas</div>
-                                <div class="sala-status">Ver todas</div>
-                            </div>
-                        </div>
-                        
-                        <div class="sala-item" data-sala="sala1">
-                            <div class="sala-color sala1"></div>
-                            <div class="sala-info">
-                                <div class="sala-nome">Sala 1</div>
-                                <div class="sala-status">Disponível</div>
-                            </div>
-                        </div>
-                        
-                        <div class="sala-item" data-sala="sala2">
-                            <div class="sala-color sala2"></div>
-                            <div class="sala-info">
-                                <div class="sala-nome">Sala 2</div>
-                                <div class="sala-status">Ocupada</div>
-                            </div>
-                        </div>
-                        
-                        <div class="sala-item" data-sala="sala3">
-                            <div class="sala-color sala3"></div>
-                            <div class="sala-info">
-                                <div class="sala-nome">Sala 3 - Cirurgia</div>
-                                <div class="sala-status">Ocupada</div>
-                            </div>
-                        </div>
-                        
-                        <div class="sala-item" data-sala="sala4">
-                            <div class="sala-color sala4"></div>
-                            <div class="sala-info">
-                                <div class="sala-nome">Sala 4</div>
-                                <div class="sala-status">Disponível</div>
-                            </div>
-                        </div>
-                        
-                        <div class="sala-item" data-sala="sala5">
-                            <div class="sala-color sala5"></div>
-                            <div class="sala-info">
-                                <div class="sala-nome">Sala 5</div>
-                                <div class="sala-status">Manutenção</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="sidebar-card">
-                    <h3 class="sidebar-title">
+                    </a>
+                    <a href="#" class="menu-item">
                         <i class="fas fa-chart-bar"></i>
-                        Estatísticas Rápidas
-                    </h3>
+                        Relatórios
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-bell"></i>
+                        Notificações
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-cog"></i>
+                        Configurações
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Estatísticas Rápidas -->
+            <div class="quick-stats-panel">
+                <div class="panel-title">Estatísticas do Dia</div>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Agendamentos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Confirmados</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Realizados</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Controles Superiores -->
+            <div class="controls-section">
+                <div class="view-controls">
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="dia">Dia</button>
+                        <button class="view-btn" data-view="mes">Mês</button>
+                    </div>
                     
-                    <div class="quick-stats">
-                        <div class="stat-item">
-                            <div class="stat-value">24</div>
-                            <div class="stat-label">Hoje</div>
+                    <div class="date-navigation">
+                        <button class="nav-btn" onclick="navegarPeriodo(-1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="current-period" id="currentPeriod">Quarta, 10 de Outubro 2024</span>
+                        <button class="nav-btn" onclick="navegarPeriodo(1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <button class="btn btn-secondary" onclick="irParaHoje()">
+                        <i class="fas fa-calendar-day"></i>
+                        Hoje
+                    </button>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="novoAgendamento()">
+                            <i class="fas fa-plus"></i>
+                            Novo
+                        </button>
+                        <button class="btn btn-secondary" onclick="buscarPeriodo()">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
+                        <button class="btn btn-secondary" onclick="atualizarAgenda()">
+                            <i class="fas fa-sync-alt"></i>
+                            Atualizar
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportarAgenda()">
+                            <i class="fas fa-download"></i>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grade de Agendamento -->
+            <div class="agenda-grid">
+                <!-- Header da Grade -->
+                <div class="grid-header">
+                    <div class="grid-cell time-label">Horário</div>
+                    <div class="grid-cell">
+                        <div class="sala-header">
+                            <div class="sala-nome">Sala 1</div>
+                            <div class="sala-status">Consulta</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value">3</div>
-                            <div class="stat-label">Pendentes</div>
+                    </div>
+                    <div class="grid-cell">
+                        <div class="sala-header">
+                            <div class="sala-nome">Sala 2</div>
+                            <div class="sala-status">Cirurgia</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value">156</div>
-                            <div class="stat-label">Este Mês</div>
+                    </div>
+                    <div class="grid-cell">
+                        <div class="sala-header">
+                            <div class="sala-nome">Sala 3</div>
+                            <div class="sala-status">Raio-X</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-value">89%</div>
-                            <div class="stat-label">Presença</div>
+                    </div>
+                    <div class="grid-cell">
+                        <div class="sala-header">
+                            <div class="sala-nome">Sala 4</div>
+                            <div class="sala-status">Internação</div>
+                        </div>
+                    </div>
+                    <div class="grid-cell">
+                        <div class="sala-header">
+                            <div class="sala-nome">Sala 5</div>
+                            <div class="sala-status">Banho/Tosa</div>
                         </div>
                     </div>
                 </div>
-            </aside>
 
-            <!-- Calendar Area -->
-            <div class="calendar-area">
-                <div class="calendar-header">
-                    <div class="calendar-title">Agenda de Consultas</div>
-                    
-                    <div class="calendar-controls">
-                        <div class="view-toggle">
-                            <button class="view-btn active" data-view="dayGridMonth">Mês</button>
-                            <button class="view-btn" data-view="timeGridWeek">Semana</button>
-                            <button class="view-btn" data-view="timeGridDay">Dia</button>
-                            <button class="view-btn" data-view="listWeek">Lista</button>
-                        </div>
-                        
-                        <div class="action-buttons">
-                            <button class="btn btn-secondary" onclick="printCalendar()">
-                                <i class="fas fa-print"></i>
-                                <span>Imprimir</span>
-                            </button>
-                            <button class="btn btn-primary" onclick="newAppointment()">
-                                <i class="fas fa-plus"></i>
-                                <span>Novo Agendamento</span>
-                            </button>
-                        </div>
-                    </div>
+                <!-- Corpo da Grade -->
+                <div class="grid-body" id="agendaGridBody">
+                    <!-- Horários serão gerados dinamicamente -->
                 </div>
-
-                <!-- Calendar Container -->
-                <div id="calendar"></div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal para detalhes do evento -->
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Detalhes da Consulta</h3>
-                <button class="close" onclick="closeModal()">&times;</button>
-            </div>
-            
-            <div class="event-details" id="eventDetailsContent">
-                <!-- Conteúdo será preenchido dinamicamente -->
-            </div>
-            
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal()">Fechar</button>
-                <button class="btn btn-primary" onclick="editEvent()">Editar</button>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.10/index.global.min.js"></script>
+    <!-- Modal de Busca por Período -->
+    <div class="modal" id="periodoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Buscar por Período</h3>
+                <button class="close-btn" onclick="fecharModalPeriodo()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="periodoForm">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Sala:</label>
+                        <select style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;">
+                            <option value="todas">Todas as Salas</option>
+                            <option value="sala1">Sala 1 - Consulta</option>
+                            <option value="sala2">Sala 2 - Cirurgia</option>
+                            <option value="sala3">Sala 3 - Raio-X</option>
+                            <option value="sala4">Sala 4 - Internação</option>
+                            <option value="sala5">Sala 5 - Banho/Tosa</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Data Inicial:</label>
+                        <input type="date" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Data Final:</label>
+                        <input type="date" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModalPeriodo()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="agendamentoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Novo Agendamento</h3>
+                <button class="close-btn" onclick="fecharModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="agendamentoForm">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Cliente:</label>
+                        <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" placeholder="Nome do cliente" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pet:</label>
+                        <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" placeholder="Nome do pet" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Sala:</label>
+                        <select style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                            <option value="">Selecione uma sala</option>
+                            <option value="sala1">Sala 1 - Consulta</option>
+                            <option value="sala2">Sala 2 - Cirurgia</option>
+                            <option value="sala3">Sala 3 - Raio-X</option>
+                            <option value="sala4">Sala 4 - Internação</option>
+                            <option value="sala5">Sala 5 - Banho/Tosa</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Data e Hora:</label>
+                        <input type="datetime-local" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Observações:</label>
+                        <textarea style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px; min-height: 80px;" placeholder="Observações sobre o atendimento"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Agendar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
-        let calendar;
-        let currentEvent = null;
+        // Estado da aplicação
+        let estadoAtual = {
+            visualizacao: 'dia',
+            dataAtual: new Date(),
+            salaFiltro: 'todas'
+        };
 
         // Dados de exemplo
-        const sampleEvents = [
+        const agendamentosExemplo = [
             {
-                id: '1',
-                title: 'Rex - Consulta de Rotina',
-                start: new Date().toISOString().split('T')[0] + 'T09:00:00',
-                end: new Date().toISOString().split('T')[0] + 'T09:30:00',
-                className: 'sala1',
-                extendedProps: {
-                    pet: 'Rex',
-                    client: 'Maria Santos',
-                    vet: 'Dr. Silva',
-                    sala: 'Sala 1',
-                    tipo: 'Consulta',
-                    phone: '(51) 99999-9999',
-                    obs: 'Consulta de rotina'
-                }
+                id: 1,
+                cliente: "Maria Silva",
+                pet: "Rex",
+                sala: "sala1",
+                horario: "08:00",
+                duracao: 30,
+                status: "confirmado",
+                tipo: "Consulta",
+                obs: "Primeira consulta"
             },
             {
-                id: '2',
-                title: 'Mimi - Vacinação',
-                start: new Date().toISOString().split('T')[0] + 'T10:30:00',
-                end: new Date().toISOString().split('T')[0] + 'T11:00:00',
-                className: 'sala2',
-                extendedProps: {
-                    pet: 'Mimi',
-                    client: 'João Pedro',
-                    vet: 'Dr. Silva',
-                    sala: 'Sala 2',
-                    tipo: 'Vacinação',
-                    phone: '(51) 88888-8888',
-                    obs: 'Vacina antirrábica'
-                }
+                id: 2,
+                cliente: "João Santos",
+                pet: "Luna",
+                sala: "sala2",
+                horario: "09:30",
+                duracao: 60,
+                status: "agendado",
+                tipo: "Cirurgia",
+                obs: "Cirurgia de castração"
             },
             {
-                id: '3',
-                title: 'Thor - Cirurgia',
-                start: new Date().toISOString().split('T')[0] + 'T14:00:00',
-                end: new Date().toISOString().split('T')[0] + 'T16:00:00',
-                className: 'sala3',
-                extendedProps: {
-                    pet: 'Thor',
-                    client: 'Ana Clara',
-                    vet: 'Dr. Costa',
-                    sala: 'Sala 3 - Cirurgia',
-                    tipo: 'Cirurgia',
-                    phone: '(51) 77777-7777',
-                    obs: 'Castração'
-                }
+                id: 3,
+                cliente: "Ana Costa",
+                pet: "Mimi",
+                sala: "sala1",
+                horario: "10:00",
+                duracao: 30,
+                status: "realizado",
+                tipo: "Consulta",
+                obs: "Vacinação"
             },
             {
-                id: '4',
-                title: 'Luna - Retorno',
-                start: new Date().toISOString().split('T')[0] + 'T15:30:00',
-                end: new Date().toISOString().split('T')[0] + 'T16:00:00',
-                className: 'sala1',
-                extendedProps: {
-                    pet: 'Luna',
-                    client: 'Carlos Lima',
-                    vet: 'Dr. Silva',
-                    sala: 'Sala 1',
-                    tipo: 'Retorno',
-                    phone: '(51) 66666-6666',
-                    obs: 'Retorno pós-cirúrgico'
-                }
+                id: 4,
+                cliente: "Pedro Lima",
+                pet: "Thor",
+                sala: "sala3",
+                horario: "11:00",
+                duracao: 45,
+                status: "confirmado",
+                tipo: "Raio-X",
+                obs: "Exame de quadril"
+            },
+            {
+                id: 5,
+                cliente: "Carla Souza",
+                pet: "Bella",
+                sala: "sala5",
+                horario: "14:00",
+                duracao: 90,
+                status: "agendado",
+                tipo: "Banho e Tosa",
+                obs: "Banho completo"
             }
         ];
 
-        // Inicialização do calendário
-        document.addEventListener('DOMContentLoaded', function() {
-            const calendarEl = document.getElementById('calendar');
-            const today = new Date().toISOString().split('T')[0];
-            
-            // Definir data atual no filtro
-            document.getElementById('dateFilter').value = today;
-            
-            calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'pt-br',
-                firstDay: 0, // Domingo como primeiro dia
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: ''
-                },
-                buttonText: {
-                    today: 'Hoje',
-                    month: 'Mês',
-                    week: 'Semana',
-                    day: 'Dia',
-                    list: 'Lista'
-                },
-                height: 'auto',
-                eventClick: function(info) {
-                    showEventDetails(info.event);
-                },
-                dateClick: function(info) {
-                    // Ao clicar em uma data, sugere novo agendamento
-                    if (confirm(`Deseja criar um novo agendamento para ${info.dateStr}?`)) {
-                        newAppointment(info.dateStr);
-                    }
-                },
-                events: sampleEvents,
-                eventDidMount: function(info) {
-                    // Tooltip nos eventos
-                    info.el.title = `${info.event.extendedProps.pet} - ${info.event.extendedProps.client}\n${info.event.extendedProps.vet} • ${info.event.extendedProps.sala}`;
-                }
-            });
-            
-            calendar.render();
-            
-            // Event listeners
-            setupEventListeners();
-        });
-
-        function setupEventListeners() {
-            // Filtro de data
-            document.getElementById('dateFilter').addEventListener('change', function() {
-                const selectedDate = this.value;
-                if (selectedDate) {
-                    calendar.gotoDate(selectedDate);
-                }
-            });
-
-            // Filtros
-            document.getElementById('vetFilter').addEventListener('change', filterEvents);
-            document.getElementById('typeFilter').addEventListener('change', filterEvents);
-
-            // Toggle de visualização
-            document.querySelectorAll('.view-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    calendar.changeView(this.dataset.view);
-                });
-            });
-
-            // Seleção de salas
-            document.querySelectorAll('.sala-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.sala-item').forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-                    filterEventsBySala(this.dataset.sala);
-                });
-            });
-
-            // Modal
-            window.addEventListener('click', function(event) {
-                const modal = document.getElementById('eventModal');
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-        }
-
-        function filterEvents() {
-            const vetFilter = document.getElementById('vetFilter').value;
-            const typeFilter = document.getElementById('typeFilter').value;
-            
-            let filteredEvents = sampleEvents;
-            
-            if (vetFilter) {
-                filteredEvents = filteredEvents.filter(event => 
-                    event.extendedProps.vet.toLowerCase().includes(vetFilter.replace('dr-', 'dr. ').replace('dra-', 'dra. '))
-                );
+        // Gerar horários de funcionamento (8h às 18h)
+        function gerarHorarios() {
+            const horarios = [];
+            for (let hora = 8; hora < 18; hora++) {
+                horarios.push(`${hora.toString().padStart(2, '0')}:00`);
+                horarios.push(`${hora.toString().padStart(2, '0')}:30`);
             }
-            
-            if (typeFilter) {
-                filteredEvents = filteredEvents.filter(event => 
-                    event.extendedProps.tipo.toLowerCase() === typeFilter
-                );
-            }
-            
-            calendar.removeAllEvents();
-            calendar.addEventSource(filteredEvents);
+            return horarios;
         }
 
-        function filterEventsBySala(sala) {
-            if (sala === 'all') {
-                calendar.removeAllEvents();
-                calendar.addEventSource(sampleEvents);
-                return;
-            }
+        // Atualizar display do período atual
+        function atualizarPeriodo() {
+            const periodoElement = document.getElementById('currentPeriod');
+            const opcoes = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
             
-            const salaClass = sala;
-            const filteredEvents = sampleEvents.filter(event => 
-                event.className === salaClass
-            );
-            
-            calendar.removeAllEvents();
-            calendar.addEventSource(filteredEvents);
-        }
-
-        function showEventDetails(event) {
-            currentEvent = event;
-            const props = event.extendedProps;
-            
-            const detailsHTML = `
-                <div class="event-detail">
-                    <i class="fas fa-paw"></i>
-                    <div>
-                        <strong>Pet:</strong> ${props.pet}<br>
-                        <small>Tipo: ${props.tipo}</small>
-                    </div>
-                </div>
-                <div class="event-detail">
-                    <i class="fas fa-user"></i>
-                    <div>
-                        <strong>Cliente:</strong> ${props.client}<br>
-                        <small>Telefone: ${props.phone}</small>
-                    </div>
-                </div>
-                <div class="event-detail">
-                    <i class="fas fa-user-md"></i>
-                    <div><strong>Veterinário:</strong> ${props.vet}</div>
-                </div>
-                <div class="event-detail">
-                    <i class="fas fa-door-open"></i>
-                    <div><strong>Local:</strong> ${props.sala}</div>
-                </div>
-                <div class="event-detail">
-                    <i class="fas fa-clock"></i>
-                    <div>
-                        <strong>Horário:</strong><br>
-                        ${formatDateTime(event.start)} - ${formatTime(event.end)}
-                    </div>
-                </div>
-                ${props.obs ? `
-                <div class="event-detail">
-                    <i class="fas fa-sticky-note"></i>
-                    <div><strong>Observações:</strong><br>${props.obs}</div>
-                </div>
-                ` : ''}
-            `;
-            
-            document.getElementById('eventDetailsContent').innerHTML = detailsHTML;
-            document.getElementById('eventModal').style.display = 'block';
-        }
-
-        function formatDateTime(date) {
-            return new Date(date).toLocaleString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function formatTime(date) {
-            return new Date(date).toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function closeModal() {
-            document.getElementById('eventModal').style.display = 'none';
-            currentEvent = null;
-        }
-
-        function editEvent() {
-            if (currentEvent) {
-                alert(`Editando consulta: ${currentEvent.extendedProps.pet}\n\nEsta funcionalidade será implementada na tela de agendamento.`);
-                closeModal();
+            switch (estadoAtual.visualizacao) {
+                case 'dia':
+                    periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', opcoes);
+                    break;
+                case 'mes':
+                    periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' });
+                    break;
             }
         }
 
-        // Funções de navegação
-        function goBack() {
-            if (confirm('Deseja voltar ao dashboard?')) {
-                alert('Voltando ao dashboard...');
-                // window.location.href = 'dashboard.html';
-            }
-        }
-
-        function logout() {
-            if (confirm('Tem certeza que deseja sair do sistema?')) {
-                alert('Logout realizado com sucesso!');
-                // window.location.href = 'login.html';
-            }
-        }
-
-        function newAppointment(selectedDate = null) {
-            let message = 'Redirecionando para nova consulta...';
-            if (selectedDate) {
-                message += `\n\nData sugerida: ${new Date(selectedDate).toLocaleDateString('pt-BR')}`;
-            }
-            alert(message);
-            // window.location.href = 'agendamento.html' + (selectedDate ? '?date=' + selectedDate : '');
-        }
-
-        function printCalendar() {
-            // Função simplificada de impressão
-            const printContent = `
-                <html>
-                <head>
-                    <title>Agenda VTA - ${calendar.view.title}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        h1 { color: #52B788; text-align: center; }
-                        .event { margin: 10px 0; padding: 10px; border-left: 4px solid #52B788; background: #f9f9f9; }
-                        .date { font-weight: bold; color: #2E86AB; }
-                        .details { margin-top: 5px; font-size: 0.9em; }
-                    </style>
-                </head>
-                <body>
-                    <h1>Agenda VTA - ${calendar.view.title}</h1>
-                    ${generatePrintableEvents()}
-                </body>
-                </html>
-            `;
+        // Navegação de período
+        function navegarPeriodo(direcao) {
+            const novaData = new Date(estadoAtual.dataAtual);
             
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(printContent);
-            printWindow.document.close();
-            printWindow.print();
-        }
-
-        function generatePrintableEvents() {
-            const events = calendar.getEvents();
-            const sortedEvents = events.sort((a, b) => new Date(a.start) - new Date(b.start));
-            
-            return sortedEvents.map(event => `
-                <div class="event">
-                    <div class="date">${formatDateTime(event.start)} - ${formatTime(event.end)}</div>
-                    <div class="details">
-                        <strong>${event.extendedProps.pet}</strong> - ${event.extendedProps.tipo}<br>
-                        Cliente: ${event.extendedProps.client}<br>
-                        Veterinário: ${event.extendedProps.vet}<br>
-                        Local: ${event.extendedProps.sala}
-                        ${event.extendedProps.obs ? `<br>Obs: ${event.extendedProps.obs}` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Simulação de atualização em tempo real
-        function updateCalendarStats() {
-            // Simula mudanças nas estatísticas
-            const statValues = document.querySelectorAll('.stat-value');
-            statValues.forEach(stat => {
-                if (Math.random() > 0.9) {
-                    const currentValue = parseInt(stat.textContent);
-                    const change = Math.floor(Math.random() * 3) - 1;
-                    const newValue = Math.max(0, currentValue + change);
-                    
-                    if (newValue !== currentValue) {
-                        stat.textContent = newValue;
-                        stat.style.transform = 'scale(1.1)';
-                        stat.style.color = 'var(--vta-green)';
-                        
-                        setTimeout(() => {
-                            stat.style.transform = 'scale(1)';
-                            stat.style.color = '';
-                        }, 300);
-                    }
-                }
-            });
-        }
-
-        // Atualização automática das estatísticas
-        setInterval(updateCalendarStats, 30000);
-
-        // Atalhos de teclado
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey || event.metaKey) {
-                switch(event.key) {
-                    case 'n':
-                        event.preventDefault();
-                        newAppointment();
-                        break;
-                    case 'p':
-                        event.preventDefault();
-                        printCalendar();
-                        break;
-                    case 'f':
-                        event.preventDefault();
-                        document.getElementById('dateFilter').focus();
-                        break;
-                }
+            switch (estadoAtual.visualizacao) {
+                case 'dia':
+                    novaData.setDate(estadoAtual.dataAtual.getDate() + direcao);
+                    break;
+                case 'mes':
+                    novaData.setMonth(estadoAtual.dataAtual.getMonth() + direcao);
+                    break;
             }
             
-            // ESC para fechar modal
-            if (event.key === 'Escape') {
-                closeModal();
-            }
-        });
+            estadoAtual.dataAtual = novaData;
+            atualizarPeriodo();
+            renderizarGrade();
+        }
 
-        // Responsividade adicional
-        function handleResize() {
-            if (window.innerWidth <= 768) {
-                calendar.setOption('height', 'auto');
-                calendar.setOption('aspectRatio', 1);
-            } else {
-                calendar.setOption('height', 'auto');
-                calendar.setOption('aspectRatio', 1.8);
+        // Ir para hoje
+        function irParaHoje() {
+            estadoAtual.dataAtual = new Date();
+            atualizarPeriodo();
+            renderizarGrade();
+            mostrarToast('Voltou para hoje!', 'success');
+        }
+
+        // Renderizar grade de agendamento (função principal)
+        function renderizarGrade() {
+            switch (estadoAtual.visualizacao) {
+                case 'dia':
+                    renderizarGradeDia();
+                    break;
+                case 'mes':
+                    renderizarGradeMes();
+                    break;
             }
         }
 
-        window.addEventListener('resize', handleResize);
-        
-        // Animações de entrada
-        function animateElements() {
-            const sidebarCards = document.querySelectorAll('.sidebar-card');
-            const calendarArea = document.querySelector('.calendar-area');
+        // Renderizar visualização por dia (salas na horizontal)
+        function renderizarGradeDia() {
+            const gridBody = document.getElementById('agendaGridBody');
+            const horarios = gerarHorarios();
             
-            sidebarCards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateX(-30px)';
-                card.style.transition = 'all 0.6s ease';
+            // Resetar classe do grid-body
+            gridBody.className = 'grid-body';
+            
+            // Atualizar header para salas
+            atualizarHeaderSalas();
+            
+            gridBody.innerHTML = '';
+            
+            horarios.forEach(horario => {
+                const row = document.createElement('div');
+                row.className = 'grid-row';
                 
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateX(0)';
-                }, 100 * index);
+                // Célula de horário
+                const timeCell = document.createElement('div');
+                timeCell.className = 'time-cell';
+                timeCell.textContent = horario;
+                row.appendChild(timeCell);
+                
+                // Células das salas
+                for (let i = 1; i <= 5; i++) {
+                    const appointmentCell = document.createElement('div');
+                    appointmentCell.className = 'appointment-cell';
+                    appointmentCell.dataset.sala = `sala${i}`;
+                    appointmentCell.dataset.horario = horario;
+                    
+                    // Verificar se há agendamento neste horário/sala
+                    const agendamento = agendamentosExemplo.find(a => 
+                        a.sala === `sala${i}` && a.horario === horario
+                    );
+                    
+                    if (agendamento) {
+                        const appointmentDiv = document.createElement('div');
+                        appointmentDiv.className = `appointment ${agendamento.sala}`;
+                        appointmentDiv.innerHTML = `
+                            <div class="appointment-title">${agendamento.pet}</div>
+                            <div class="appointment-details">${agendamento.cliente}</div>
+                            <div class="appointment-details">${agendamento.tipo}</div>
+                            <div class="status-indicator status-${agendamento.status}"></div>
+                        `;
+                        appointmentDiv.onclick = () => mostrarDetalhesAgendamento(agendamento);
+                        appointmentCell.appendChild(appointmentDiv);
+                    }
+                    
+                    appointmentCell.onclick = (e) => {
+                        if (e.target === appointmentCell) {
+                            selecionarHorario(`sala${i}`, horario);
+                        }
+                    };
+                    
+                    row.appendChild(appointmentCell);
+                }
+                
+                gridBody.appendChild(row);
+            });
+        }
+
+        // Renderizar visualização por mês (calendário)
+        function renderizarGradeMes() {
+            const gridBody = document.getElementById('agendaGridBody');
+            
+            // Atualizar header para calendário
+            atualizarHeaderMes();
+            
+            gridBody.innerHTML = '';
+            gridBody.className = 'calendar-body';
+            
+            const ano = estadoAtual.dataAtual.getFullYear();
+            const mes = estadoAtual.dataAtual.getMonth();
+            
+            // Primeiro dia do mês
+            const primeiroDia = new Date(ano, mes, 1);
+            // Último dia do mês
+            const ultimoDia = new Date(ano, mes + 1, 0);
+            // Primeiro dia da semana do calendário
+            const inicioCalendario = new Date(primeiroDia);
+            inicioCalendario.setDate(primeiroDia.getDate() - primeiroDia.getDay());
+            
+            // Criar 6 semanas (42 dias)
+            for (let semana = 0; semana < 6; semana++) {
+                const row = document.createElement('div');
+                row.className = 'calendar-week';
+                
+                for (let dia = 0; dia < 7; dia++) {
+                    const dataAtual = new Date(inicioCalendario);
+                    dataAtual.setDate(inicioCalendario.getDate() + (semana * 7) + dia);
+                    
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'calendar-day';
+                    
+                    // Marcar dias fora do mês atual
+                    if (dataAtual.getMonth() !== mes) {
+                        dayCell.classList.add('other-month');
+                    }
+                    
+                    // Marcar hoje
+                    const hoje = new Date();
+                    if (dataAtual.toDateString() === hoje.toDateString()) {
+                        dayCell.classList.add('today');
+                    }
+                    
+                    dayCell.innerHTML = `
+                        <div class="day-number">${dataAtual.getDate()}</div>
+                        <div class="day-events">
+                            ${dataAtual.getDate() === 10 ? '<div class="event-dot evento-consulta"></div>' : ''}
+                            ${dataAtual.getDate() === 15 ? '<div class="event-dot evento-cirurgia"></div>' : ''}
+                            ${dataAtual.getDate() === 22 ? '<div class="event-dot evento-consulta"></div><div class="event-dot evento-exame"></div>' : ''}
+                        </div>
+                    `;
+                    
+                    dayCell.onclick = () => selecionarDiaCalendario(dataAtual);
+                    
+                    row.appendChild(dayCell);
+                }
+                
+                gridBody.appendChild(row);
+            }
+        }
+
+        // Funções auxiliares para atualizar headers
+        function atualizarHeaderSalas() {
+            const gridHeader = document.querySelector('.grid-header');
+            gridHeader.innerHTML = `
+                <div class="grid-cell time-label">Horário</div>
+                <div class="grid-cell">
+                    <div class="sala-header">
+                        <div class="sala-nome">Sala 1</div>
+                        <div class="sala-status">Consulta</div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="sala-header">
+                        <div class="sala-nome">Sala 2</div>
+                        <div class="sala-status">Cirurgia</div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="sala-header">
+                        <div class="sala-nome">Sala 3</div>
+                        <div class="sala-status">Raio-X</div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="sala-header">
+                        <div class="sala-nome">Sala 4</div>
+                        <div class="sala-status">Internação</div>
+                    </div>
+                </div>
+                <div class="grid-cell">
+                    <div class="sala-header">
+                        <div class="sala-nome">Sala 5</div>
+                        <div class="sala-status">Banho/Tosa</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function atualizarHeaderMes() {
+            const gridHeader = document.querySelector('.grid-header');
+            const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            
+            let headerHTML = '';
+            diasSemana.forEach(dia => {
+                headerHTML += `<div class="grid-cell calendar-day-header">${dia}</div>`;
             });
             
-            calendarArea.style.opacity = '0';
-            calendarArea.style.transform = 'translateY(30px)';
-            calendarArea.style.transition = 'all 0.6s ease';
+            gridHeader.innerHTML = headerHTML;
+        }
+
+        // Selecionar horário para novo agendamento (visualização dia)
+        function selecionarHorario(sala, horario) {
+            console.log(`Selecionado: ${sala} às ${horario}`);
+            novoAgendamento(sala, horario);
+        }
+
+        // Selecionar horário na visualização semanal
+        function selecionarHorarioSemana(data, horario) {
+            console.log(`Selecionado: ${data.toLocaleDateString()} às ${horario}`);
+            novoAgendamento('', horario, data);
+        }
+
+        // Selecionar dia no calendário mensal
+        function selecionarDiaCalendario(data) {
+            console.log(`Dia selecionado: ${data.toLocaleDateString()}`);
+            // Mudar para visualização de dia na data selecionada
+            estadoAtual.dataAtual = data;
+            estadoAtual.visualizacao = 'dia';
+            
+            // Atualizar botão ativo
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-view="dia"]').classList.add('active');
+            
+            atualizarPeriodo();
+            renderizarGrade();
+            mostrarToast(`Visualizando agendamentos de ${data.toLocaleDateString('pt-BR')}`, 'success');
+        }
+
+        // Mostrar detalhes do agendamento
+        function mostrarDetalhesAgendamento(agendamento) {
+            alert(`Agendamento: ${agendamento.pet}\nCliente: ${agendamento.cliente}\nTipo: ${agendamento.tipo}\nStatus: ${agendamento.status}\nObs: ${agendamento.obs}`);
+        }
+
+        // Novo agendamento
+        function novoAgendamento(sala = '', horario = '', data = null) {
+            document.getElementById('agendamentoModal').classList.add('show');
+            
+            // Pré-preencher campos se fornecidos
+            const form = document.getElementById('agendamentoForm');
+            if (sala) {
+                const salaSelect = form.querySelector('select');
+                if (salaSelect) salaSelect.value = sala;
+            }
+            
+            if (horario && data) {
+                const dataHoraInput = form.querySelector('input[type="datetime-local"]');
+                if (dataHoraInput) {
+                    const dataFormatada = data.toISOString().split('T')[0];
+                    dataHoraInput.value = `${dataFormatada}T${horario}`;
+                }
+            }
+        }
+
+        // Fechar modal
+        function fecharModal() {
+            document.getElementById('agendamentoModal').classList.remove('show');
+        }
+
+        // Buscar por período
+        function buscarPeriodo() {
+            document.getElementById('periodoModal').classList.add('show');
+        }
+
+        // Fechar modal de período
+        function fecharModalPeriodo() {
+            document.getElementById('periodoModal').classList.remove('show');
+        }
+
+        // Atualizar agenda
+        function atualizarAgenda() {
+            renderizarGrade();
+            mostrarToast('Agenda atualizada!', 'success');
+        }
+
+        // Exportar agenda
+        function exportarAgenda() {
+            mostrarToast('Funcionalidade de exportação em desenvolvimento', 'info');
+        }
+
+        // Toast notification
+        function mostrarToast(mensagem, tipo = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--vta-green);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                z-index: 2000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            if (tipo === 'success') toast.style.background = 'var(--vta-green)';
+            if (tipo === 'warning') toast.style.background = 'var(--vta-orange)';
+            if (tipo === 'error') toast.style.background = 'var(--vta-orange-dark)';
+            
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
             
             setTimeout(() => {
-                calendarArea.style.opacity = '1';
-                calendarArea.style.transform = 'translateY(0)';
-            }, 300);
+                toast.remove();
+            }, 3000);
         }
 
-        // Executar animações quando a página carregar
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(animateElements, 100);
+        // Event listeners para controles de visualização
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                estadoAtual.visualizacao = this.dataset.view;
+                atualizarPeriodo();
+                renderizarGrade();
+                
+                // Log para debug
+                console.log('Visualização alterada para:', estadoAtual.visualizacao);
+            });
         });
+
+        // Formulário de agendamento
+        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            mostrarToast('Agendamento criado com sucesso!', 'success');
+            fecharModal();
+            renderizarGrade();
+        });
+
+        // Formulário de busca por período
+        document.getElementById('periodoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            mostrarToast('Busca realizada com sucesso!', 'success');
+            fecharModalPeriodo();
+            renderizarGrade();
+        });
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'n':
+                        e.preventDefault();
+                        novoAgendamento();
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        atualizarAgenda();
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        buscarPeriodo();
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        irParaHoje();
+                        break;
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                fecharModal();
+                fecharModalPeriodo();
+            }
+            
+            // Navegação com setas
+            if (e.key === 'ArrowLeft' && e.ctrlKey) {
+                e.preventDefault();
+                navegarPeriodo(-1);
+            }
+            if (e.key === 'ArrowRight' && e.ctrlKey) {
+                e.preventDefault();
+                navegarPeriodo(1);
+            }
+        });
+
+        // CSS para animação
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Inicializar agenda
+        atualizarPeriodo();
+        renderizarGrade();
+        
+        console.log('Agenda VTA carregada com sucesso!');
+        console.log('📅 Visualizações: Dia (salas) | Semana | Mês (calendário)');
+        console.log('⌨️ Atalhos: Ctrl+N (novo), Ctrl+R (atualizar), Ctrl+F (buscar), Ctrl+H (hoje)');
+        console.log('🔄 Navegação: Ctrl+← (anterior), Ctrl+→ (próximo)');
+        console.log('🖱️ Clique em células vazias para agendar, em dias do calendário para ver detalhes');
     </script>
-    <!-- Navegação e controle de sessão -->
-    <script src="assets/js/vta-nav.js" defer></script>
 </body>
 </html>
