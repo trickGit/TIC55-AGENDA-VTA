@@ -101,8 +101,8 @@
         }
 
         .period-selector {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--vta-green);
+            border: 1px solid var(--vta-green);
             color: var(--white);
             padding: 0.5rem 1rem;
             border-radius: 8px;
@@ -188,8 +188,7 @@
         .kpi-card.revenue::before { background: linear-gradient(90deg, var(--vta-green), var(--vta-green-light)); }
         .kpi-card.appointments::before { background: linear-gradient(90deg, var(--vta-blue), var(--vta-blue-light)); }
         .kpi-card.clients::before { background: linear-gradient(90deg, var(--vta-orange), var(--vta-orange-light)); }
-        .kpi-card.satisfaction::before { background: linear-gradient(90deg, var(--vta-purple), var(--vta-purple-light)); }
-
+        
         .kpi-header {
             display: flex;
             justify-content: space-between;
@@ -598,24 +597,6 @@
                     </div>
                 </div>
 
-                <div class="kpi-card satisfaction">
-                    <div class="kpi-header">
-                        <div class="kpi-info">
-                            <div class="kpi-value">4.8</div>
-                            <div class="kpi-label">Satisfação Média</div>
-                        </div>
-                        <div class="kpi-icon purple">
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-trend trend-positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+0.3 vs mês anterior</span>
-                    </div>
-                    <div class="kpi-details">
-                        456 avaliações | 92% recomendam a clínica
-                    </div>
-                </div>
             </section>
 
             <!-- Charts Section -->
@@ -784,23 +765,101 @@
     </div>
 
     <script>
-        // Dados para os gráficos
-        const chartData = {
-            consultas: {
-                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                data: [980, 1120, 1350, 1180, 1420, 1380, 1520, 1680, 1450, 1720, 1580, 1650]
+    // Dados para os gráficos
+    const chartData = {
+        consultas: {
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            data: [980, 1120, 1350, 1180, 1420, 1380, 1520, 1680, 1450, 1720, 1580, 1650]
+        },
+        receita: {
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            data: [32500, 38200, 42800, 39600, 46300, 44800, 48900, 52400, 47200, 55800, 51300, 54200]
+        }
+    };
+
+    // Gráfico principal
+    let mainChart;
+    const mainCtx = document.getElementById('mainChart').getContext('2d');
+
+    function initMainChart() {
+        mainChart = new Chart(mainCtx, {
+            type: 'line',
+            data: {
+                labels: chartData.consultas.labels,
+                datasets: [{
+                    label: 'Consultas',
+                    data: chartData.consultas.data,
+                    borderColor: '#52B788',
+                    backgroundColor: 'rgba(82, 183, 136, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
             },
-            receita: {
-                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                data: [32500, 38200, 42800, 39600, 46300, 44800, 48900, 52400, 47200, 55800, 51300, 54200]
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }
+                }
             }
-        };
+        });
+    }
 
-        // Configuração do gráfico principal
-        let mainChart;
-        const mainCtx = document.getElementById('mainChart').getContext('2d');
+    // Gráfico de pizza
+    const pieCtx = document.getElementById('pieChart').getContext('2d');
+    const pieChart = new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Consultas Gerais', 'Cirurgias', 'Vacinas', 'Exames', 'Emergências'],
+            datasets: [{
+                data: [45, 20, 15, 12, 8],
+                backgroundColor: [
+                    '#52B788',
+                    '#2E86AB',
+                    '#F77F00',
+                    '#6F42C1',
+                    '#FCBF49'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                }
+            }
+        }
+    });
 
-        function initMainChart() {
+    // Função para alternar visualização do gráfico principal
+    function toggleChart(type) {
+        const buttons = document.querySelectorAll('.chart-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        mainChart.destroy();
+
+        if (type === 'consultas') {
             mainChart = new Chart(mainCtx, {
                 type: 'line',
                 data: {
@@ -818,23 +877,87 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
+                    plugins: { legend: { position: 'top' } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            }
-                        }
+                        y: { beginAtZero: true },
+                        x: {}
                     }
                 }
-            
+            });
+        } else if (type === 'receita') {
+            mainChart = new Chart(mainCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.receita.labels,
+                    datasets: [{
+                        label: 'Receita (R$)',
+                        data: chartData.receita.data,
+                        borderColor: '#2E86AB',
+                        backgroundColor: 'rgba(46, 134, 171, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: {}
+                    }
+                }
+            });
+        } else {
+            mainChart = new Chart(mainCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.consultas.labels,
+                    datasets: [{
+                        label: 'Consultas',
+                        data: chartData.consultas.data,
+                        borderColor: '#52B788',
+                        backgroundColor: 'rgba(82, 183, 136, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Receita (R$)',
+                        data: chartData.receita.data,
+                        borderColor: '#2E86AB',
+                        backgroundColor: 'rgba(46, 134, 171, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        y: { type: 'linear', position: 'left', beginAtZero: true },
+                        y1: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } }
+                    }
+                }
+            });
+        }
+    }
+
+    // Funções auxiliares
+    function exportReport() {
+        alert('Funcionalidade de exportação será implementada');
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+
+    // Inicializar gráfico principal ao carregar página
+    document.addEventListener('DOMContentLoaded', function() {
+        initMainChart();
+    });
+</script>
