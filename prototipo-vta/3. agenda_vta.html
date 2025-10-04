@@ -1149,509 +1149,473 @@
         </div>
     </div>
 
-    <script>
-        // Estado da aplicação
-        let estadoAtual = {
-            visualizacao: 'dia',
-            dataAtual: new Date(),
-            salaFiltro: 'todas'
+            <script>
+    // Estado da aplicação
+    let estadoAtual = {
+        visualizacao: 'dia',
+        dataAtual: new Date(),
+        salaFiltro: 'todas'
+    };
+
+    // Armazenamento de agendamentos (simulando banco de dados)
+    let agendamentos = [
+        {
+            id: 1,
+            cliente: "Maria Silva",
+            pet: "Rex",
+            sala: "sala1",
+            data: new Date(),
+            horario: "08:00",
+            duracao: 30,
+            status: "confirmado",
+            tipo: "Consulta",
+            obs: "Primeira consulta"
+        },
+        {
+            id: 2,
+            cliente: "João Santos",
+            pet: "Luna",
+            sala: "sala2",
+            data: new Date(),
+            horario: "09:30",
+            duracao: 60,
+            status: "agendado",
+            tipo: "Cirurgia",
+            obs: "Cirurgia de castração"
+        },
+        {
+            id: 3,
+            cliente: "Ana Costa",
+            pet: "Mimi",
+            sala: "sala1",
+            data: new Date(),
+            horario: "10:00",
+            duracao: 30,
+            status: "realizado",
+            tipo: "Consulta",
+            obs: "Vacinação"
+        }
+    ];
+
+    let proximoId = 4;
+
+    // Gerar horários de funcionamento (8h às 18h)
+    function gerarHorarios() {
+        const horarios = [];
+        for (let hora = 8; hora < 18; hora++) {
+            horarios.push(`${hora.toString().padStart(2, '0')}:00`);
+            horarios.push(`${hora.toString().padStart(2, '0')}:30`);
+        }
+        return horarios;
+    }
+
+    // Verificar se duas datas são do mesmo dia
+    function mesmaData(data1, data2) {
+        return data1.getDate() === data2.getDate() &&
+               data1.getMonth() === data2.getMonth() &&
+               data1.getFullYear() === data2.getFullYear();
+    }
+
+    // Atualizar display do período atual
+    function atualizarPeriodo() {
+        const periodoElement = document.getElementById('currentPeriod');
+        const opcoes = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
         };
-
-        // Dados de exemplo
-        const agendamentosExemplo = [
-            {
-                id: 1,
-                cliente: "Maria Silva",
-                pet: "Rex",
-                sala: "sala1",
-                horario: "08:00",
-                duracao: 30,
-                status: "confirmado",
-                tipo: "Consulta",
-                obs: "Primeira consulta"
-            },
-            {
-                id: 2,
-                cliente: "João Santos",
-                pet: "Luna",
-                sala: "sala2",
-                horario: "09:30",
-                duracao: 60,
-                status: "agendado",
-                tipo: "Cirurgia",
-                obs: "Cirurgia de castração"
-            },
-            {
-                id: 3,
-                cliente: "Ana Costa",
-                pet: "Mimi",
-                sala: "sala1",
-                horario: "10:00",
-                duracao: 30,
-                status: "realizado",
-                tipo: "Consulta",
-                obs: "Vacinação"
-            },
-            {
-                id: 4,
-                cliente: "Pedro Lima",
-                pet: "Thor",
-                sala: "sala3",
-                horario: "11:00",
-                duracao: 45,
-                status: "confirmado",
-                tipo: "Raio-X",
-                obs: "Exame de quadril"
-            },
-            {
-                id: 5,
-                cliente: "Carla Souza",
-                pet: "Bella",
-                sala: "sala5",
-                horario: "14:00",
-                duracao: 90,
-                status: "agendado",
-                tipo: "Banho e Tosa",
-                obs: "Banho completo"
-            }
-        ];
-
-        // Gerar horários de funcionamento (8h às 18h)
-        function gerarHorarios() {
-            const horarios = [];
-            for (let hora = 8; hora < 18; hora++) {
-                horarios.push(`${hora.toString().padStart(2, '0')}:00`);
-                horarios.push(`${hora.toString().padStart(2, '0')}:30`);
-            }
-            return horarios;
+        
+        switch (estadoAtual.visualizacao) {
+            case 'dia':
+                periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', opcoes);
+                break;
+            case 'mes':
+                periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' });
+                break;
         }
+    }
 
-        // Atualizar display do período atual
-        function atualizarPeriodo() {
-            const periodoElement = document.getElementById('currentPeriod');
-            const opcoes = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            
-            switch (estadoAtual.visualizacao) {
-                case 'dia':
-                    periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', opcoes);
-                    break;
-                case 'mes':
-                    periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' });
-                    break;
-            }
+    // Navegação de período
+    function navegarPeriodo(direcao) {
+        const novaData = new Date(estadoAtual.dataAtual);
+        
+        switch (estadoAtual.visualizacao) {
+            case 'dia':
+                novaData.setDate(estadoAtual.dataAtual.getDate() + direcao);
+                break;
+            case 'mes':
+                novaData.setMonth(estadoAtual.dataAtual.getMonth() + direcao);
+                break;
         }
-
-        // Navegação de período
-        function navegarPeriodo(direcao) {
-            const novaData = new Date(estadoAtual.dataAtual);
-            
-            switch (estadoAtual.visualizacao) {
-                case 'dia':
-                    novaData.setDate(estadoAtual.dataAtual.getDate() + direcao);
-                    break;
-                case 'mes':
-                    novaData.setMonth(estadoAtual.dataAtual.getMonth() + direcao);
-                    break;
-            }
-            
-            estadoAtual.dataAtual = novaData;
-            atualizarPeriodo();
-            renderizarGrade();
-        }
-
-        // Ir para hoje
-        function irParaHoje() {
-            estadoAtual.dataAtual = new Date();
-            atualizarPeriodo();
-            renderizarGrade();
-            mostrarToast('Voltou para hoje!', 'success');
-        }
-
-        // Renderizar grade de agendamento (função principal)
-        function renderizarGrade() {
-            switch (estadoAtual.visualizacao) {
-                case 'dia':
-                    renderizarGradeDia();
-                    break;
-                case 'mes':
-                    renderizarGradeMes();
-                    break;
-            }
-        }
-
-        // Renderizar visualização por dia (salas na horizontal)
-        function renderizarGradeDia() {
-            const gridBody = document.getElementById('agendaGridBody');
-            const horarios = gerarHorarios();
-            
-            // Resetar classe do grid-body
-            gridBody.className = 'grid-body';
-            
-            // Atualizar header para salas
-            atualizarHeaderSalas();
-            
-            gridBody.innerHTML = '';
-            
-            horarios.forEach(horario => {
-                const row = document.createElement('div');
-                row.className = 'grid-row';
-                
-                // Célula de horário
-                const timeCell = document.createElement('div');
-                timeCell.className = 'time-cell';
-                timeCell.textContent = horario;
-                row.appendChild(timeCell);
-                
-                // Células das salas
-                for (let i = 1; i <= 5; i++) {
-                    const appointmentCell = document.createElement('div');
-                    appointmentCell.className = 'appointment-cell';
-                    appointmentCell.dataset.sala = `sala${i}`;
-                    appointmentCell.dataset.horario = horario;
-                    
-                    // Verificar se há agendamento neste horário/sala
-                    const agendamento = agendamentosExemplo.find(a => 
-                        a.sala === `sala${i}` && a.horario === horario
-                    );
-                    
-                    if (agendamento) {
-                        const appointmentDiv = document.createElement('div');
-                        appointmentDiv.className = `appointment ${agendamento.sala}`;
-                        appointmentDiv.innerHTML = `
-                            <div class="appointment-title">${agendamento.pet}</div>
-                            <div class="appointment-details">${agendamento.cliente}</div>
-                            <div class="appointment-details">${agendamento.tipo}</div>
-                            <div class="status-indicator status-${agendamento.status}"></div>
-                        `;
-                        appointmentDiv.onclick = () => mostrarDetalhesAgendamento(agendamento);
-                        appointmentCell.appendChild(appointmentDiv);
-                    }
-                    
-                    appointmentCell.onclick = (e) => {
-                        if (e.target === appointmentCell) {
-                            selecionarHorario(`sala${i}`, horario);
-                        }
-                    };
-                    
-                    row.appendChild(appointmentCell);
-                }
-                
-                gridBody.appendChild(row);
-            });
-        }
-
-        // Renderizar visualização por mês (calendário)
-        function renderizarGradeMes() {
-            const gridBody = document.getElementById('agendaGridBody');
-            
-            // Atualizar header para calendário
-            atualizarHeaderMes();
-            
-            gridBody.innerHTML = '';
-            gridBody.className = 'calendar-body';
-            
-            const ano = estadoAtual.dataAtual.getFullYear();
-            const mes = estadoAtual.dataAtual.getMonth();
-            
-            // Primeiro dia do mês
-            const primeiroDia = new Date(ano, mes, 1);
-            // Último dia do mês
-            const ultimoDia = new Date(ano, mes + 1, 0);
-            // Primeiro dia da semana do calendário
-            const inicioCalendario = new Date(primeiroDia);
-            inicioCalendario.setDate(primeiroDia.getDate() - primeiroDia.getDay());
-            
-            // Criar 6 semanas (42 dias)
-            for (let semana = 0; semana < 6; semana++) {
-                const row = document.createElement('div');
-                row.className = 'calendar-week';
-                
-                for (let dia = 0; dia < 7; dia++) {
-                    const dataAtual = new Date(inicioCalendario);
-                    dataAtual.setDate(inicioCalendario.getDate() + (semana * 7) + dia);
-                    
-                    const dayCell = document.createElement('div');
-                    dayCell.className = 'calendar-day';
-                    
-                    // Marcar dias fora do mês atual
-                    if (dataAtual.getMonth() !== mes) {
-                        dayCell.classList.add('other-month');
-                    }
-                    
-                    // Marcar hoje
-                    const hoje = new Date();
-                    if (dataAtual.toDateString() === hoje.toDateString()) {
-                        dayCell.classList.add('today');
-                    }
-                    
-                    dayCell.innerHTML = `
-                        <div class="day-number">${dataAtual.getDate()}</div>
-                        <div class="day-events">
-                            ${dataAtual.getDate() === 10 ? '<div class="event-dot evento-consulta"></div>' : ''}
-                            ${dataAtual.getDate() === 15 ? '<div class="event-dot evento-cirurgia"></div>' : ''}
-                            ${dataAtual.getDate() === 22 ? '<div class="event-dot evento-consulta"></div><div class="event-dot evento-exame"></div>' : ''}
-                        </div>
-                    `;
-                    
-                    dayCell.onclick = () => selecionarDiaCalendario(dataAtual);
-                    
-                    row.appendChild(dayCell);
-                }
-                
-                gridBody.appendChild(row);
-            }
-        }
-
-        // Funções auxiliares para atualizar headers
-        function atualizarHeaderSalas() {
-            const gridHeader = document.querySelector('.grid-header');
-            gridHeader.innerHTML = `
-                <div class="grid-cell time-label">Horário</div>
-                <div class="grid-cell">
-                    <div class="sala-header">
-                        <div class="sala-nome">Sala 1</div>
-                        <div class="sala-status">Consulta</div>
-                    </div>
-                </div>
-                <div class="grid-cell">
-                    <div class="sala-header">
-                        <div class="sala-nome">Sala 2</div>
-                        <div class="sala-status">Cirurgia</div>
-                    </div>
-                </div>
-                <div class="grid-cell">
-                    <div class="sala-header">
-                        <div class="sala-nome">Sala 3</div>
-                        <div class="sala-status">Raio-X</div>
-                    </div>
-                </div>
-                <div class="grid-cell">
-                    <div class="sala-header">
-                        <div class="sala-nome">Sala 4</div>
-                        <div class="sala-status">Internação</div>
-                    </div>
-                </div>
-                <div class="grid-cell">
-                    <div class="sala-header">
-                        <div class="sala-nome">Sala 5</div>
-                        <div class="sala-status">Banho/Tosa</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function atualizarHeaderMes() {
-            const gridHeader = document.querySelector('.grid-header');
-            const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            
-            let headerHTML = '';
-            diasSemana.forEach(dia => {
-                headerHTML += `<div class="grid-cell calendar-day-header">${dia}</div>`;
-            });
-            
-            gridHeader.innerHTML = headerHTML;
-        }
-
-        // Selecionar horário para novo agendamento (visualização dia)
-        function selecionarHorario(sala, horario) {
-            console.log(`Selecionado: ${sala} às ${horario}`);
-            novoAgendamento(sala, horario);
-        }
-
-        // Selecionar horário na visualização semanal
-        function selecionarHorarioSemana(data, horario) {
-            console.log(`Selecionado: ${data.toLocaleDateString()} às ${horario}`);
-            novoAgendamento('', horario, data);
-        }
-
-        // Selecionar dia no calendário mensal
-        function selecionarDiaCalendario(data) {
-            console.log(`Dia selecionado: ${data.toLocaleDateString()}`);
-            // Mudar para visualização de dia na data selecionada
-            estadoAtual.dataAtual = data;
-            estadoAtual.visualizacao = 'dia';
-            
-            // Atualizar botão ativo
-            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector('[data-view="dia"]').classList.add('active');
-            
-            atualizarPeriodo();
-            renderizarGrade();
-            mostrarToast(`Visualizando agendamentos de ${data.toLocaleDateString('pt-BR')}`, 'success');
-        }
-
-        // Mostrar detalhes do agendamento
-        function mostrarDetalhesAgendamento(agendamento) {
-            alert(`Agendamento: ${agendamento.pet}\nCliente: ${agendamento.cliente}\nTipo: ${agendamento.tipo}\nStatus: ${agendamento.status}\nObs: ${agendamento.obs}`);
-        }
-
-        // Novo agendamento
-        function novoAgendamento(sala = '', horario = '', data = null) {
-            document.getElementById('agendamentoModal').classList.add('show');
-            
-            // Pré-preencher campos se fornecidos
-            const form = document.getElementById('agendamentoForm');
-            if (sala) {
-                const salaSelect = form.querySelector('select');
-                if (salaSelect) salaSelect.value = sala;
-            }
-            
-            if (horario && data) {
-                const dataHoraInput = form.querySelector('input[type="datetime-local"]');
-                if (dataHoraInput) {
-                    const dataFormatada = data.toISOString().split('T')[0];
-                    dataHoraInput.value = `${dataFormatada}T${horario}`;
-                }
-            }
-        }
-
-        // Fechar modal
-        function fecharModal() {
-            document.getElementById('agendamentoModal').classList.remove('show');
-        }
-
-        // Buscar por período
-        function buscarPeriodo() {
-            document.getElementById('periodoModal').classList.add('show');
-        }
-
-        // Fechar modal de período
-        function fecharModalPeriodo() {
-            document.getElementById('periodoModal').classList.remove('show');
-        }
-
-        // Atualizar agenda
-        function atualizarAgenda() {
-            renderizarGrade();
-            mostrarToast('Agenda atualizada!', 'success');
-        }
-
-        // Exportar agenda
-        function exportarAgenda() {
-            mostrarToast('Funcionalidade de exportação em desenvolvimento', 'info');
-        }
-
-        // Toast notification
-        function mostrarToast(mensagem, tipo = 'info') {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--vta-green);
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                z-index: 2000;
-                animation: slideIn 0.3s ease;
-            `;
-            
-            if (tipo === 'success') toast.style.background = 'var(--vta-green)';
-            if (tipo === 'warning') toast.style.background = 'var(--vta-orange)';
-            if (tipo === 'error') toast.style.background = 'var(--vta-orange-dark)';
-            
-            toast.textContent = mensagem;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        // Event listeners para controles de visualização
-        document.querySelectorAll('.view-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                estadoAtual.visualizacao = this.dataset.view;
-                atualizarPeriodo();
-                renderizarGrade();
-                
-                // Log para debug
-                console.log('Visualização alterada para:', estadoAtual.visualizacao);
-            });
-        });
-
-        // Formulário de agendamento
-        document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            mostrarToast('Agendamento criado com sucesso!', 'success');
-            fecharModal();
-            renderizarGrade();
-        });
-
-        // Formulário de busca por período
-        document.getElementById('periodoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            mostrarToast('Busca realizada com sucesso!', 'success');
-            fecharModalPeriodo();
-            renderizarGrade();
-        });
-
-        // Atalhos de teclado
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case 'n':
-                        e.preventDefault();
-                        novoAgendamento();
-                        break;
-                    case 'r':
-                        e.preventDefault();
-                        atualizarAgenda();
-                        break;
-                    case 'f':
-                        e.preventDefault();
-                        buscarPeriodo();
-                        break;
-                    case 'h':
-                        e.preventDefault();
-                        irParaHoje();
-                        break;
-                }
-            }
-            
-            if (e.key === 'Escape') {
-                fecharModal();
-                fecharModalPeriodo();
-            }
-            
-            // Navegação com setas
-            if (e.key === 'ArrowLeft' && e.ctrlKey) {
-                e.preventDefault();
-                navegarPeriodo(-1);
-            }
-            if (e.key === 'ArrowRight' && e.ctrlKey) {
-                e.preventDefault();
-                navegarPeriodo(1);
-            }
-        });
-
-        // CSS para animação
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Inicializar agenda
+        
+        estadoAtual.dataAtual = novaData;
         atualizarPeriodo();
         renderizarGrade();
+    }
+
+    // Ir para hoje
+    function irParaHoje() {
+        estadoAtual.dataAtual = new Date();
+        atualizarPeriodo();
+        renderizarGrade();
+        mostrarToast('Voltou para hoje!', 'success');
+    }
+
+    // Renderizar grade de agendamento
+    function renderizarGrade() {
+        switch (estadoAtual.visualizacao) {
+            case 'dia':
+                renderizarGradeDia();
+                break;
+            case 'mes':
+                renderizarGradeMes();
+                break;
+        }
+    }
+
+    // Renderizar visualização por dia
+    function renderizarGradeDia() {
+        const gridBody = document.getElementById('agendaGridBody');
+        const horarios = gerarHorarios();
         
-        console.log('Agenda VTA carregada com sucesso!');
-        console.log('📅 Visualizações: Dia (salas) | Semana | Mês (calendário)');
-        console.log('⌨️ Atalhos: Ctrl+N (novo), Ctrl+R (atualizar), Ctrl+F (buscar), Ctrl+H (hoje)');
-        console.log('🔄 Navegação: Ctrl+← (anterior), Ctrl+→ (próximo)');
-        console.log('🖱️ Clique em células vazias para agendar, em dias do calendário para ver detalhes');
-    </script>
+        gridBody.className = 'grid-body';
+        atualizarHeaderSalas();
+        gridBody.innerHTML = '';
+        
+        horarios.forEach(horario => {
+            const row = document.createElement('div');
+            row.className = 'grid-row';
+            
+            const timeCell = document.createElement('div');
+            timeCell.className = 'time-cell';
+            timeCell.textContent = horario;
+            row.appendChild(timeCell);
+            
+            for (let i = 1; i <= 5; i++) {
+                const appointmentCell = document.createElement('div');
+                appointmentCell.className = 'appointment-cell';
+                appointmentCell.dataset.sala = `sala${i}`;
+                appointmentCell.dataset.horario = horario;
+                
+                const agendamento = agendamentos.find(a => 
+                    a.sala === `sala${i}` && 
+                    a.horario === horario &&
+                    mesmaData(a.data, estadoAtual.dataAtual)
+                );
+                
+                if (agendamento) {
+                    const appointmentDiv = document.createElement('div');
+                    appointmentDiv.className = `appointment ${agendamento.sala}`;
+                    appointmentDiv.innerHTML = `
+                        <div class="appointment-title">${agendamento.pet}</div>
+                        <div class="appointment-details">${agendamento.cliente}</div>
+                        <div class="appointment-details">${agendamento.tipo}</div>
+                        <div class="status-indicator status-${agendamento.status}"></div>
+                    `;
+                    appointmentDiv.onclick = () => mostrarDetalhesAgendamento(agendamento);
+                    appointmentCell.appendChild(appointmentDiv);
+                }
+                
+                appointmentCell.onclick = (e) => {
+                    if (e.target === appointmentCell) {
+                        selecionarHorario(`sala${i}`, horario);
+                    }
+                };
+                
+                row.appendChild(appointmentCell);
+            }
+            
+            gridBody.appendChild(row);
+        });
+    }
+
+    // Renderizar visualização por mês
+    function renderizarGradeMes() {
+        const gridBody = document.getElementById('agendaGridBody');
+        
+        atualizarHeaderMes();
+        gridBody.innerHTML = '';
+        gridBody.className = 'calendar-body';
+        
+        const ano = estadoAtual.dataAtual.getFullYear();
+        const mes = estadoAtual.dataAtual.getMonth();
+        
+        const primeiroDia = new Date(ano, mes, 1);
+        const inicioCalendario = new Date(primeiroDia);
+        inicioCalendario.setDate(primeiroDia.getDate() - primeiroDia.getDay());
+        
+        for (let semana = 0; semana < 6; semana++) {
+            const row = document.createElement('div');
+            row.className = 'calendar-week';
+            
+            for (let dia = 0; dia < 7; dia++) {
+                const dataAtual = new Date(inicioCalendario);
+                dataAtual.setDate(inicioCalendario.getDate() + (semana * 7) + dia);
+                
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                
+                if (dataAtual.getMonth() !== mes) {
+                    dayCell.classList.add('other-month');
+                }
+                
+                const hoje = new Date();
+                if (mesmaData(dataAtual, hoje)) {
+                    dayCell.classList.add('today');
+                }
+                
+                const agendamentosNoDia = agendamentos.filter(a => mesmaData(a.data, dataAtual));
+                const eventosHTML = agendamentosNoDia.map(a => 
+                    `<div class="event-dot evento-${a.tipo.toLowerCase()}"></div>`
+                ).join('');
+                
+                dayCell.innerHTML = `
+                    <div class="day-number">${dataAtual.getDate()}</div>
+                    <div class="day-events">${eventosHTML}</div>
+                `;
+                
+                dayCell.onclick = () => selecionarDiaCalendario(dataAtual);
+                
+                row.appendChild(dayCell);
+            }
+            
+            gridBody.appendChild(row);
+        }
+    }
+
+    // Atualizar headers
+    function atualizarHeaderSalas() {
+        const gridHeader = document.querySelector('.grid-header');
+        gridHeader.innerHTML = `
+            <div class="grid-cell time-label">Horário</div>
+            <div class="grid-cell">
+                <div class="sala-header">
+                    <div class="sala-nome">Sala 1</div>
+                    <div class="sala-status">Consulta</div>
+                </div>
+            </div>
+            <div class="grid-cell">
+                <div class="sala-header">
+                    <div class="sala-nome">Sala 2</div>
+                    <div class="sala-status">Cirurgia</div>
+                </div>
+            </div>
+            <div class="grid-cell">
+                <div class="sala-header">
+                    <div class="sala-nome">Sala 3</div>
+                    <div class="sala-status">Raio-X</div>
+                </div>
+            </div>
+            <div class="grid-cell">
+                <div class="sala-header">
+                    <div class="sala-nome">Sala 4</div>
+                    <div class="sala-status">Internação</div>
+                </div>
+            </div>
+            <div class="grid-cell">
+                <div class="sala-header">
+                    <div class="sala-nome">Sala 5</div>
+                    <div class="sala-status">Banho/Tosa</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function atualizarHeaderMes() {
+        const gridHeader = document.querySelector('.grid-header');
+        const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        
+        let headerHTML = '';
+        diasSemana.forEach(dia => {
+            headerHTML += `<div class="grid-cell calendar-day-header">${dia}</div>`;
+        });
+        
+        gridHeader.innerHTML = headerHTML;
+    }
+
+    // Selecionar horário para agendamento
+    function selecionarHorario(sala, horario) {
+        novoAgendamento(sala, horario);
+    }
+
+    // Selecionar dia no calendário
+    function selecionarDiaCalendario(data) {
+        estadoAtual.dataAtual = new Date(data);
+        estadoAtual.visualizacao = 'dia';
+        
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-view="dia"]').classList.add('active');
+        
+        atualizarPeriodo();
+        renderizarGrade();
+        mostrarToast(`Visualizando ${data.toLocaleDateString('pt-BR')}`, 'success');
+    }
+
+    // Mostrar detalhes e permitir exclusão
+    function mostrarDetalhesAgendamento(agendamento) {
+        const confirmacao = confirm(
+            `Agendamento:\n\n` +
+            `Pet: ${agendamento.pet}\n` +
+            `Cliente: ${agendamento.cliente}\n` +
+            `Tipo: ${agendamento.tipo}\n` +
+            `Horário: ${agendamento.horario}\n` +
+            `Status: ${agendamento.status}\n` +
+            `Obs: ${agendamento.obs}\n\n` +
+            `Deseja EXCLUIR este agendamento?`
+        );
+        
+        if (confirmacao) {
+            excluirAgendamento(agendamento.id);
+        }
+    }
+
+    // Excluir agendamento
+    function excluirAgendamento(id) {
+        const index = agendamentos.findIndex(a => a.id === id);
+        if (index !== -1) {
+            agendamentos.splice(index, 1);
+            renderizarGrade();
+            mostrarToast('Agendamento excluído com sucesso!', 'success');
+        }
+    }
+
+    // Novo agendamento
+    function novoAgendamento(sala = '', horario = '') {
+        document.getElementById('agendamentoModal').classList.add('show');
+        
+        const form = document.getElementById('agendamentoForm');
+        const salaSelect = form.querySelector('select');
+        const dataHoraInput = form.querySelector('input[type="datetime-local"]');
+        
+        if (sala && salaSelect) {
+            salaSelect.value = sala;
+        }
+        
+        if (horario && dataHoraInput) {
+            const ano = estadoAtual.dataAtual.getFullYear();
+            const mes = String(estadoAtual.dataAtual.getMonth() + 1).padStart(2, '0');
+            const dia = String(estadoAtual.dataAtual.getDate()).padStart(2, '0');
+            dataHoraInput.value = `${ano}-${mes}-${dia}T${horario}`;
+        } else if (dataHoraInput && !horario) {
+            const ano = estadoAtual.dataAtual.getFullYear();
+            const mes = String(estadoAtual.dataAtual.getMonth() + 1).padStart(2, '0');
+            const dia = String(estadoAtual.dataAtual.getDate()).padStart(2, '0');
+            dataHoraInput.value = `${ano}-${mes}-${dia}T08:00`;
+        }
+    }
+
+    function fecharModal() {
+        document.getElementById('agendamentoModal').classList.remove('show');
+    }
+
+    function buscarPeriodo() {
+        document.getElementById('periodoModal').classList.add('show');
+    }
+
+    function fecharModalPeriodo() {
+        document.getElementById('periodoModal').classList.remove('show');
+    }
+
+    function atualizarAgenda() {
+        renderizarGrade();
+        mostrarToast('Agenda atualizada!', 'success');
+    }
+
+    function exportarAgenda() {
+        mostrarToast('Funcionalidade de exportação em desenvolvimento', 'info');
+    }
+
+    function mostrarToast(mensagem, tipo = 'info') {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--vta-green);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        if (tipo === 'success') toast.style.background = 'var(--vta-green)';
+        if (tipo === 'warning') toast.style.background = 'var(--vta-orange)';
+        if (tipo === 'error') toast.style.background = 'var(--vta-orange-dark)';
+        
+        toast.textContent = mensagem;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Event listeners
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            estadoAtual.visualizacao = this.dataset.view;
+            atualizarPeriodo();
+            renderizarGrade();
+        });
+    });
+
+    // Formulário de agendamento
+    document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const clienteInput = this.querySelector('input[type="text"]');
+        const petInput = this.querySelectorAll('input[type="text"]')[1];
+        const salaSelect = this.querySelector('select');
+        const dataHoraInput = this.querySelector('input[type="datetime-local"]');
+        const obsTextarea = this.querySelector('textarea');
+        
+        const dataHora = new Date(dataHoraInput.value);
+        const horario = dataHoraInput.value.split('T')[1];
+        
+        const novoAgendamento = {
+            id: proximoId++,
+            cliente: clienteInput.value,
+            pet: petInput.value,
+            sala: salaSelect.value,
+            data: dataHora,
+            horario: horario,
+            duracao: 30,
+            status: "agendado",
+            tipo: "Consulta",
+            obs: obsTextarea.value
+        };
+        
+        agendamentos.push(novoAgendamento);
+        
+        mostrarToast('Agendamento criado com sucesso!', 'success');
+        fecharModal();
+        this.reset();
+        renderizarGrade();
+    });
+
+    document.getElementById('periodoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        mostrarToast('Busca realizada!', 'success');
+        fecharModalPeriodo();
+    });
+
+    // CSS para animação
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Inicializar
+    atualizarPeriodo();
+    renderizarGrade();
+</script>
+    
     <script src="assets/js/vta-nav.js" defer></script>
 </body>
 </html>
