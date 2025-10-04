@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -598,11 +599,25 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .appointment.sala1 { background: var(--vta-green); }
-        .appointment.sala2 { background: var(--vta-blue); }
-        .appointment.sala3 { background: var(--vta-orange); }
-        .appointment.sala4 { background: var(--vta-purple); }
-        .appointment.sala5 { background: var(--vta-orange-dark); }
+        .appointment.sala1 {
+            background: var(--vta-green);
+        }
+
+        .appointment.sala2 {
+            background: var(--vta-blue);
+        }
+
+        .appointment.sala3 {
+            background: var(--vta-orange);
+        }
+
+        .appointment.sala4 {
+            background: var(--vta-purple);
+        }
+
+        .appointment.sala5 {
+            background: var(--vta-orange-dark);
+        }
 
         .appointment-title {
             font-weight: 600;
@@ -624,10 +639,21 @@
             border-radius: 50%;
         }
 
-        .status-agendado { background: var(--vta-orange); }
-        .status-confirmado { background: var(--vta-green); }
-        .status-realizado { background: var(--vta-blue); }
-        .status-cancelado { background: var(--vta-orange-dark); }
+        .status-agendado {
+            background: var(--vta-orange);
+        }
+
+        .status-confirmado {
+            background: var(--vta-green);
+        }
+
+        .status-realizado {
+            background: var(--vta-blue);
+        }
+
+        .status-cancelado {
+            background: var(--vta-orange-dark);
+        }
 
         /* Modal styles */
         .modal {
@@ -688,7 +714,7 @@
                 grid-template-columns: 250px 1fr;
                 gap: 1.5rem;
             }
-            
+
             .grid-header,
             .grid-row {
                 grid-template-columns: 80px repeat(5, 1fr);
@@ -799,7 +825,8 @@
                 font-size: 0.9rem;
             }
 
-            .sala-header, .dia-header {
+            .sala-header,
+            .dia-header {
                 font-size: 0.85rem;
             }
 
@@ -879,7 +906,8 @@
                 grid-template-columns: 1fr;
             }
 
-            .calendar-day-header, .week-day-header {
+            .calendar-day-header,
+            .week-day-header {
                 font-size: 0.7rem;
                 padding: 0.5rem 0.25rem;
             }
@@ -897,8 +925,128 @@
                 padding: 0.2rem;
             }
         }
+
+        /* Modal de Detalhes do Agendamento */
+        .detail-group {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .detail-group:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--gray-medium);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-badge.agendado {
+            background: rgba(247, 127, 0, 0.1);
+            color: var(--vta-orange);
+        }
+
+        .status-badge.confirmado {
+            background: rgba(82, 183, 136, 0.1);
+            color: var(--vta-green);
+        }
+
+        .status-badge.realizado {
+            background: rgba(46, 134, 171, 0.1);
+            color: var(--vta-blue);
+        }
+
+        .status-badge.cancelado {
+            background: rgba(214, 40, 40, 0.1);
+            color: var(--vta-orange-dark);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-danger {
+            background: var(--vta-orange-dark);
+            color: var(--white);
+        }
+
+        .btn-danger:hover {
+            background: #B91C1C;
+            transform: translateY(-1px);
+        }
+
+        /* Modal de Confirmação */
+        .confirm-modal-content {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: rgba(214, 40, 40, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--vta-orange-dark);
+        }
+
+        .confirm-message {
+            font-size: 1.1rem;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .confirm-submessage {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+            margin-bottom: 2rem;
+        }
+
+        .info-box {
+            background: var(--gray-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: var(--gray-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box-text {
+            font-size: 0.9rem;
+            color: var(--gray-medium);
+        }
     </style>
 </head>
+
 <body>
     <header class="header">
         <div class="header-content">
@@ -992,7 +1140,7 @@
                         <button class="view-btn active" data-view="dia">Dia</button>
                         <button class="view-btn" data-view="mes">Mês</button>
                     </div>
-                    
+
                     <div class="date-navigation">
                         <button class="nav-btn" onclick="navegarPeriodo(-1)">
                             <i class="fas fa-chevron-left"></i>
@@ -1065,7 +1213,7 @@
                 </div>
 
                 <div class="grid-body" id="agendaGridBody">
-                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1080,7 +1228,8 @@
                 <form id="periodoForm">
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Sala:</label>
-                        <select style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;">
+                        <select
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;">
                             <option value="todas">Todas as Salas</option>
                             <option value="sala1">Sala 1 - Consulta</option>
                             <option value="sala2">Sala 2 - Cirurgia</option>
@@ -1091,11 +1240,15 @@
                     </div>
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Data Inicial:</label>
-                        <input type="date" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                        <input type="date"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;"
+                            required>
                     </div>
                     <div class="form-group" style="margin-bottom: 1.5rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Data Final:</label>
-                        <input type="date" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                        <input type="date"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;"
+                            required>
                     </div>
                     <div style="display: flex; gap: 1rem; justify-content: flex-end;">
                         <button type="button" class="btn btn-secondary" onclick="fecharModalPeriodo()">Cancelar</button>
@@ -1115,15 +1268,21 @@
                 <form id="agendamentoForm">
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Cliente:</label>
-                        <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" placeholder="Nome do cliente" required>
+                        <input type="text"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;"
+                            placeholder="Nome do cliente" required>
                     </div>
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Pet:</label>
-                        <input type="text" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" placeholder="Nome do pet" required>
+                        <input type="text"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;"
+                            placeholder="Nome do pet" required>
                     </div>
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Sala:</label>
-                        <select style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                        <select
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;"
+                            required>
                             <option value="">Selecione uma sala</option>
                             <option value="sala1">Sala 1 - Consulta</option>
                             <option value="sala2">Sala 2 - Cirurgia</option>
@@ -1134,11 +1293,15 @@
                     </div>
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Data e Hora:</label>
-                        <input type="datetime-local" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;" required>
+                        <input type="datetime-local"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px;"
+                            required>
                     </div>
                     <div class="form-group" style="margin-bottom: 1.5rem;">
                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Observações:</label>
-                        <textarea style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px; min-height: 80px;" placeholder="Observações sobre o atendimento"></textarea>
+                        <textarea
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-light); border-radius: 8px; min-height: 80px;"
+                            placeholder="Observações sobre o atendimento"></textarea>
                     </div>
                     <div style="display: flex; gap: 1rem; justify-content: flex-end;">
                         <button type="button" class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
@@ -1149,245 +1312,272 @@
         </div>
     </div>
 
-            <script>
-    // Estado da aplicação
-    let estadoAtual = {
-        visualizacao: 'dia',
-        dataAtual: new Date(),
-        salaFiltro: 'todas'
-    };
+    <!-- Modal de Detalhes -->
+    <div class="modal" id="detalhesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalhes do Agendamento</h3>
+                <button class="close-btn" onclick="fecharDetalhes()">&times;</button>
+            </div>
+            <div class="modal-body" id="detalhesContent">
+                <!-- Conteúdo será preenchido dinamicamente -->
+            </div>
+        </div>
+    </div>
 
-    // Armazenamento de agendamentos (simulando banco de dados)
-    let agendamentos = [
-        {
-            id: 1,
-            cliente: "Maria Silva",
-            pet: "Rex",
-            sala: "sala1",
-            data: new Date(),
-            horario: "08:00",
-            duracao: 30,
-            status: "confirmado",
-            tipo: "Consulta",
-            obs: "Primeira consulta"
-        },
-        {
-            id: 2,
-            cliente: "João Santos",
-            pet: "Luna",
-            sala: "sala2",
-            data: new Date(),
-            horario: "09:30",
-            duracao: 60,
-            status: "agendado",
-            tipo: "Cirurgia",
-            obs: "Cirurgia de castração"
-        },
-        {
-            id: 3,
-            cliente: "Ana Costa",
-            pet: "Mimi",
-            sala: "sala1",
-            data: new Date(),
-            horario: "10:00",
-            duracao: 30,
-            status: "realizado",
-            tipo: "Consulta",
-            obs: "Vacinação"
-        }
-    ];
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal" id="confirmarExclusaoModal">
+        <div class="modal-content confirm-modal-content">
+            <div class="confirm-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="confirm-message">Confirmar Exclusão</h3>
+            <p class="confirm-submessage">Esta ação não pode ser desfeita!</p>
+            <div class="info-box" id="confirmInfoBox">
+                <!-- Informações do agendamento -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharConfirmacao()" style="flex: 1;">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" onclick="confirmarExclusao()" style="flex: 1;">
+                    <i class="fas fa-trash"></i>
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
 
-    let proximoId = 4;
-
-    // Gerar horários de funcionamento (8h às 18h)
-    function gerarHorarios() {
-        const horarios = [];
-        for (let hora = 8; hora < 18; hora++) {
-            horarios.push(`${hora.toString().padStart(2, '0')}:00`);
-            horarios.push(`${hora.toString().padStart(2, '0')}:30`);
-        }
-        return horarios;
-    }
-
-    // Verificar se duas datas são do mesmo dia
-    function mesmaData(data1, data2) {
-        return data1.getDate() === data2.getDate() &&
-               data1.getMonth() === data2.getMonth() &&
-               data1.getFullYear() === data2.getFullYear();
-    }
-
-    // Atualizar display do período atual
-    function atualizarPeriodo() {
-        const periodoElement = document.getElementById('currentPeriod');
-        const opcoes = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+    <script>
+        let estadoAtual = {
+            visualizacao: 'dia',
+            dataAtual: new Date(),
+            salaFiltro: 'todas'
         };
-        
-        switch (estadoAtual.visualizacao) {
-            case 'dia':
-                periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', opcoes);
-                break;
-            case 'mes':
-                periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' });
-                break;
+
+        let agendamentos = [
+            {
+                id: 1,
+                cliente: "Maria Silva",
+                pet: "Rex",
+                sala: "sala1",
+                data: new Date(),
+                horario: "08:00",
+                duracao: 30,
+                status: "confirmado",
+                tipo: "Consulta",
+                obs: "Primeira consulta"
+            },
+            {
+                id: 2,
+                cliente: "João Santos",
+                pet: "Luna",
+                sala: "sala2",
+                data: new Date(),
+                horario: "09:30",
+                duracao: 60,
+                status: "agendado",
+                tipo: "Cirurgia",
+                obs: "Cirurgia de castração"
+            },
+            {
+                id: 3,
+                cliente: "Ana Costa",
+                pet: "Mimi",
+                sala: "sala1",
+                data: new Date(),
+                horario: "10:00",
+                duracao: 30,
+                status: "realizado",
+                tipo: "Consulta",
+                obs: "Vacinação"
+            }
+        ];
+
+        let proximoId = 4;
+        let agendamentoParaExcluir = null;
+
+        function gerarHorarios() {
+            const horarios = [];
+            for (let hora = 8; hora < 18; hora++) {
+                horarios.push(`${hora.toString().padStart(2, '0')}:00`);
+                horarios.push(`${hora.toString().padStart(2, '0')}:30`);
+            }
+            return horarios;
         }
-    }
 
-    // Navegação de período
-    function navegarPeriodo(direcao) {
-        const novaData = new Date(estadoAtual.dataAtual);
-        
-        switch (estadoAtual.visualizacao) {
-            case 'dia':
-                novaData.setDate(estadoAtual.dataAtual.getDate() + direcao);
-                break;
-            case 'mes':
-                novaData.setMonth(estadoAtual.dataAtual.getMonth() + direcao);
-                break;
+        function mesmaData(data1, data2) {
+            return data1.getDate() === data2.getDate() &&
+                data1.getMonth() === data2.getMonth() &&
+                data1.getFullYear() === data2.getFullYear();
         }
-        
-        estadoAtual.dataAtual = novaData;
-        atualizarPeriodo();
-        renderizarGrade();
-    }
 
-    // Ir para hoje
-    function irParaHoje() {
-        estadoAtual.dataAtual = new Date();
-        atualizarPeriodo();
-        renderizarGrade();
-        mostrarToast('Voltou para hoje!', 'success');
-    }
+        function atualizarPeriodo() {
+            const periodoElement = document.getElementById('currentPeriod');
+            const opcoes = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
 
-    // Renderizar grade de agendamento
-    function renderizarGrade() {
-        switch (estadoAtual.visualizacao) {
-            case 'dia':
-                renderizarGradeDia();
-                break;
-            case 'mes':
-                renderizarGradeMes();
-                break;
+            switch (estadoAtual.visualizacao) {
+                case 'dia':
+                    periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', opcoes);
+                    break;
+                case 'mes':
+                    periodoElement.textContent = estadoAtual.dataAtual.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long' });
+                    break;
+            }
         }
-    }
 
-    // Renderizar visualização por dia
-    function renderizarGradeDia() {
-        const gridBody = document.getElementById('agendaGridBody');
-        const horarios = gerarHorarios();
-        
-        gridBody.className = 'grid-body';
-        atualizarHeaderSalas();
-        gridBody.innerHTML = '';
-        
-        horarios.forEach(horario => {
-            const row = document.createElement('div');
-            row.className = 'grid-row';
-            
-            const timeCell = document.createElement('div');
-            timeCell.className = 'time-cell';
-            timeCell.textContent = horario;
-            row.appendChild(timeCell);
-            
-            for (let i = 1; i <= 5; i++) {
-                const appointmentCell = document.createElement('div');
-                appointmentCell.className = 'appointment-cell';
-                appointmentCell.dataset.sala = `sala${i}`;
-                appointmentCell.dataset.horario = horario;
-                
-                const agendamento = agendamentos.find(a => 
-                    a.sala === `sala${i}` && 
-                    a.horario === horario &&
-                    mesmaData(a.data, estadoAtual.dataAtual)
-                );
-                
-                if (agendamento) {
-                    const appointmentDiv = document.createElement('div');
-                    appointmentDiv.className = `appointment ${agendamento.sala}`;
-                    appointmentDiv.innerHTML = `
+        function navegarPeriodo(direcao) {
+            const novaData = new Date(estadoAtual.dataAtual);
+
+            switch (estadoAtual.visualizacao) {
+                case 'dia':
+                    novaData.setDate(estadoAtual.dataAtual.getDate() + direcao);
+                    break;
+                case 'mes':
+                    novaData.setMonth(estadoAtual.dataAtual.getMonth() + direcao);
+                    break;
+            }
+
+            estadoAtual.dataAtual = novaData;
+            atualizarPeriodo();
+            renderizarGrade();
+        }
+
+        function irParaHoje() {
+            estadoAtual.dataAtual = new Date();
+            atualizarPeriodo();
+            renderizarGrade();
+            mostrarToast('Voltou para hoje!', 'success');
+        }
+
+        function renderizarGrade() {
+            switch (estadoAtual.visualizacao) {
+                case 'dia':
+                    renderizarGradeDia();
+                    break;
+                case 'mes':
+                    renderizarGradeMes();
+                    break;
+            }
+        }
+
+        function renderizarGradeDia() {
+            const gridBody = document.getElementById('agendaGridBody');
+            const horarios = gerarHorarios();
+
+            gridBody.className = 'grid-body';
+            atualizarHeaderSalas();
+            gridBody.innerHTML = '';
+
+            horarios.forEach(horario => {
+                const row = document.createElement('div');
+                row.className = 'grid-row';
+
+                const timeCell = document.createElement('div');
+                timeCell.className = 'time-cell';
+                timeCell.textContent = horario;
+                row.appendChild(timeCell);
+
+                for (let i = 1; i <= 5; i++) {
+                    const appointmentCell = document.createElement('div');
+                    appointmentCell.className = 'appointment-cell';
+                    appointmentCell.dataset.sala = `sala${i}`;
+                    appointmentCell.dataset.horario = horario;
+
+                    const agendamento = agendamentos.find(a =>
+                        a.sala === `sala${i}` &&
+                        a.horario === horario &&
+                        mesmaData(a.data, estadoAtual.dataAtual)
+                    );
+
+                    if (agendamento) {
+                        const appointmentDiv = document.createElement('div');
+                        appointmentDiv.className = `appointment ${agendamento.sala}`;
+                        appointmentDiv.innerHTML = `
                         <div class="appointment-title">${agendamento.pet}</div>
                         <div class="appointment-details">${agendamento.cliente}</div>
                         <div class="appointment-details">${agendamento.tipo}</div>
                         <div class="status-indicator status-${agendamento.status}"></div>
                     `;
-                    appointmentDiv.onclick = () => mostrarDetalhesAgendamento(agendamento);
-                    appointmentCell.appendChild(appointmentDiv);
-                }
-                
-                appointmentCell.onclick = (e) => {
-                    if (e.target === appointmentCell) {
-                        selecionarHorario(`sala${i}`, horario);
+                        appointmentDiv.onclick = () => mostrarDetalhesAgendamento(agendamento);
+                        appointmentCell.appendChild(appointmentDiv);
                     }
-                };
-                
-                row.appendChild(appointmentCell);
-            }
-            
-            gridBody.appendChild(row);
-        });
-    }
 
-    // Renderizar visualização por mês
-    function renderizarGradeMes() {
-        const gridBody = document.getElementById('agendaGridBody');
-        
-        atualizarHeaderMes();
-        gridBody.innerHTML = '';
-        gridBody.className = 'calendar-body';
-        
-        const ano = estadoAtual.dataAtual.getFullYear();
-        const mes = estadoAtual.dataAtual.getMonth();
-        
-        const primeiroDia = new Date(ano, mes, 1);
-        const inicioCalendario = new Date(primeiroDia);
-        inicioCalendario.setDate(primeiroDia.getDate() - primeiroDia.getDay());
-        
-        for (let semana = 0; semana < 6; semana++) {
-            const row = document.createElement('div');
-            row.className = 'calendar-week';
-            
-            for (let dia = 0; dia < 7; dia++) {
-                const dataAtual = new Date(inicioCalendario);
-                dataAtual.setDate(inicioCalendario.getDate() + (semana * 7) + dia);
-                
-                const dayCell = document.createElement('div');
-                dayCell.className = 'calendar-day';
-                
-                if (dataAtual.getMonth() !== mes) {
-                    dayCell.classList.add('other-month');
+                    appointmentCell.onclick = (e) => {
+                        if (e.target === appointmentCell) {
+                            selecionarHorario(`sala${i}`, horario);
+                        }
+                    };
+
+                    row.appendChild(appointmentCell);
                 }
-                
-                const hoje = new Date();
-                if (mesmaData(dataAtual, hoje)) {
-                    dayCell.classList.add('today');
-                }
-                
-                const agendamentosNoDia = agendamentos.filter(a => mesmaData(a.data, dataAtual));
-                const eventosHTML = agendamentosNoDia.map(a => 
-                    `<div class="event-dot evento-${a.tipo.toLowerCase()}"></div>`
-                ).join('');
-                
-                dayCell.innerHTML = `
+
+                gridBody.appendChild(row);
+            });
+        }
+
+        function renderizarGradeMes() {
+            const gridBody = document.getElementById('agendaGridBody');
+
+            atualizarHeaderMes();
+            gridBody.innerHTML = '';
+            gridBody.className = 'calendar-body';
+
+            const ano = estadoAtual.dataAtual.getFullYear();
+            const mes = estadoAtual.dataAtual.getMonth();
+
+            const primeiroDia = new Date(ano, mes, 1);
+            const inicioCalendario = new Date(primeiroDia);
+            inicioCalendario.setDate(primeiroDia.getDate() - primeiroDia.getDay());
+
+            for (let semana = 0; semana < 6; semana++) {
+                const row = document.createElement('div');
+                row.className = 'calendar-week';
+
+                for (let dia = 0; dia < 7; dia++) {
+                    const dataAtual = new Date(inicioCalendario);
+                    dataAtual.setDate(inicioCalendario.getDate() + (semana * 7) + dia);
+
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'calendar-day';
+
+                    if (dataAtual.getMonth() !== mes) {
+                        dayCell.classList.add('other-month');
+                    }
+
+                    const hoje = new Date();
+                    if (mesmaData(dataAtual, hoje)) {
+                        dayCell.classList.add('today');
+                    }
+
+                    const agendamentosNoDia = agendamentos.filter(a => mesmaData(a.data, dataAtual));
+                    const eventosHTML = agendamentosNoDia.map(a =>
+                        `<div class="event-dot evento-${a.tipo.toLowerCase()}"></div>`
+                    ).join('');
+
+                    dayCell.innerHTML = `
                     <div class="day-number">${dataAtual.getDate()}</div>
                     <div class="day-events">${eventosHTML}</div>
                 `;
-                
-                dayCell.onclick = () => selecionarDiaCalendario(dataAtual);
-                
-                row.appendChild(dayCell);
-            }
-            
-            gridBody.appendChild(row);
-        }
-    }
 
-    // Atualizar headers
-    function atualizarHeaderSalas() {
-        const gridHeader = document.querySelector('.grid-header');
-        gridHeader.innerHTML = `
+                    dayCell.onclick = () => selecionarDiaCalendario(dataAtual);
+
+                    row.appendChild(dayCell);
+                }
+
+                gridBody.appendChild(row);
+            }
+        }
+
+        function atualizarHeaderSalas() {
+            const gridHeader = document.querySelector('.grid-header');
+            gridHeader.innerHTML = `
             <div class="grid-cell time-label">Horário</div>
             <div class="grid-cell">
                 <div class="sala-header">
@@ -1420,115 +1610,187 @@
                 </div>
             </div>
         `;
-    }
-
-    function atualizarHeaderMes() {
-        const gridHeader = document.querySelector('.grid-header');
-        const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-        
-        let headerHTML = '';
-        diasSemana.forEach(dia => {
-            headerHTML += `<div class="grid-cell calendar-day-header">${dia}</div>`;
-        });
-        
-        gridHeader.innerHTML = headerHTML;
-    }
-
-    // Selecionar horário para agendamento
-    function selecionarHorario(sala, horario) {
-        novoAgendamento(sala, horario);
-    }
-
-    // Selecionar dia no calendário
-    function selecionarDiaCalendario(data) {
-        estadoAtual.dataAtual = new Date(data);
-        estadoAtual.visualizacao = 'dia';
-        
-        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('[data-view="dia"]').classList.add('active');
-        
-        atualizarPeriodo();
-        renderizarGrade();
-        mostrarToast(`Visualizando ${data.toLocaleDateString('pt-BR')}`, 'success');
-    }
-
-    // Mostrar detalhes e permitir exclusão
-    function mostrarDetalhesAgendamento(agendamento) {
-        const confirmacao = confirm(
-            `Agendamento:\n\n` +
-            `Pet: ${agendamento.pet}\n` +
-            `Cliente: ${agendamento.cliente}\n` +
-            `Tipo: ${agendamento.tipo}\n` +
-            `Horário: ${agendamento.horario}\n` +
-            `Status: ${agendamento.status}\n` +
-            `Obs: ${agendamento.obs}\n\n` +
-            `Deseja EXCLUIR este agendamento?`
-        );
-        
-        if (confirmacao) {
-            excluirAgendamento(agendamento.id);
         }
-    }
 
-    // Excluir agendamento
-    function excluirAgendamento(id) {
-        const index = agendamentos.findIndex(a => a.id === id);
-        if (index !== -1) {
-            agendamentos.splice(index, 1);
+        function atualizarHeaderMes() {
+            const gridHeader = document.querySelector('.grid-header');
+            const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+
+            let headerHTML = '';
+            diasSemana.forEach(dia => {
+                headerHTML += `<div class="grid-cell calendar-day-header">${dia}</div>`;
+            });
+
+            gridHeader.innerHTML = headerHTML;
+        }
+
+        function selecionarHorario(sala, horario) {
+            novoAgendamento(sala, horario);
+        }
+
+        function selecionarDiaCalendario(data) {
+            estadoAtual.dataAtual = new Date(data);
+            estadoAtual.visualizacao = 'dia';
+
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-view="dia"]').classList.add('active');
+
+            atualizarPeriodo();
             renderizarGrade();
-            mostrarToast('Agendamento excluído com sucesso!', 'success');
+            mostrarToast(`Visualizando ${data.toLocaleDateString('pt-BR')}`, 'success');
         }
-    }
 
-    // Novo agendamento
-    function novoAgendamento(sala = '', horario = '') {
-        document.getElementById('agendamentoModal').classList.add('show');
-        
-        const form = document.getElementById('agendamentoForm');
-        const salaSelect = form.querySelector('select');
-        const dataHoraInput = form.querySelector('input[type="datetime-local"]');
-        
-        if (sala && salaSelect) {
-            salaSelect.value = sala;
+        function getNomeSala(sala) {
+            const nomes = {
+                'sala1': 'Sala 1 - Consulta',
+                'sala2': 'Sala 2 - Cirurgia',
+                'sala3': 'Sala 3 - Raio-X',
+                'sala4': 'Sala 4 - Internação',
+                'sala5': 'Sala 5 - Banho/Tosa'
+            };
+            return nomes[sala] || sala;
         }
-        
-        if (horario && dataHoraInput) {
-            const ano = estadoAtual.dataAtual.getFullYear();
-            const mes = String(estadoAtual.dataAtual.getMonth() + 1).padStart(2, '0');
-            const dia = String(estadoAtual.dataAtual.getDate()).padStart(2, '0');
-            dataHoraInput.value = `${ano}-${mes}-${dia}T${horario}`;
-        } else if (dataHoraInput && !horario) {
-            const ano = estadoAtual.dataAtual.getFullYear();
-            const mes = String(estadoAtual.dataAtual.getMonth() + 1).padStart(2, '0');
-            const dia = String(estadoAtual.dataAtual.getDate()).padStart(2, '0');
-            dataHoraInput.value = `${ano}-${mes}-${dia}T08:00`;
+
+        function mostrarDetalhesAgendamento(agendamento) {
+            const detalhesContent = document.getElementById('detalhesContent');
+
+            detalhesContent.innerHTML = `
+            <div class="detail-group">
+                <div class="detail-label">Pet</div>
+                <div class="detail-value">${agendamento.pet}</div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">Cliente</div>
+                <div class="detail-value">${agendamento.cliente}</div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">Tipo de Atendimento</div>
+                <div class="detail-value">${agendamento.tipo}</div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">Sala</div>
+                <div class="detail-value">${getNomeSala(agendamento.sala)}</div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">Data e Horário</div>
+                <div class="detail-value">${agendamento.data.toLocaleDateString('pt-BR')} às ${agendamento.horario}</div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">Duração</div>
+                <div class="detail-value">${agendamento.duracao} minutos</div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    <span class="status-badge ${agendamento.status}">${agendamento.status.toUpperCase()}</span>
+                </div>
+            </div>
+            <div class="detail-group">
+                <div class="detail-label">Observações</div>
+                <div class="detail-value">${agendamento.obs || 'Nenhuma observação'}</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharDetalhes()">
+                    <i class="fas fa-times"></i>
+                    Fechar
+                </button>
+                <button class="btn btn-danger" onclick="solicitarExclusao(${agendamento.id})">
+                    <i class="fas fa-trash"></i>
+                    Excluir Agendamento
+                </button>
+            </div>
+        `;
+
+            document.getElementById('detalhesModal').classList.add('show');
         }
-    }
 
-    function fecharModal() {
-        document.getElementById('agendamentoModal').classList.remove('show');
-    }
+        function fecharDetalhes() {
+            document.getElementById('detalhesModal').classList.remove('show');
+        }
 
-    function buscarPeriodo() {
-        document.getElementById('periodoModal').classList.add('show');
-    }
+        function solicitarExclusao(id) {
+            agendamentoParaExcluir = agendamentos.find(a => a.id === id);
 
-    function fecharModalPeriodo() {
-        document.getElementById('periodoModal').classList.remove('show');
-    }
+            if (!agendamentoParaExcluir) return;
 
-    function atualizarAgenda() {
-        renderizarGrade();
-        mostrarToast('Agenda atualizada!', 'success');
-    }
+            const confirmInfoBox = document.getElementById('confirmInfoBox');
+            confirmInfoBox.innerHTML = `
+            <div class="info-box-title">${agendamentoParaExcluir.pet}</div>
+            <div class="info-box-text">
+                Cliente: ${agendamentoParaExcluir.cliente}<br>
+                ${agendamentoParaExcluir.data.toLocaleDateString('pt-BR')} às ${agendamentoParaExcluir.horario}
+            </div>
+        `;
 
-    function exportarAgenda() {
-        mostrarToast('Funcionalidade de exportação em desenvolvimento', 'info');
-    }
+            fecharDetalhes();
+            document.getElementById('confirmarExclusaoModal').classList.add('show');
+        }
 
-    function mostrarToast(mensagem, tipo = 'info') {
-        const toast = document.createElement('div');
-        toast.style.cssText = `
+        function fecharConfirmacao() {
+            document.getElementById('confirmarExclusaoModal').classList.remove('show');
+            agendamentoParaExcluir = null;
+        }
+
+        function confirmarExclusao() {
+            if (!agendamentoParaExcluir) return;
+
+            const index = agendamentos.findIndex(a => a.id === agendamentoParaExcluir.id);
+            if (index !== -1) {
+                agendamentos.splice(index, 1);
+                fecharConfirmacao();
+                renderizarGrade();
+                mostrarToast('Agendamento excluído com sucesso!', 'success');
+            }
+        }
+
+        function novoAgendamento(sala = '', horario = '') {
+            document.getElementById('agendamentoModal').classList.add('show');
+
+            const form = document.getElementById('agendamentoForm');
+            const salaSelect = form.querySelector('select');
+            const dataHoraInput = form.querySelector('input[type="datetime-local"]');
+
+            if (sala && salaSelect) {
+                salaSelect.value = sala;
+            }
+
+            if (horario && dataHoraInput) {
+                const ano = estadoAtual.dataAtual.getFullYear();
+                const mes = String(estadoAtual.dataAtual.getMonth() + 1).padStart(2, '0');
+                const dia = String(estadoAtual.dataAtual.getDate()).padStart(2, '0');
+                dataHoraInput.value = `${ano}-${mes}-${dia}T${horario}`;
+            } else if (dataHoraInput && !horario) {
+                const ano = estadoAtual.dataAtual.getFullYear();
+                const mes = String(estadoAtual.dataAtual.getMonth() + 1).padStart(2, '0');
+                const dia = String(estadoAtual.dataAtual.getDate()).padStart(2, '0');
+                dataHoraInput.value = `${ano}-${mes}-${dia}T08:00`;
+            }
+        }
+
+        function fecharModal() {
+            document.getElementById('agendamentoModal').classList.remove('show');
+        }
+
+        function buscarPeriodo() {
+            document.getElementById('periodoModal').classList.add('show');
+        }
+
+        function fecharModalPeriodo() {
+            document.getElementById('periodoModal').classList.remove('show');
+        }
+
+        function atualizarAgenda() {
+            renderizarGrade();
+            mostrarToast('Agenda atualizada!', 'success');
+        }
+
+        function exportarAgenda() {
+            mostrarToast('Funcionalidade de exportação em desenvolvimento', 'info');
+        }
+
+        function mostrarToast(mensagem, tipo = 'info') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -1539,83 +1801,80 @@
             z-index: 2000;
             animation: slideIn 0.3s ease;
         `;
-        
-        if (tipo === 'success') toast.style.background = 'var(--vta-green)';
-        if (tipo === 'warning') toast.style.background = 'var(--vta-orange)';
-        if (tipo === 'error') toast.style.background = 'var(--vta-orange-dark)';
-        
-        toast.textContent = mensagem;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => toast.remove(), 3000);
-    }
 
-    // Event listeners
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            estadoAtual.visualizacao = this.dataset.view;
-            atualizarPeriodo();
+            if (tipo === 'success') toast.style.background = 'var(--vta-green)';
+            if (tipo === 'warning') toast.style.background = 'var(--vta-orange)';
+            if (tipo === 'error') toast.style.background = 'var(--vta-orange-dark)';
+
+            toast.textContent = mensagem;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                estadoAtual.visualizacao = this.dataset.view;
+                atualizarPeriodo();
+                renderizarGrade();
+            });
+        });
+
+        document.getElementById('agendamentoForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const clienteInput = this.querySelector('input[type="text"]');
+            const petInput = this.querySelectorAll('input[type="text"]')[1];
+            const salaSelect = this.querySelector('select');
+            const dataHoraInput = this.querySelector('input[type="datetime-local"]');
+            const obsTextarea = this.querySelector('textarea');
+
+            const dataHora = new Date(dataHoraInput.value);
+            const horario = dataHoraInput.value.split('T')[1];
+
+            const novoAgendamento = {
+                id: proximoId++,
+                cliente: clienteInput.value,
+                pet: petInput.value,
+                sala: salaSelect.value,
+                data: dataHora,
+                horario: horario,
+                duracao: 30,
+                status: "agendado",
+                tipo: "Consulta",
+                obs: obsTextarea.value
+            };
+
+            agendamentos.push(novoAgendamento);
+
+            mostrarToast('Agendamento criado com sucesso!', 'success');
+            fecharModal();
+            this.reset();
             renderizarGrade();
         });
-    });
 
-    // Formulário de agendamento
-    document.getElementById('agendamentoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const clienteInput = this.querySelector('input[type="text"]');
-        const petInput = this.querySelectorAll('input[type="text"]')[1];
-        const salaSelect = this.querySelector('select');
-        const dataHoraInput = this.querySelector('input[type="datetime-local"]');
-        const obsTextarea = this.querySelector('textarea');
-        
-        const dataHora = new Date(dataHoraInput.value);
-        const horario = dataHoraInput.value.split('T')[1];
-        
-        const novoAgendamento = {
-            id: proximoId++,
-            cliente: clienteInput.value,
-            pet: petInput.value,
-            sala: salaSelect.value,
-            data: dataHora,
-            horario: horario,
-            duracao: 30,
-            status: "agendado",
-            tipo: "Consulta",
-            obs: obsTextarea.value
-        };
-        
-        agendamentos.push(novoAgendamento);
-        
-        mostrarToast('Agendamento criado com sucesso!', 'success');
-        fecharModal();
-        this.reset();
-        renderizarGrade();
-    });
+        document.getElementById('periodoForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            mostrarToast('Busca realizada!', 'success');
+            fecharModalPeriodo();
+        });
 
-    document.getElementById('periodoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        mostrarToast('Busca realizada!', 'success');
-        fecharModalPeriodo();
-    });
-
-    // CSS para animação
-    const style = document.createElement('style');
-    style.textContent = `
+        const style = document.createElement('style');
+        style.textContent = `
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
     `;
-    document.head.appendChild(style);
+        document.head.appendChild(style);
 
-    // Inicializar
-    atualizarPeriodo();
-    renderizarGrade();
-</script>
-    
+        atualizarPeriodo();
+        renderizarGrade();
+    </script>
+
     <script src="assets/js/vta-nav.js" defer></script>
 </body>
+
 </html>
