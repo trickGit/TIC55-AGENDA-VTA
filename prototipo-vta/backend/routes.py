@@ -1,12 +1,15 @@
-from flask import request, jsonify, session
+# routes.py CORRIGIDO
+
+from flask import request, jsonify, session, render_template, redirect, url_for
 import psycopg2
-from werkzeug.security import check_password_hash, generate_password_hash
+import psycopg2.extras # Importante para o cursor como dicionário
+from werkzeug.security import check_password_hash
 import os
 
-# Importa o objeto 'app' que foi criado no arquivo app.py
+# Importa a instância 'app' do arquivo app.py
 from app import app
 
-# Configurações de conexão com o banco de dados a partir das variáveis de ambiente
+# --- Configuração da Conexão com o Banco de Dados ---
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
@@ -14,19 +17,19 @@ DB_PASS = os.getenv("DB_PASS")
 
 def get_db_connection():
     """Cria e retorna uma nova conexão com o banco de dados."""
-    conn = psycopg2.connect(
-        host=DB_HOST,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASS
-    )
+    conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS)
     return conn
 
-# --- Rota de Login ---
+# --- ROTAS DE PÁGINAS E AUTENTICAÇÃO ---
+
+# Rota para a página de Login (GET)
+@app.route('/')
+def login_page():
+    return render_template('1. login_vta.html')
+
+# Rota para processar o formulário de login (POST)
 @app.route('/login', methods=['POST'])
 def login():
-    """Processa a tentativa de login do usuário."""
-    # Usamos request.form porque o front-end está enviando como 'FormData'
     data = request.form
     email = data.get('email')
     senha = data.get('password')
@@ -37,7 +40,6 @@ def login():
     conn = None
     try:
         conn = get_db_connection()
-        # Usamos um cursor como dicionário para facilitar o acesso às colunas pelo nome
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         
         cur.execute("SELECT id, email, senha_hash, perfil FROM usuarios WHERE email = %s", (email,))
@@ -45,14 +47,17 @@ def login():
         
         cur.close()
 
-        # user[2] ou user['senha_hash']
         if user and check_password_hash(user['senha_hash'], senha):
             session['user_id'] = user['id']
             session['user_perfil'] = user['perfil']
             
-            return jsonify({"message": "Login bem-sucedido!", "redirect_url": "/dashboard"}), 200
+            # Responde ao front-end com a URL de redirecionamento
+            return jsonify({
+                "message": "Login bem-sucedido! Redirecionando...", 
+                "redirect_url": url_for('dashboard')
+            }), 200
         else:
-            return jsonify({"message": "Credenciais inválidas!"}), 401
+            return jsonify({"message": "Email/usuário ou senha incorretos."}), 401
 
     except Exception as e:
         print(f"Erro no login: {e}")
@@ -61,60 +66,29 @@ def login():
         if conn:
             conn.close()
 
-# --- Rota de Logout ---
-@app.route('/logout', methods=['POST'])
+# Rota de Logout
+@app.route('/logout')
 def logout():
-    session.clear() # Limpa toda a sessão
-    return jsonify({"message": "Logout bem-sucedido!"}), 200
+    session.clear()
+    return redirect(url_for('login_page'))
 
-# --- Rota Protegida de Exemplo ---
+# --- ROTAS PROTEGIDAS (EXIGEM LOGIN) ---
+
+# Rota do Dashboard
 @app.route('/dashboard')
 def dashboard():
-    if 'user_id' in session:
-        return f"<h1>Bem-vindo ao Dashboard!</h1><p>Seu ID: {session['user_id']}, Perfil: {session['user_perfil']}</p>"
-    else:
-        # No futuro, aqui você faria um redirect para a tela de login
-        return jsonify({"message": "Acesso não autorizado! Faça login."}), 401
-        from flask import request, jsonify, session, render_template, redirect, url_for
-import psycopg2
-from werkzeug.security import check_password_hash, generate_password_hash
-import os
-
-# Importa o objeto 'app' que foi criado no arquivo app.py
-from app import app
-
-# (o restante do seu código de conexão com o banco de dados continua aqui...)
-
-# --- Rota de Login ---
-# (sua rota de login continua aqui)
-
-# --- Rota de Logout ---
-# (sua rota de logout continua aqui)
-
-# --- Rota do Dashboard ---
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' in session:
-        # Em vez de retornar uma string, vamos renderizar o HTML do dashboard
-        return render_template('2. dashboard_vta.html')
-    else:
-        # Redireciona para a página de login se não estiver logado
+    if 'user_id' not in session:
         return redirect(url_for('login_page'))
+    # Renderiza o arquivo HTML do dashboard
+    return render_template('2. dashboard_vta.html')
 
-# --- Rota da Agenda ---
+# Rota da Agenda
 @app.route('/agenda')
 def agenda_page():
-    if 'user_id' in session:
-        # Renderiza a página da agenda se o usuário estiver logado
-        return render_template('3. agenda_vta.html')
-    else:
-        # Redireciona para a página de login se não estiver logado
+    if 'user_id' not in session:
         return redirect(url_for('login_page'))
+    # Renderiza o arquivo HTML da agenda
+    return render_template('3. agenda_vta.html')
 
-# --- Rota para a página de Login (GET) ---
-# É bom ter uma rota que apenas exiba a página de login
-@app.route('/')
-def login_page():
-    return render_template('1. login_vta.html')
-
-# (o restante das suas rotas pode ser adicionado aqui)
+# Adicione aqui outras rotas para as demais páginas (clientes, pets, etc.)
+# seguindo o mesmo modelo.
