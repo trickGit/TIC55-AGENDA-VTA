@@ -1,52 +1,51 @@
 
+
 # Agenda VTA - Sistema de Agendamento para Clínica Veterinária
 
 ## Sobre o Projeto
 
-[cite\_start]O **Agenda VTA** é um sistema de agendamento desenvolvido para otimizar a gestão de consultas e o uso das salas de atendimento na clínica veterinária **Vet Assistance**[cite: 9, 12, 293, 296]. [cite\_start]O projeto nasceu da necessidade de substituir o controle manual por planilhas de Excel, que era suscetível a erros, agendamentos duplicados e não oferecia uma visão clara da disponibilidade dos recursos[cite: 13, 14, 297, 298].
+O **Agenda VTA** é uma plataforma web desenvolvida para otimizar a gestão de agendamentos e o uso das salas de atendimento na clínica veterinária **Vet Assistance**. O projeto nasceu da necessidade de substituir o controle manual por planilhas de Excel, um processo suscetível a erros como duplicidade de horários e dificuldades para visualizar espaços ocupados.
 
-O foco da solução é fornecer uma ferramenta **estável, rápida e intuitiva** para a equipe interna, principalmente para a recepção, que realiza um alto volume de agendamentos diários e simultâneos.
+O foco da solução é fornecer uma ferramenta **estável, rápida e intuitiva** para a equipe interna da clínica (recepcionistas, veterinários e gestores), que realiza um alto volume de agendamentos diários.
 
-[cite\_start]**Importante:** Este sistema é de **uso exclusivo da equipe da clínica** (recepcionistas, veterinários e gestores) e não possui portal de acesso para os clientes finais[cite: 18, 302].
+**Importante:** Este sistema é de **uso exclusivo da equipe da clínica** e não possui um portal de acesso para os clientes finais.
 
 -----
 
 ## 🚀 Principais Funcionalidades (MVP)
 
-O escopo inicial do projeto (MVP) foi definido para atender às necessidades mais críticas da clínica:
+O escopo do projeto foi definido para atender às necessidades mais críticas da clínica, incluindo:
 
-  * [cite\_start]🔐 **Autenticação de Usuários (UC01):** Sistema de login seguro com perfis de acesso (recepcionista, veterinário, administrador)[cite: 91, 375].
-  * [cite\_start]👥 **Gestão de Clientes e Pets (UC02):** Cadastro, consulta, edição e exclusão de tutores e seus animais de estimação, centralizando as informações[cite: 92, 376].
-  * [cite\_start]🗓️ **Visualização da Agenda por Sala (UC03):** O grande diferencial do sistema, uma grade de horários organizada por salas, com modos de visualização por dia e semana, permitindo ver em tempo real a ocupação[cite: 93, 314, 377].
-  * [cite\_start]✅ **Realizar Agendamento (UC04):** Fluxo simples para marcar novas consultas, validando conflitos de horário e disponibilidade de sala para evitar sobreposições[cite: 94, 378].
-  * [cite\_start]🚫 **Bloqueio de Horários (UC05):** Funcionalidade para bloquear datas, horários ou salas inteiras, impedindo novos agendamentos em casos de manutenção ou indisponibilidade[cite: 94, 378].
-  * [cite\_start]📢 **Geração de Texto para Notificação:** O sistema gera um texto-ticket padronizado para que a equipe envie manualmente a confirmação via WhatsApp, mantendo um contato pessoal com o cliente[cite: 95, 379].
-  * [cite\_start]📊 **Relatórios Gerenciais (UC07):** Geração de relatórios para análise de atendimentos e ocupação das salas[cite: 137, 421].
-  * [cite\_start]🐾 **Histórico do Pet (UC08):** Acesso rápido ao histórico de agendamentos de cada animal[cite: 137, 421].
+  * 🔐 **Autenticação de Usuários (UC01):** Sistema de login seguro com perfis de acesso e permissões (administrador, recepcionista, veterinário).
+  * 👥 **Gestão de Clientes e Pets (UC02):** Cadastro, consulta, edição e exclusão de tutores e seus animais de estimação, centralizando as informações.
+  * 🗓️ **Visualização da Agenda por Sala (UC03):** O grande diferencial do sistema. Uma grade de horários organizada por salas, permitindo visualizar em tempo real a ocupação com modos de visualização por dia e semana.
+  * ✅ **Realizar Agendamento (UC04):** Fluxo simplificado para marcar novas consultas, validando conflitos de horário para evitar sobreposições.
+  * 🚫 **Bloqueio de Horários e Salas (UC05):** Funcionalidade para bloquear datas, horários ou salas inteiras em casos de manutenção ou indisponibilidade.
+  * 📊 **Dashboard e Relatórios (UC07):** Painel com estatísticas rápidas e geração de relatórios gerenciais para análise de atendimentos e ocupação.
+  * 🐾 **Histórico do Pet (UC08):** Acesso rápido ao histórico de agendamentos e atendimentos de cada animal.
 
 -----
 
 ## 🏛️ Arquitetura e Princípios de Design
 
-Este projeto foi guiado por premissas essenciais definidas junto ao cliente para garantir a aderência à realidade da clínica:
+O projeto foi guiado por premissas essenciais para garantir a aderência à realidade da clínica:
 
-1.  **Estabilidade em Primeiro Lugar:** A prioridade máxima é um sistema que "não pode cair". [cite\_start]As decisões técnicas favoreceram a estabilidade e a simplicidade para garantir a continuidade da operação[cite: 265, 549].
-2.  [cite\_start]**Segurança Contra Erros:** Toda ação de exclusão exige uma **confirmação em duas etapas**, minimizando o risco de perda acidental de dados[cite: 266, 550].
-3.  **Comunicação Controlada e Humanizada:** O sistema **não envia mensagens automáticas** via WhatsApp. [cite\_start]Em vez disso, gera um "ticket" de texto padronizado para que a recepção possa copiar, colar e enviar manualmente, mantendo um contato pessoal com o cliente[cite: 95, 268, 379, 552].
-4.  [cite\_start]**Foco na Usabilidade da Recepção:** A interface foi pensada para a persona da recepcionista, que precisa de máxima agilidade para realizar tarefas repetitivas em um ambiente com múltiplos atendimentos simultâneos[cite: 265, 549].
+1.  **Estabilidade em Primeiro Lugar:** A prioridade máxima é um sistema confiável. As decisões técnicas favoreceram a estabilidade e a simplicidade para garantir a continuidade da operação.
+2.  **Segurança Contra Erros:** Ações críticas, como a exclusão de dados, exigem confirmação para minimizar o risco de perda acidental de informações.
+3.  **Comunicação Controlada:** O sistema gera um "ticket" de texto padronizado para que a recepção possa copiar e enviar manualmente as confirmações via WhatsApp, mantendo um contato pessoal com o cliente.
+4.  **Foco na Usabilidade da Recepção:** A interface foi desenhada para ser ágil e intuitiva, otimizando a rotina da equipe que lida com múltiplos atendimentos simultâneos.
 
 -----
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Categoria | Tecnologia |
-| :--- | :--- |
-| **Front-End** | `HTML5`, `CSS3`, `JavaScript` |
-| **Back-End** | [cite\_start]`Python`, `Flask` [cite: 126, 410] |
-| **Banco de Dados** | [cite\_start]`PostgreSQL` [cite: 121, 405] |
-| **Versionamento** | [cite\_start]`Git`, `GitHub` [cite: 124, 408] |
-| **Gerenciamento** | `Trello` |
-| **Prototipagem** | [cite\_start]`Figma` [cite: 117, 401] |
+| Categoria      | Tecnologia                   |
+| :------------- | :--------------------------- |
+| **Front-End** | `HTML5`, `CSS3`, `JavaScript`|
+| **Back-End** | `Python`, `Flask`            |
+| **Banco de Dados**| `PostgreSQL`                 |
+| **Versionamento**| `Git`, `GitHub`              |
+| **Prototipagem** | `Figma`                      |
 
 -----
 
@@ -57,35 +56,58 @@ Para configurar e rodar o ambiente de desenvolvimento localmente, siga estes pas
 1.  **Clone o repositório:**
 
     ```bash
-    git clone https://github.com/trickGit/Agenda-Vet.git
-    cd Agenda-Vet
+    git clone https://github.com/trickGit/tic55-agenda-vta.git
+    cd tic55-agenda-vta
     ```
 
 2.  **Configuração do Back-end (Python/Flask):**
 
-      * Navegue até a pasta do projeto back-end.
-      * Crie e ative um ambiente virtual (`venv`).
-      * Instale as dependências: `pip install -r requirements.txt`.
-      * Configure as variáveis de ambiente (ex: em um arquivo `.env`), incluindo as credenciais do banco de dados PostgreSQL.
-      * Execute a aplicação Flask.
+      * Navegue até a pasta do back-end:
+        ```bash
+        cd prototipo-vta/backend
+        ```
+      * Crie e ative um ambiente virtual.
+          * No Windows:
+            ```bash
+            python -m venv venv
+            .\venv\Scripts\activate
+            ```
+          * No macOS/Linux:
+            ```bash
+            python3 -m venv venv
+            source venv/bin/activate
+            ```
+      * Instale as dependências do projeto:
+        ```bash
+        pip install -r requirements.txt
+        ```
+      * Configure as variáveis de ambiente. Crie um arquivo chamado `.env` na pasta `backend` e adicione as credenciais do seu banco de dados PostgreSQL, seguindo o exemplo:
+        ```env
+        SECRET_KEY="sua-chave-secreta-aqui"
+        DB_HOST="localhost"
+        DB_NAME="vta_agenda"
+        DB_USER="vta_user"
+        DB_PASS="sua-senha-do-banco"
+        ```
+      * Execute a aplicação Flask:
+        ```bash
+        flask run
+        ```
+      * O back-end estará rodando em `http://127.0.0.1:5000`.
 
-3.  **Configuração do Front-end:**
+3.  **Acesso ao Sistema:**
 
-      * Navegue até a pasta `prototipo-vta`.
-      * Abra o arquivo `1. login_vta.html` em seu navegador de preferência ou utilize um servidor local (como o Live Server do VSCode).
-
-4.  **Acesso ao Sistema:**
-
-      * Após iniciar ambos os ambientes, o sistema estará acessível. Utilize as credenciais de teste para o primeiro acesso.
+      * Após iniciar o back-end, abra seu navegador e acesse `http://127.0.0.1:5000`.
+      * Você será direcionado para a página de login. Utilize as credenciais de teste para o primeiro acesso.
 
 -----
 
 ## 👥 Equipe do Projeto
 
-| Integrante | Papel |
-| :--- | :--- |
-| **Augusto Azambuya M. da Silva** | [cite\_start]Desenvolvedor Back-end [cite: 4, 288] |
-| **Lucas Ramos Alves** | [cite\_start]Communicator [cite: 5, 289] |
-| **Mateus Franceschet Pereira** | [cite\_start]Desenvolvedor Front-end [cite: 6, 290] |
-| **Patrick Vargas Santos** | [cite\_start]Desenvolvedor Full-Stack [cite: 7, 291] |
-| **Roger Luiz do Nascimento Vesely** | [cite\_start]Scrum Master [cite: 8, 292] |
+| Integrante                      | Papel                  |
+| :------------------------------ | :--------------------- |
+| **Augusto Azambuya M. da Silva**| Desenvolvedor Back-end |
+| **Lucas Ramos Alves** | Communicator           |
+| **Mateus Franceschet Pereira** | Desenvolvedor Front-end|
+| **Patrick Vargas Santos** | Desenvolvedor Full-Stack|
+| **Roger Luiz do Nascimento Vesely**| Scrum Master           |
