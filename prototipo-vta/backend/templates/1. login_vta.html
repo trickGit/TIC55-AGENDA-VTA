@@ -367,7 +367,7 @@
             <i class="fas fa-bone pet-icon"></i>
             
             <div class="logo">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" ... >
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo VTA" style="width: 90px; height: auto;">
             </div>
             
             <h1 class="branding-title">Agenda VTA</h1>
@@ -499,6 +499,6 @@
         }
     });
 </script>
-    <script src="assets/js/vta-nav.js" defer></script>
+    <script src="{{ url_for('static', filename='js/vta-nav.js') }}" defer></script>
 </body>
 </html>
