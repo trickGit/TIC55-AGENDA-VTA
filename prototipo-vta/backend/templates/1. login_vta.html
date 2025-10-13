@@ -367,7 +367,7 @@
             <i class="fas fa-bone pet-icon"></i>
             
             <div class="logo">
-                <img src="IMG/LogoVet.png" alt="Logo VTA" style="width: 90px; height: 90px; object-fit: contain;">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" ... >
             </div>
             
             <h1 class="branding-title">Agenda VTA</h1>
@@ -437,128 +437,68 @@
         </div>
     </div>
 
-    <script>
-        // Elementos DOM
-        const loginForm = document.getElementById('loginForm');
-        const loginButton = document.getElementById('loginButton');
-        const buttonText = document.getElementById('buttonText');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const errorMessage = document.getElementById('errorMessage');
-        const successMessage = document.getElementById('successMessage');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
+   <script>
+    // Elementos DOM
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const buttonText = document.getElementById('buttonText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
 
-        // Efeito de foco nos inputs
-        const formGroups = document.querySelectorAll('.form-group');
-        formGroups.forEach(group => {
-            const input = group.querySelector('input');
-            if (input) {
-                input.addEventListener('focus', () => {
-                    group.classList.add('focused');
-                });
+    // Funções para feedback visual
+    function showMessage(type, message) {
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        const el = (type === 'error') ? errorMessage : successMessage;
+        el.style.display = 'block';
+        el.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> ${message}`;
+    }
+
+    function setLoading(loading) {
+        loginButton.disabled = loading;
+        buttonText.style.display = loading ? 'none' : 'flex';
+        loadingSpinner.style.display = loading ? 'block' : 'none';
+    }
+
+    // Evento de submissão do formulário
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Impede o recarregamento da página
+        setLoading(true);
+
+        const formData = new FormData(loginForm);
+
+        try {
+            // Envia os dados para o back-end
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json(); // Lê a resposta JSON do servidor
+
+            if (response.ok) {
+                // Se o login for bem-sucedido
+                showMessage('success', result.message);
                 
-                input.addEventListener('blur', () => {
-                    if (!input.value) {
-                        group.classList.remove('focused');
-                    }
-                });
-            }
-        });
+                // Redireciona para a URL enviada pelo back-end APÓS 1 SEGUNDO
+                setTimeout(() => {
+                    window.location.href = result.redirect_url;
+                }, 1000);
 
-        // Função para mostrar mensagens
-        function showMessage(type, message) {
-            hideMessages();
-            const messageElement = type === 'error' ? errorMessage : successMessage;
-            messageElement.style.display = 'block';
-            if (message) {
-                messageElement.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> ${message}`;
-            }
-        }
-
-        function hideMessages() {
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-        }
-
-        // Função para simular loading
-        function setLoading(loading) {
-            if (loading) {
-                loginButton.classList.add('loading');
-                buttonText.style.display = 'none';
-                loadingSpinner.style.display = 'block';
-                loginButton.disabled = true;
             } else {
-                loginButton.classList.remove('loading');
-                buttonText.style.display = 'flex';
-                loadingSpinner.style.display = 'none';
-                loginButton.disabled = false;
+                // Se houver erro de login (ex: senha errada)
+                showMessage('error', result.message || 'Erro desconhecido.');
             }
+        } catch (error) {
+            // Se houver erro de rede (servidor fora do ar)
+            console.error('Erro de conexão:', error);
+            showMessage('error', 'Não foi possível conectar ao servidor.');
+        } finally {
+            setLoading(false);
         }
-
-        // Submissão do formulário
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            hideMessages();
-            
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-
-            // Validação básica
-            if (!email || !password) {
-                showMessage('error', 'Por favor, preencha todos os campos.');
-                return;
-            }
-
-            setLoading(true);
-
-            // Simulação de autenticação (substituir por API real)
-            setTimeout(() => {
-                // Credenciais de teste
-                const validCredentials = [
-                    { email: 'admin@vta.com', password: 'admin123', role: 'Administrador' },
-                    { email: 'recepcao@vta.com', password: 'recepcao123', role: 'Recepcionista' },
-                    { email: 'veterinario@vta.com', password: 'vet123', role: 'Veterinário' }
-                ];
-
-                const user = validCredentials.find(
-                    cred => (cred.email === email || cred.email.split('@')[0] === email) && 
-                            cred.password === password
-                );
-
-                setLoading(false);
-
-                if (user) {
-                    showMessage('success', `Bem-vindo, ${user.role}!`);
-                    
-                    // Simular redirecionamento
-                    setTimeout(() => {
-                        alert(`Login realizado com sucesso!\nRedirecionando para o dashboard...\n\nPerfil: ${user.role}`);
-                        // window.location.href = 'dashboard.html';
-                    }, 1500);
-                } else {
-                    showMessage('error', 'Email/usuário ou senha incorretos.');
-                    // Limpar senha em caso de erro
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                }
-            }, 2000);
-        });
-
-        // Easter egg - credenciais de teste
-        let clickCount = 0;
-        document.querySelector('.logo').addEventListener('click', () => {
-            clickCount++;
-            if (clickCount === 5) {
-                alert('Credenciais de teste:\n\nAdmin: admin@vta.com / admin123\nRecepção: recepcao@vta.com / recepcao123\nVeterinário: veterinario@vta.com / vet123');
-                clickCount = 0;
-            }
-        });
-
-        // Efeito de digitação suave
-        [emailInput, passwordInput].forEach(input => {
-            input.addEventListener('input', hideMessages);
-        });
-    </script>
+    });
+</script>
     <script src="assets/js/vta-nav.js" defer></script>
 </body>
 </html>
