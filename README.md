@@ -3,11 +3,11 @@
 
 ## Sobre o Projeto
 
-O **Agenda VTA** é um sistema de agendamento desenvolvido para otimizar a gestão de consultas e o uso das salas de atendimento na clínica veterinária **Vet Assistance**. O projeto nasceu da necessidade de substituir o controle manual por planilhas, que era suscetível a erros, agendamentos duplicados e não oferecia uma visão clara da disponibilidade dos recursos.
+[cite\_start]O **Agenda VTA** é um sistema de agendamento desenvolvido para otimizar a gestão de consultas e o uso das salas de atendimento na clínica veterinária **Vet Assistance**[cite: 9, 12, 293, 296]. [cite\_start]O projeto nasceu da necessidade de substituir o controle manual por planilhas de Excel, que era suscetível a erros, agendamentos duplicados e não oferecia uma visão clara da disponibilidade dos recursos[cite: 13, 14, 297, 298].
 
 O foco da solução é fornecer uma ferramenta **estável, rápida e intuitiva** para a equipe interna, principalmente para a recepção, que realiza um alto volume de agendamentos diários e simultâneos.
 
-**Importante:** Este sistema é de **uso exclusivo da equipe da clínica** e não possui portal de acesso para os clientes finais.
+[cite\_start]**Importante:** Este sistema é de **uso exclusivo da equipe da clínica** (recepcionistas, veterinários e gestores) e não possui portal de acesso para os clientes finais[cite: 18, 302].
 
 -----
 
@@ -15,14 +15,14 @@ O foco da solução é fornecer uma ferramenta **estável, rápida e intuitiva**
 
 O escopo inicial do projeto (MVP) foi definido para atender às necessidades mais críticas da clínica:
 
-* 🔐 **Autenticação de Usuários (UC01):** Sistema de login seguro com perfis de acesso (recepção, veterinário, administrador).
-* 👥 **Gestão de Clientes e Pets (UC02):** Cadastro, consulta, edição e exclusão de tutores e seus pets, centralizando as informações.
-* 🗓️ **Visualização da Agenda por Sala (UC03):** Grade de horários organizada por sala, com modos de visualização por dia e semana.
-* ✅ **Realizar Agendamento (UC04):** Fluxo simples para marcar novas consultas, validando conflitos de horário e disponibilidade de sala.
-* 🚫 **Bloqueio de Horários (UC05):** Funcionalidade administrativa para bloquear datas ou horários específicos, impedindo novos agendamentos.
-* 📢 **Notificação Interna de Alterações (UC06):** Alertas no painel da recepção sobre mudanças ou cancelamentos de agendamentos.
-* 📊 **Relatórios Gerenciais (UC07):** Geração de relatórios mensais para análise de atendimentos.
-* 🐾 **Histórico do Pet (UC08):** Acesso rápido ao histórico de agendamentos de cada animal.
+  * [cite\_start]🔐 **Autenticação de Usuários (UC01):** Sistema de login seguro com perfis de acesso (recepcionista, veterinário, administrador)[cite: 91, 375].
+  * [cite\_start]👥 **Gestão de Clientes e Pets (UC02):** Cadastro, consulta, edição e exclusão de tutores e seus animais de estimação, centralizando as informações[cite: 92, 376].
+  * [cite\_start]🗓️ **Visualização da Agenda por Sala (UC03):** O grande diferencial do sistema, uma grade de horários organizada por salas, com modos de visualização por dia e semana, permitindo ver em tempo real a ocupação[cite: 93, 314, 377].
+  * [cite\_start]✅ **Realizar Agendamento (UC04):** Fluxo simples para marcar novas consultas, validando conflitos de horário e disponibilidade de sala para evitar sobreposições[cite: 94, 378].
+  * [cite\_start]🚫 **Bloqueio de Horários (UC05):** Funcionalidade para bloquear datas, horários ou salas inteiras, impedindo novos agendamentos em casos de manutenção ou indisponibilidade[cite: 94, 378].
+  * [cite\_start]📢 **Geração de Texto para Notificação:** O sistema gera um texto-ticket padronizado para que a equipe envie manualmente a confirmação via WhatsApp, mantendo um contato pessoal com o cliente[cite: 95, 379].
+  * [cite\_start]📊 **Relatórios Gerenciais (UC07):** Geração de relatórios para análise de atendimentos e ocupação das salas[cite: 137, 421].
+  * [cite\_start]🐾 **Histórico do Pet (UC08):** Acesso rápido ao histórico de agendamentos de cada animal[cite: 137, 421].
 
 -----
 
@@ -30,88 +30,62 @@ O escopo inicial do projeto (MVP) foi definido para atender às necessidades mai
 
 Este projeto foi guiado por premissas essenciais definidas junto ao cliente para garantir a aderência à realidade da clínica:
 
-1.  **Estabilidade em Primeiro Lugar:** A prioridade máxima é um sistema que "não pode cair". As decisões técnicas favoreceram a estabilidade e a simplicidade para garantir a continuidade da operação.
-2.  **Segurança Contra Erros:** Toda ação de exclusão exige uma **confirmação em duas etapas**, minimizando o risco de perda acidental de dados.
-3.  **Comunicação Controlada e Humanizada:** O sistema **não envia mensagens automáticas** via WhatsApp. Em vez disso, gera um "ticket" de texto padronizado para que a recepção possa copiar, colar e enviar manualmente, mantendo um contato pessoal com o cliente.
-4.  **Foco na Usabilidade da Recepção:** A interface foi pensada para a persona da recepcionista, que precisa de máxima agilidade para realizar tarefas repetitivas em um ambiente com múltiplos atendimentos simultâneos.
+1.  **Estabilidade em Primeiro Lugar:** A prioridade máxima é um sistema que "não pode cair". [cite\_start]As decisões técnicas favoreceram a estabilidade e a simplicidade para garantir a continuidade da operação[cite: 265, 549].
+2.  [cite\_start]**Segurança Contra Erros:** Toda ação de exclusão exige uma **confirmação em duas etapas**, minimizando o risco de perda acidental de dados[cite: 266, 550].
+3.  **Comunicação Controlada e Humanizada:** O sistema **não envia mensagens automáticas** via WhatsApp. [cite\_start]Em vez disso, gera um "ticket" de texto padronizado para que a recepção possa copiar, colar e enviar manualmente, mantendo um contato pessoal com o cliente[cite: 95, 268, 379, 552].
+4.  [cite\_start]**Foco na Usabilidade da Recepção:** A interface foi pensada para a persona da recepcionista, que precisa de máxima agilidade para realizar tarefas repetitivas em um ambiente com múltiplos atendimentos simultâneos[cite: 265, 549].
 
 -----
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Categoria      | Tecnologia                               |
-| :------------- | :--------------------------------------- |
-| **Front-End** | `HTML5`, `CSS3`, `JavaScript`            |
-| **Back-End** | `Python`, `Flask`                        |
-| **Banco de Dados** | `PostgreSQL`                             |
-| **Versionamento** | `Git`, `GitHub`                          |
-| **Gerenciamento** | `Trello`                                 |
+| Categoria | Tecnologia |
+| :--- | :--- |
+| **Front-End** | `HTML5`, `CSS3`, `JavaScript` |
+| **Back-End** | [cite\_start]`Python`, `Flask` [cite: 126, 410] |
+| **Banco de Dados** | [cite\_start]`PostgreSQL` [cite: 121, 405] |
+| **Versionamento** | [cite\_start]`Git`, `GitHub` [cite: 124, 408] |
+| **Gerenciamento** | `Trello` |
+| **Prototipagem** | [cite\_start]`Figma` [cite: 117, 401] |
 
 -----
 
-## 🚀 Como Executar o Protótipo (Ambiente Local)
+## 🏁 Como Executar o Projeto (Guia Rápido)
 
 Para configurar e rodar o ambiente de desenvolvimento localmente, siga estes passos:
 
-### Pré-requisitos
+1.  **Clone o repositório:**
 
-* **Git** instalado para clonar o repositório.
-* **Visual Studio Code** (ou outro editor de código).
-* Extensão **Live Server** no VS Code (recomendado para o front-end).
-
-### 1. Clonar o repositório
-
-```bash
-git clone [https://github.com/trickGit/tic55-agenda-vta.git](https://github.com/trickGit/tic55-agenda-vta.git)
-cd tic55-agenda-vta
-````
-
-### 2\. Executando o Front-end (Protótipo HTML)
-
-O front-end é composto por arquivos HTML estáticos que podem ser abertos diretamente no navegador, mas o uso de um servidor local é recomendado para evitar problemas de CORS no futuro.
-
-1.  Abra a pasta do projeto (`tic55-agenda-vta`) no Visual Studio Code.
-2.  Caso não tenha, instale a extensão **Live Server** de Ritwick Dey.
-3.  Navegue até a pasta `prototipo-vta`.
-4.  Clique com o botão direito no arquivo `1. login_vta.html`.
-5.  Selecione a opção **"Open with Live Server"**.
-6.  O seu navegador abrirá automaticamente com a tela de login do protótipo funcional.
-
-### 3\. Executando o Back-end (Python/Flask)
-
-As instruções abaixo servem como guia para quando a implementação do back-end estiver disponível no repositório.
-
-1.  **Navegue até a pasta do back-end:**
     ```bash
-    # Exemplo de como seria
-    cd backend-agenda-vta
+    git clone https://github.com/trickGit/Agenda-Vet.git
+    cd Agenda-Vet
     ```
-2.  **Crie e ative um ambiente virtual:**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # No Windows: venv\Scripts\activate
-    ```
-3.  **Instale as dependências:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  **Configure as variáveis de ambiente** (crie um arquivo `.env` com as credenciais do banco de dados).
-5.  **Execute a aplicação Flask:**
-    ```bash
-    flask run
-    ```
+
+2.  **Configuração do Back-end (Python/Flask):**
+
+      * Navegue até a pasta do projeto back-end.
+      * Crie e ative um ambiente virtual (`venv`).
+      * Instale as dependências: `pip install -r requirements.txt`.
+      * Configure as variáveis de ambiente (ex: em um arquivo `.env`), incluindo as credenciais do banco de dados PostgreSQL.
+      * Execute a aplicação Flask.
+
+3.  **Configuração do Front-end:**
+
+      * Navegue até a pasta `prototipo-vta`.
+      * Abra o arquivo `1. login_vta.html` em seu navegador de preferência ou utilize um servidor local (como o Live Server do VSCode).
+
+4.  **Acesso ao Sistema:**
+
+      * Após iniciar ambos os ambientes, o sistema estará acessível. Utilize as credenciais de teste para o primeiro acesso.
 
 -----
 
 ## 👥 Equipe do Projeto
 
-| Integrante                      | Papel                  |
-| :------------------------------ | :--------------------- |
-| **Augusto Azambuya M. da Silva** | Desenvolvedor Back-end |
-| **Lucas Ramos Alves** | Communicator           |
-| **Mateus Franceschet Pereira** | Desenvolvedor Front-end |
-| **Patrick Vargas Santos** | Desenvolvedor Full-Stack |
-| **Roger Luiz do Nascimento Vesely**| Scrum Master           |
-
-```
-```
+| Integrante | Papel |
+| :--- | :--- |
+| **Augusto Azambuya M. da Silva** | [cite\_start]Desenvolvedor Back-end [cite: 4, 288] |
+| **Lucas Ramos Alves** | [cite\_start]Communicator [cite: 5, 289] |
+| **Mateus Franceschet Pereira** | [cite\_start]Desenvolvedor Front-end [cite: 6, 290] |
+| **Patrick Vargas Santos** | [cite\_start]Desenvolvedor Full-Stack [cite: 7, 291] |
+| **Roger Luiz do Nascimento Vesely** | [cite\_start]Scrum Master [cite: 8, 292] |

@@ -652,7 +652,6 @@
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Header -->
         <header class="header">
             <div class="header-content">
                 <div class="header-left">
@@ -680,9 +679,7 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Sidebar -->
             <aside class="sidebar">
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">Menu Principal</h3>
@@ -745,9 +742,7 @@
                 </div>
             </aside>
 
-            <!-- Pets Content -->
             <div class="pets-content">
-                <!-- Page Header -->
                 <section class="page-header">
                     <h1 class="page-title">
                         <i class="fas fa-paw"></i>
@@ -765,7 +760,6 @@
                     </div>
                 </section>
 
-                <!-- Stats Cards -->
                 <section class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">
@@ -797,9 +791,7 @@
                     </div>
                 </section>
 
-                <!-- Form and Table -->
                 <section class="content-grid">
-                    <!-- Form Section -->
                     <div class="form-section">
                         <h2 class="form-title">
                             <i class="fas fa-plus-circle"></i>
@@ -860,8 +852,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="proprietario">Proprietário *</label>
-                                <select class="form-control form-select" id="proprietario" name="proprietario" required>
+                                <label class="form-label" for="tutor">Tutor *</label>
+                                <select class="form-control form-select" id="tutor" name="tutor" required>
                                     <option value="">Selecione o cliente...</option>
                                     <option value="1">Maria Santos</option>
                                     <option value="2">João Pedro Silva</option>
@@ -890,7 +882,6 @@
                         </form>
                     </div>
 
-                    <!-- Table Section -->
                     <div class="table-section">
                         <div class="table-header">
                             <h2 class="table-title">Pets Cadastrados</h2>
@@ -907,7 +898,7 @@
                                     <tr>
                                         <th>Pet</th>
                                         <th>Espécie</th>
-                                        <th>Proprietário</th>
+                                        <th>Tutor</th>
                                         <th>Idade</th>
                                         <th>Status</th>
                                         <th>Ações</th>
@@ -1073,7 +1064,6 @@
         </main>
     </div>
 
-    <!-- Modal de Confirmação -->
     <div class="modal" id="modalConfirmacao">
         <div class="modal-content">
             <h3 style="margin-bottom: 1rem; color: var(--vta-orange-dark);">
@@ -1158,12 +1148,12 @@
                 dataNascimento: formData.get('dataNascimento'),
                 peso: formData.get('peso'),
                 cor: formData.get('cor'),
-                proprietario: formData.get('proprietario'),
+                tutor: formData.get('tutor'),
                 observacoes: formData.get('observacoes')
             };
 
             // Validação básica
-            if (!petData.nome || !petData.especie || !petData.sexo || !petData.proprietario) {
+            if (!petData.nome || !petData.especie || !petData.sexo || !petData.tutor) {
                 alert('Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
@@ -1196,9 +1186,9 @@
             
             // Dados mockados para demonstração
             const petData = {
-                1: { nome: 'Rex', especie: 'cao', raca: 'golden_retriever', sexo: 'macho', proprietario: '1' },
-                2: { nome: 'Mimi', especie: 'gato', raca: 'persa', sexo: 'femea', proprietario: '2' },
-                3: { nome: 'Thor', especie: 'cao', raca: 'rottweiler', sexo: 'macho', proprietario: '3' }
+                1: { nome: 'Rex', especie: 'cao', raca: 'golden_retriever', sexo: 'macho', tutor: '1' },
+                2: { nome: 'Mimi', especie: 'gato', raca: 'persa', sexo: 'femea', tutor: '2' },
+                3: { nome: 'Thor', especie: 'cao', raca: 'rottweiler', sexo: 'macho', tutor: '3' }
             };
 
             if (petData[id]) {
@@ -1208,7 +1198,7 @@
                 atualizarRacas();
                 document.getElementById('raca').value = pet.raca;
                 document.getElementById('sexo').value = pet.sexo;
-                document.getElementById('proprietario').value = pet.proprietario;
+                document.getElementById('tutor').value = pet.tutor;
                 
                 document.querySelector('button[type="submit"]').innerHTML = '<i class="fas fa-save"></i> Atualizar Pet';
                 
@@ -1339,7 +1329,6 @@
             });
         });
     </script>
-    <!-- Navegação e controle de sessão -->
     <script src="assets/js/vta-nav.js" defer></script>
 </body>
 </html>
