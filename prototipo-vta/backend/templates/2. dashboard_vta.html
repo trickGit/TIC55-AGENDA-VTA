@@ -534,7 +534,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="3.%20agenda_vta.html" class="nav-link">
+                            <a href="{{ url_for('agenda_page') }}" class="nav-link"
+                               onclick="window.location.href='{{ url_for('agenda_page') }}'; return false;">
                                 <i class="fas fa-calendar"></i>
                                 Agenda
                             </a>
@@ -845,6 +846,6 @@
         setInterval(updateStats, 30000);
     </script>
     <!-- Navegação e controle de sessão -->
-    <script src="assets/js/vta-nav.js" defer></script>
+  <script src="{{ url_for('static', filename='assets/js/vta-nav.js') }}" defer></script>
 </body>
 </html>
