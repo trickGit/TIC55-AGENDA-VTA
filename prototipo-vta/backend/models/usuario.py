@@ -54,7 +54,7 @@ class Usuario:
     # Static method para verificar se uma senha corresponde ao hash armazenado
    
     @staticmethod
-    def verify_senha(stored, senha) -> bool:
+    def validar_senha(stored, senha) -> bool:
         # Se o hash ou senha forem inválidos, retorna False
         if not isinstance(stored, str) or not isinstance(senha, str):
             return False
