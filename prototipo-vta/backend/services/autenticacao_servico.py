@@ -1,17 +1,17 @@
 import os
 import secrets
 from datetime import datetime, timedelta
-from backend.models.usuario import Usuario  # importa tua classe Usuario existente
+from backend.models.usuario import Usuario  # Importa tua classe Usuario existente
 
 
 class AutenticacaoServico:
 
-    #construtor da classe AutenticacaoServico
+    # Construtor da classe AutenticacaoServico
     def __init__(self, usuarios: list[Usuario]):
         self.usuarios = usuarios
         self.tokens_recuperacao = {}  # token -> {uuid, expira, usado}
 
-    #autentica um usuário e registra o login.
+    # Autentica um usuário e registra o login.
     def sessao_login(self, email: str, senha: str) -> Usuario | None:
         for usuario in self.usuarios:
             if usuario.email == email and Usuario.validar_senha(usuario.senha_hash, senha):
@@ -25,7 +25,7 @@ class AutenticacaoServico:
         print("Email ou senha incorretos.")
         return None
     
-    #gera um token temporário para recuperação de senha.
+    # Gera um token temporário para recuperação de senha.
     def solicitar_recuperacao_senha(self, email: str) -> str | None:
         usuario = next((u for u in self.usuarios if u.email == email), None)
         if not usuario:
@@ -44,7 +44,7 @@ class AutenticacaoServico:
         print(f"Token gerado para {email}: {token} (expira às {expira})")
         return token
 
-    #redefine a senha de um usuário se o token for válido.
+    # Redefine a senha de um usuário se o token for válido.
     def redefinir_senha(self, token: str, nova_senha: str) -> bool:
         meta = self.tokens_recuperacao.get(token)
 

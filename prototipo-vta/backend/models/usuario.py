@@ -2,20 +2,10 @@
 import os  # Para funções do sistema operacional, usado para gerar salt aleatório
 import hashlib  # Para funções de hash criptográfico
 import hmac  # Para comparação segura de strings
-from enum import Enum  # Para criar enumerações
 from datetime import datetime  # Para registrar último login
 from uuid import uuid4  # Para gerar UUIDs únicos
-
-# Enumeração dos tipos de perfis de usuário disponíveis no sistema
-class PerfilUsuario(Enum):
-    ADMIN = "admin"  # Perfil com acesso total
-    RECEPCIONISTA = "recepcionista"  # Perfil com acesso intermediário
-    VETERINARIO = "veterinario"  # Perfil com acesso limitado
-
-# Enumeração dos status possíveis para um usuário
-class StatusUsuario(Enum):
-    ATIVO = "ativo"  # Usuário ativo
-    INATIVO = "inativo"  # Usuário inativo
+from enum.perfil_usuario import PerfilUsuario  # Importa enumeração de perfis de usuário
+from enum.status_usuario import StatusUsuario  # Importa enumeração de status de usuário
 
 class Usuario:
     # Permissões padrão usadas como fallback quando um perfil não está no mapa
