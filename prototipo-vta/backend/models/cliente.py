@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-class cliente:
+class Cliente:
     
     # Método construtor da classe cliente
     def __init__(self, nome, telefone, email, uuid=None):

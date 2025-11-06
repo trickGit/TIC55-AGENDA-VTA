@@ -2,10 +2,10 @@
 import os  # Para funções do sistema operacional, usado para gerar salt aleatório
 import hashlib  # Para funções de hash criptográfico
 import hmac  # Para comparação segura de strings
-from datetime import datetime  # Para registrar último login
+from datetime import datetime, timezone  # Para registrar último login
 from uuid import uuid4  # Para gerar UUIDs únicos
-from enum.perfil_usuario import PerfilUsuario  # Importa enumeração de perfis de usuário
-from enum.status_usuario import StatusUsuario  # Importa enumeração de status de usuário
+from backend.enums.perfil_usuario import PerfilUsuario # Importa enumeração de perfis de usuário
+from backend.enums.status_usuario import StatusUsuario # Importa enumeração de status de usuário
 
 class Usuario:
     # Permissões padrão usadas como fallback quando um perfil não está no mapa
@@ -20,29 +20,45 @@ class Usuario:
     }
 
     # Construtor da classe Usuario
-    def __init__(self, uuid: int, nome: str, email: str, senha_hash: str, perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA, status: StatusUsuario = StatusUsuario.ATIVO, ultimo_login: datetime | None = None) -> None:
+    def __init__(self, uuid: str, nome: str, email: str, senha_hash: str, perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA, status: StatusUsuario = StatusUsuario.ATIVO, ultimo_login: datetime | None = None) -> None:
+        # Validações
+        if not nome or not nome.strip():
+            raise ValueError("Nome não pode ser vazio")
+        if not email or "@" not in email:  
+            raise ValueError("Email inválido")
+        if not senha_hash:
+            raise ValueError("Hash de senha não pode ser vazio")
+        
+        # Atribuições dos atributos
         self.uuid = uuid if uuid is not None else str(uuid4())
-        self.nome = nome
-        self.email = email
+        self.nome = nome.strip()
+        self.email = email.strip().lower()
         self.senha_hash = senha_hash
         self.perfil = perfil
         self.status = status
-        self.ultimo_login = ultimo_login  # datetime ou None
+
+        # Conversão automática de string ISO para datetime, se necessário
+        if isinstance(ultimo_login, str):
+            try:
+                self.ultimo_login = datetime.fromisoformat(ultimo_login)
+            except ValueError:
+                self.ultimo_login = None
+        else:
+            self.ultimo_login = ultimo_login  # datetime ou None
 
     # Representação em string do objeto Usuario
     def __repr__(self) -> str:
         ult = self.ultimo_login.isoformat() if isinstance(self.ultimo_login, datetime) else None
-        return f"Usuario(id={self.id!r}, nome={self.nome!r}, email={self.email!r}, status={self.status.value!r}, ultimo_login={ult!r})"
+        return f"Usuario(uuid={self.uuid!r}, nome={self.nome!r}, email={self.email!r}, status={self.status.value!r}, ultimo_login={ult!r})"
 
     # Static method para gerar hash de senha usando PBKDF2 e um salt aleatório
     @staticmethod
-    def hash_senha(senha: str, iterations: int = 100_000) -> str:
+    def hash_senha(senha: str, iterations: int = 600_000) -> str:
         salt = os.urandom(16)  # Gera um salt aleatório de 16 bytes
         dk = hashlib.pbkdf2_hmac("sha256", senha.encode("utf-8"), salt, iterations)
         return f"{iterations}${salt.hex()}${dk.hex()}"
 
     # Static method para verificar se uma senha corresponde ao hash armazenado
-   
     @staticmethod
     def validar_senha(stored, senha) -> bool:
         # Se o hash ou senha forem inválidos, retorna False
@@ -73,7 +89,8 @@ class Usuario:
     def autenticar(self, senha: str) -> bool:
         if not self.is_ativo():
             return False
-        return Usuario.verify_senha(self.senha_hash, senha)
+        # ✅ Corrigido: chamava método inexistente verify_senha
+        return Usuario.validar_senha(self.senha_hash, senha)
 
     # Verifica se o usuário está ativo
     def is_ativo(self) -> bool:
@@ -94,9 +111,9 @@ class Usuario:
         self.status = status
     
     # Registra o último login (usa UTC atual se data_hora for None)
-    def registrar_ultimologin(self, data_hora: datetime | None = None) -> None:
+    def registrar_ultimo_login(self, data_hora: datetime | None = None) -> None:
         if data_hora is None:
-            data_hora = datetime.utcnow()
+            data_hora = datetime.now(timezone.utc)
         if not isinstance(data_hora, datetime):
             raise ValueError("data_hora deve ser um datetime ou None")
         self.ultimo_login = data_hora
