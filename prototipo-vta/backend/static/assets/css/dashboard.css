@@ -1,0 +1,500 @@
+/* Reset e configurações básicas: Garante uma base consistente entre navegadores */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Faz com que padding e borda não aumentem o tamanho final do elemento */
+}
+
+/* Paleta de cores VTA: Variáveis CSS para manter a consistência de cores em todo o projeto */
+:root {
+    --vta-green: #52B788;
+    --vta-green-light: #74C69D;
+    --vta-green-dark: #40916C;
+    --vta-blue: #2E86AB;
+    --vta-blue-light: #48A3C7;
+    --vta-blue-dark: #1B5E7A;
+    --vta-orange: #F77F00;
+    --vta-orange-light: #FCBF49;
+    --vta-orange-dark: #D62828;
+    --white: #FFFFFF;
+    --gray-light: #F8F9FA;
+    --gray-medium: #6C757D;
+    --gray-dark: #343A40;
+}
+
+/* Estilos globais do corpo da página */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--gray-light);
+    color: var(--gray-dark);
+}
+
+/* Layout Principal: Define a estrutura grid para o container principal */
+.dashboard-container {
+    display: grid;
+    grid-template-rows: auto 1fr; /* Header com altura automática, conteúdo principal preenche o resto */
+    min-height: 100vh;
+}
+
+/* Header: Estilização do cabeçalho superior */
+.header {
+    background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+    color: var(--white);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: sticky; /* Mantém o header fixo no topo ao rolar */
+    top: 0;
+    z-index: 100; /* Garante que o header fique acima de outros elementos */
+}
+
+/* Conteúdo do Header: Alinhamento e espaçamento dos elementos internos do cabeçalho */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px; /* Limita a largura para melhor legibilidade em telas grandes */
+    margin: 0 auto;
+}
+
+/* Lado esquerdo do header: Logo e título */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-mini {
+    width: 45px;
+    height: 45px;
+    background: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vta-green);
+    font-size: 1.5rem;
+}
+
+.header-title h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.header-subtitle {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Lado direito do header: Informações do usuário e logout */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Informações do usuário */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1); /* Fundo semi-transparente */
+    -webkit-backdrop-filter: blur(10px); /* Efeito de vidro fosco para Safari */
+    backdrop-filter: blur(10px); /* Efeito de vidro fosco */
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vta-green);
+    font-weight: bold;
+}
+
+.user-details h3 {
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.user-role {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Botão de Logout */
+.logout-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(15deg); /* Efeito de rotação ao passar o mouse */
+}
+
+/* Conteúdo Principal: Layout da área principal, com sidebar e conteúdo */
+.main-content {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Coluna fixa para sidebar, o resto para o conteúdo */
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Sidebar: Estilização do menu lateral */
+.sidebar {
+    background: var(--white);
+    border-radius: 15px;
+    padding: 1.5rem;
+    height: fit-content; /* Altura se ajusta ao conteúdo */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: sticky; /* Mantém a sidebar fixa ao rolar */
+    top: 100px;
+}
+
+/* Seções da Sidebar */
+.sidebar-section {
+    margin-bottom: 2rem;
+}
+
+.sidebar-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+}
+
+/* Menu de Navegação */
+.nav-menu {
+    list-style: none;
+}
+
+.nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: var(--gray-dark);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-link:hover, .nav-link.active {
+    background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+    color: var(--white);
+    transform: translateX(5px); /* Efeito de deslocamento ao passar o mouse/ativo */
+}
+
+.nav-link i {
+    font-size: 1.1rem;
+    width: 20px;
+}
+
+/* Conteúdo do Dashboard */
+.dashboard-content {
+    display: grid;
+    gap: 2rem;
+}
+
+/* Grid de Cartões de Estatísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Layout responsivo para os cartões */
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px); /* Efeito de elevação ao passar o mouse */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Barra colorida no topo do card */
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--vta-green), var(--vta-blue));
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+/* Ícone do card de estatística */
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.stat-icon.green { background: linear-gradient(135deg, var(--vta-green), var(--vta-green-light)); }
+.stat-icon.blue { background: linear-gradient(135deg, var(--vta-blue), var(--vta-blue-light)); }
+.stat-icon.orange { background: linear-gradient(135deg, var(--vta-orange), var(--vta-orange-light)); }
+
+/* Valor principal da estatística */
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gray-dark);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--gray-medium);
+    margin-bottom: 1rem;
+}
+
+/* Indicador de tendência (ex: +15%) */
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.trend-positive { color: var(--vta-green); }
+.trend-negative { color: var(--vta-orange-dark); }
+
+/* Seção de Ações Rápidas */
+.quick-actions {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--gray-dark);
+}
+
+/* Botões de Ação */
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Layout responsivo */
+    gap: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--gray-light);
+    border: none;
+    border-radius: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    color: var(--gray-dark);
+}
+
+.action-btn:hover {
+    background: var(--vta-green);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3); /* Sombra colorida no hover */
+}
+
+.action-btn i {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border-radius: 10px;
+    color: var(--vta-green);
+}
+
+.action-btn:hover i {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+/* Seção da Agenda do Dia */
+.schedule-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Agenda ocupa 2/3, Notificações 1/3 */
+    gap: 2rem;
+}
+
+.schedule-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Itens da Agenda */
+.schedule-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-left: 4px solid var(--vta-green);
+    background: var(--gray-light);
+    border-radius: 0 10px 10px 0;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.schedule-item:hover {
+    background: var(--vta-green);
+    color: var(--white);
+}
+
+.schedule-time {
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-width: 60px;
+}
+
+.schedule-details h4 {
+    margin-bottom: 0.25rem;
+}
+
+.schedule-details p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Seção de Notificações */
+.notifications {
+    max-height: 400px;
+    overflow-y: auto; /* Adiciona scroll se as notificações excederem a altura máxima */
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-light);
+    transition: all 0.3s ease;
+}
+
+.notification-item:hover {
+    background: var(--gray-light);
+}
+
+.notification-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--white);
+}
+
+.notification-icon.info { background: var(--vta-blue); }
+.notification-icon.warning { background: var(--vta-orange); }
+.notification-icon.success { background: var(--vta-green); }
+
+.notification-content h5 {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.notification-content p {
+    font-size: 0.8rem;
+    color: var(--gray-medium);
+}
+
+/* Media Queries para Responsividade */
+
+/* Para tablets e telas menores */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr; /* Muda para layout de coluna única */
+        gap: 1.5rem;
+    }
+
+    .sidebar {
+        position: static; /* Remove o posicionamento fixo */
+        order: 2; /* Move a sidebar para baixo do conteúdo principal */
+    }
+
+    .schedule-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Para dispositivos móveis */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column; /* Empilha os itens do header */
+        gap: 1rem;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .user-details {
+        display: none; /* Oculta os detalhes do usuário para economizar espaço */
+    }
+}
