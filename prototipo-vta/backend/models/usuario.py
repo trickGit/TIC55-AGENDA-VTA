@@ -54,6 +54,8 @@ class Usuario:
     # Static method para gerar hash de senha usando PBKDF2 e um salt aleatório
     @staticmethod
     def hash_senha(senha: str, iterations: int = 600_000) -> str:
+        if not senha:
+            raise ValueError("Senha não pode ser vazia")    
         salt = os.urandom(16)  # Gera um salt aleatório de 16 bytes
         dk = hashlib.pbkdf2_hmac("sha256", senha.encode("utf-8"), salt, iterations)
         return f"{iterations}${salt.hex()}${dk.hex()}"
@@ -89,7 +91,6 @@ class Usuario:
     def autenticar(self, senha: str) -> bool:
         if not self.is_ativo():
             return False
-        # ✅ Corrigido: chamava método inexistente verify_senha
         return Usuario.validar_senha(self.senha_hash, senha)
 
     # Verifica se o usuário está ativo

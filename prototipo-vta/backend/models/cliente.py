@@ -4,7 +4,7 @@ class Cliente:
     
     # Método construtor da classe cliente
     def __init__(self, nome, telefone, email, uuid=None):
-        self.uuid = uuid if uuid is not None else str(uuid4())
+        self.clienteID = uuid if uuid is not None else str(uuid4())
         self.nome = nome
         self.telefone = telefone
         self.email = email
@@ -14,7 +14,7 @@ class Cliente:
     def exibir_informacoes(self):
         
         return (
-            f"UUID: {self.uuid}, Nome: {self.nome}, "
+            f"ClienteID: {self.clienteID}, Nome: {self.nome}, "
             f"Telefone: {self.telefone}, Email: {self.email}, Ativo: {self.ativo}"
         )
 
