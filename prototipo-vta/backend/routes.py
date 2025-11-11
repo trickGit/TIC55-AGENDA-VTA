@@ -90,5 +90,13 @@ def agenda_page():
     # Renderiza o arquivo HTML da agenda
     return render_template('3. agenda_vta.html')
 
+# Rota da Agenda
+@app.route('/pets')
+def pets_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+    # Renderiza o arquivo HTML da agenda
+    return render_template('6. pets_vta.html')
+
 # Adicione aqui outras rotas para as demais páginas (clientes, pets, etc.)
 # seguindo o mesmo modelo.
