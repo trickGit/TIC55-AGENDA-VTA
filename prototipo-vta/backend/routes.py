@@ -118,5 +118,18 @@ def salas_page():
         return redirect(url_for('login_page'))
     return render_template('8. salas_vta.html')
 
+# Rota para Relatórios ADM
+@app.route('/relatorios')
+def relatorios_dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+    return render_template('9. relatorios_dashboard.html')
+
+# Nova rota para Relatórios Pets
+@app.route('/relatorios/pets')
+def relatorios_pets():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+    return render_template('10. relatorios_pets.html')
 # Adicione aqui outras rotas para as demais páginas (clientes, pets, etc.)
 # seguindo o mesmo modelo.

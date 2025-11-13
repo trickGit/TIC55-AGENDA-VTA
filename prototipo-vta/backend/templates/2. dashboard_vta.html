@@ -89,13 +89,15 @@
                     <h3 class="sidebar-title">Relatórios</h3>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="9.%20relatorios_dashboard.html" class="nav-link">
+                            <a href="{{ url_for('relatorios_dashboard') }}" class="nav-link"
+                               onclick="window.location.href='{{ url_for('relatorios_dashboard') }}'; return false;">
                                 <i class="fas fa-chart-bar"></i>
                                 Relatórios ADM
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="10.%20relatorios_pets.html" class="nav-link">
+                            <a href="{{ url_for('relatorios_pets') }}" class="nav-link"
+                               onclick="window.location.href='{{ url_for('relatorios_pets') }}'; return false;">
                                 <i class="fas fa-file-medical"></i>
                                 Histórico Pets
                             </a>
