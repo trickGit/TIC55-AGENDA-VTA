@@ -55,17 +55,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="4.%20agendamento_vta.html" class="nav-link">
+                            <a href="{{ url_for('agendamento_page') }}" class="nav-link"
+                               onclick="window.location.href='{{ url_for('agendamento_page') }}'; return false;">
                                 <i class="fas fa-plus-circle"></i>
                                 Novo Agendamento
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="5.%20clientes_vta.html" class="nav-link">
-                                <i class="fas fa-users"></i>
-                                Clientes
-                            </a>
-                        </li>
+                            <a href="{{ url_for('clientes_page') }}" class="nav-link"
+                               onclick="window.location.href='{{ url_for('clientes_page') }}'; return false;">
+                                 <i class="fas fa-users"></i>
+                                 Clientes
+                             </a>
+                         </li>
                         <li class="nav-item">
                             <a href="{{ url_for('pets_page') }}" class="nav-link"
                                onclick="window.location.href='{{ url_for('pets_page') }}'; return false;">
@@ -74,11 +76,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="8.%20salas_vta.html" class="nav-link">
-                                <i class="fas fa-door-open"></i>
-                                Salas
-                            </a>
-                        </li>
+                            <a href="{{ url_for('salas_page') }}" class="nav-link"
+                               onclick="window.location.href='{{ url_for('salas_page') }}'; return false;">
+                                 <i class="fas fa-door-open"></i>
+                                 Salas
+                             </a>
+                         </li>
                     </ul>
                 </div>
 

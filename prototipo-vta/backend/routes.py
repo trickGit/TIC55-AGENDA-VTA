@@ -90,13 +90,33 @@ def agenda_page():
     # Renderiza o arquivo HTML da agenda
     return render_template('3. agenda_vta.html')
 
-# Rota da Agenda
+# Nova rota para Agendamento (Novo / Editar)
+@app.route('/agendamento')
+def agendamento_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+    return render_template('4. agendamento_vta.html')
+
+# Rota dos Pets
 @app.route('/pets')
 def pets_page():
     if 'user_id' not in session:
         return redirect(url_for('login_page'))
-    # Renderiza o arquivo HTML da agenda
     return render_template('6. pets_vta.html')
+
+# Nova rota para Clientes
+@app.route('/clientes')
+def clientes_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+    return render_template('5. clientes_vta.html')
+
+# Nova rota para Salas
+@app.route('/salas')
+def salas_page():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+    return render_template('8. salas_vta.html')
 
 # Adicione aqui outras rotas para as demais páginas (clientes, pets, etc.)
 # seguindo o mesmo modelo.
