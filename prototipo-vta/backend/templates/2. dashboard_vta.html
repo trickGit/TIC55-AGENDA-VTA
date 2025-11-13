@@ -9,10 +9,8 @@
 </head>
 <body>
     <div class="dashboard-container">
-<!-- Header: Cabeçalho da página, com logo, título e informações do usuário -->
         <header class="header">
             <div class="header-content">
-        <!-- Lado esquerdo do cabeçalho: Logo e título -->
                 <div class="header-left">
                     <div class="logo-mini">
                         <i class="fas fa-stethoscope"></i>
@@ -38,11 +36,8 @@
             </div>
         </header>
 
-        <!-- Main Content: Conteúdo principal da página, dividido em sidebar e conteúdo do dashboard -->
         <main class="main-content">
-            <!-- Sidebar: Menu de navegação lateral -->
             <aside class="sidebar">
-                <!-- Seção do menu principal -->
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">Menu Principal</h3>
                     <ul class="nav-menu">
@@ -72,7 +67,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('pets_page') }}" class="nav-link">
+                            <a href="{{ url_for('pets_page') }}" class="nav-link"
+                               onclick="window.location.href='{{ url_for('pets_page') }}'; return false;">
                                 <i class="fas fa-paw"></i>
                                 Pets
                             </a>
@@ -86,7 +82,6 @@
                     </ul>
                 </div>
 
-                <!-- Seção de relatórios -->
                 <div class="sidebar-section">
                     <h3 class="sidebar-title">Relatórios</h3>
                     <ul class="nav-menu">
@@ -106,11 +101,8 @@
                 </div>
             </aside>
 
-            <!-- Dashboard Content: Onde as informações principais são exibidas -->
             <div class="dashboard-content">
-                <!-- Stats Cards: Cartões com estatísticas rápidas -->
                 <section class="stats-grid">
-                    <!-- Card de Consultas Hoje -->
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-info">
@@ -127,7 +119,6 @@
                         </div>
                     </div>
 
-                    <!-- Card de Salas Disponíveis -->
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-info">
@@ -144,7 +135,6 @@
                         </div>
                     </div>
 
-                    <!-- Card de Clientes Ativos -->
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-info">
@@ -163,7 +153,6 @@
 
                 </section>
 
-                <!-- Quick Actions: Botões para as ações mais comuns do sistema -->
                 <section class="quick-actions">
                     <h2 class="section-title">Ações Rápidas</h2>
                     <div class="action-buttons">
@@ -198,9 +187,7 @@
                     </div>
                 </section>
 
-                <!-- Today's Schedule & Notifications: Seção com a agenda do dia e notificações -->
                 <section class="schedule-section">
-                    <!-- Coluna da Agenda de Hoje -->
                     <div class="schedule-card">
                         <h2 class="section-title">Agenda de Hoje</h2>
                         <div class="schedule-item">
@@ -233,7 +220,6 @@
                         </div>
                     </div>
 
-                    <!-- Coluna de Notificações -->
                     <div class="schedule-card">
                         <h2 class="section-title">Notificações</h2>
                         <div class="notifications">
@@ -280,9 +266,39 @@
         </main>
     </div>
 
-    <!-- Scripts da página -->
     <script src="{{ url_for('static', filename='assets/js/dashboard.min.js') }}" defer></script>
-    <!-- Navegação e controle de sessão -->
     <script src="{{ url_for('static', filename='assets/js/vta-nav.js') }}" defer></script>
+
+    {% raw %}
+    <script>
+        // Nav links: permite navegação para rotas do servidor e para arquivos estáticos
+        (function () {
+            'use strict';
+            const navLinks = document.querySelectorAll('.nav-link');
+            if (!navLinks || !navLinks.length) return;
+
+            navLinks.forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    const href = (link.getAttribute('href') || '').trim();
+
+                    // Se for rota do servidor (começa com /) ou URL externa, deixa o navegador navegar
+                    if (href.startsWith('/') || href.startsWith('http')) {
+                        navLinks.forEach(function (l) { l.classList.remove('active'); });
+                        link.classList.add('active');
+                        return;
+                    }
+
+                    // Se for link relativo para arquivo estático (ex: "6.%20pets_vta.html"), navega explicitamente
+                    if (href && href !== '#') {
+                        e.preventDefault();
+                        navLinks.forEach(function (l) { l.classList.remove('active'); });
+                        link.classList.add('active');
+                        window.location.href = href;
+                    }
+                }, { passive: true });
+            });
+        })();
+    </script>
+    {% endraw %}
 </body>
 </html>
