@@ -1137,37 +1137,42 @@
                 <h3 class="sidebar-title">Menu Principal</h3>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="2. dashboard_vta.html" class="nav-link">
+                        <a href="{{ url_for("dashboard") }}" class="nav-link">
                             <i class="fas fa-chart-pie"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="3. agenda_vta.html" class="nav-link active">
+                                <a href="{{ url_for("agenda_page") }}" class="nav-link active"
+                                       onclick='window.location.href="{{ url_for("agenda_page") }}"; return false;'>
                             <i class="fas fa-calendar"></i>
                             Agenda
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="4. agendamento_vta.html" class="nav-link">
+                                <a href="{{ url_for("agendamento_page") }}" class="nav-link"
+                                       onclick='window.location.href="{{ url_for("agendamento_page") }}"; return false;'>
                             <i class="fas fa-plus-circle"></i>
                             Novo Agendamento
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="5. clientes_vta.html" class="nav-link">
+                                <a href="{{ url_for("clientes_page") }}" class="nav-link"
+                                       onclick='window.location.href="{{ url_for("clientes_page") }}"; return false;'>
                             <i class="fas fa-users"></i>
                             Clientes
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="6. pets_vta.html" class="nav-link">
+                                <a href="{{ url_for("pets_page") }}" class="nav-link"
+                                       onclick='window.location.href="{{ url_for("pets_page") }}"; return false;'>
                             <i class="fas fa-paw"></i>
                             Pets
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="8. salas_vta.html" class="nav-link">
+                                <a href="{{ url_for("salas_page") }}" class="nav-link"
+                                       onclick='window.location.href="{{ url_for("salas_page") }}"; return false;'>
                             <i class="fas fa-door-open"></i>
                             Salas
                         </a>
@@ -1179,13 +1184,15 @@
                 <h3 class="sidebar-title">Relatórios</h3>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="9. relatorios_dashboard.html" class="nav-link">
+                                <a href="{{ url_for("relatorios_dashboard") }}" class="nav-link"
+                                       onclick='window.location.href="{{ url_for("relatorios_dashboard") }}"; return false;'>
                             <i class="fas fa-chart-bar"></i>
                             Relatórios ADM
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="10. relatorios_pets.html" class="nav-link">
+                                <a href="{{ url_for("relatorios_pets") }}" class="nav-link"
+                                       onclick='window.location.href="{{ url_for("relatorios_pets") }}"; return false;'>
                             <i class="fas fa-file-medical"></i>
                             Histórico Pets
                         </a>
