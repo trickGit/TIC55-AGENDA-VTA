@@ -1,145 +1,380 @@
 # Importações necessárias
-import os  # Para funções do sistema operacional, usado para gerar salt aleatório
-import hashlib  # Para funções de hash criptográfico
-import hmac  # Para comparação segura de strings
-from datetime import datetime, timezone  # Para registrar último login
-from uuid import uuid4  # Para gerar UUIDs únicos
-from backend.enums.perfil_usuario import PerfilUsuario # Importa enumeração de perfis de usuário
-from backend.enums.status_usuario import StatusUsuario # Importa enumeração de status de usuário
+import os
+import hashlib
+import hmac
+import re
+from datetime import datetime, timezone
+from uuid import uuid4, UUID
+from backend.enums.perfil_usuario import PerfilUsuario
+from backend.enums.status_usuario import StatusUsuario
+
 
 class Usuario:
-    # Permissões padrão usadas como fallback quando um perfil não está no mapa
-    # Esta constante é um frozenset vazio, tornando-a imutável e compartilhada entre todas as instâncias da classe.
-    PERMISSOES_PADRAO = frozenset()  # nenhum acesso por padrão
+    """
+    Representa um usuário do sistema com autenticação e controle de permissões.
+    
+    Attributes:
+        uuid: Identificador único do usuário
+        nome: Nome completo
+        email: Email (normalizado para lowercase)
+        senha_hash: Hash da senha (formato: iterations$salt$hash)
+        perfil: Perfil do usuário (define permissões)
+        status: Status do usuário (ativo/inativo)
+        ultimo_login: Timestamp do último login (UTC)
+    """
+    
+    # Permissões padrão (nenhuma por padrão)
+    PERMISSOES_PADRAO = frozenset()
 
-    # Mapa que define as permissões específicas para cada tipo de perfil
+    # Mapa de permissões por perfil
     PERMISSOES_POR_PERFIL = {
-        PerfilUsuario.ADMIN: {"visualizar", "criar", "editar", "excluir"},  # Todas as permissões
-        PerfilUsuario.RECEPCIONISTA: {"visualizar", "criar"},  # Permissões básicas
-        PerfilUsuario.VETERINARIO: {"visualizar"},  # Apenas visualização
+        PerfilUsuario.ADMIN: frozenset({"visualizar", "criar", "editar", "excluir"}),
+        PerfilUsuario.RECEPCIONISTA: frozenset({"visualizar", "criar"}),
+        PerfilUsuario.VETERINARIO: frozenset({"visualizar"}),
     }
 
-    # Construtor da classe Usuario
-    def __init__(self, uuid: str, nome: str, email: str, senha_hash: str, perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA, status: StatusUsuario = StatusUsuario.ATIVO, ultimo_login: datetime | None = None) -> None:
+    # Padrão de validação de email (básico mas mais robusto)
+    EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+
+    def __init__(
+        self, 
+        nome: str, 
+        email: str, 
+        senha_hash: str,
+        uuid: str | UUID | None = None,
+        perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA,
+        status: StatusUsuario = StatusUsuario.ATIVO,
+        ultimo_login: datetime | None = None
+    ) -> None:
+        """
+        Inicializa um novo usuário.
+        
+        Args:
+            nome: Nome do usuário (não pode ser vazio)
+            email: Email válido
+            senha_hash: Hash da senha já processado
+            uuid: UUID do usuário (gerado automaticamente se None)
+            perfil: Perfil de permissões
+            status: Status inicial
+            ultimo_login: Timestamp do último login (UTC)
+            
+        Raises:
+            ValueError: Se dados inválidos forem fornecidos
+        """
         # Validações
         if not nome or not nome.strip():
             raise ValueError("Nome não pode ser vazio")
-        if not email or "@" not in email:  
-            raise ValueError("Email inválido")
-        if not senha_hash:
+        
+        email = email.strip().lower() if email else ""
+        if not self._validar_email(email):
+            raise ValueError(f"Email inválido: {email}")
+        
+        if not senha_hash or not senha_hash.strip():
             raise ValueError("Hash de senha não pode ser vazio")
         
-        # Atribuições dos atributos
-        self.uuid = uuid if uuid is not None else str(uuid4())
-        self.nome = nome.strip()
-        self.email = email.strip().lower()
-        self.senha_hash = senha_hash
+        if not isinstance(perfil, PerfilUsuario):
+            raise ValueError("Perfil deve ser uma instância de PerfilUsuario")
+        
+        if not isinstance(status, StatusUsuario):
+            raise ValueError("Status deve ser uma instância de StatusUsuario")
+        
+        if ultimo_login is not None and not isinstance(ultimo_login, datetime):
+            raise ValueError("ultimo_login deve ser datetime ou None")
+        
+        # Atribuições
+        self.uuid = str(uuid) if uuid is not None else str(uuid4())
+        # CORREÇÃO 1: Normalizar espaços extras no nome
+        self.nome = ' '.join(nome.strip().split())
+        self.email = email
+        self.senha_hash = senha_hash.strip()
         self.perfil = perfil
         self.status = status
+        self.ultimo_login = ultimo_login
 
-        # Conversão automática de string ISO para datetime, se necessário
-        if isinstance(ultimo_login, str):
-            try:
-                self.ultimo_login = datetime.fromisoformat(ultimo_login)
-            except ValueError:
-                self.ultimo_login = None
-        else:
-            self.ultimo_login = ultimo_login  # datetime ou None
+    @classmethod
+    def _validar_email(cls, email: str) -> bool:
+        """Valida formato do email."""
+        return bool(email and cls.EMAIL_REGEX.match(email))
 
-    # Representação em string do objeto Usuario
     def __repr__(self) -> str:
-        ult = self.ultimo_login.isoformat() if isinstance(self.ultimo_login, datetime) else None
-        return f"Usuario(uuid={self.uuid!r}, nome={self.nome!r}, email={self.email!r}, status={self.status.value!r}, ultimo_login={ult!r})"
+        """Representação em string do usuário."""
+        ult = self.ultimo_login.isoformat() if self.ultimo_login else None
+        return (
+            f"Usuario(uuid={self.uuid!r}, nome={self.nome!r}, "
+            f"email={self.email!r}, perfil={self.perfil.value!r}, "
+            f"status={self.status.value!r}, ultimo_login={ult!r})"
+        )
 
-    # Static method para gerar hash de senha usando PBKDF2 e um salt aleatório
+    def __eq__(self, other) -> bool:
+        """Compara usuários pelo UUID."""
+        if not isinstance(other, Usuario):
+            return False
+        return self.uuid == other.uuid
+
+    def __hash__(self) -> int:
+        """Hash baseado no UUID."""
+        return hash(self.uuid)
+
     @staticmethod
     def hash_senha(senha: str, iterations: int = 600_000) -> str:
-        if not senha:
-            raise ValueError("Senha não pode ser vazia")    
-        salt = os.urandom(16)  # Gera um salt aleatório de 16 bytes
+        """
+        Gera hash seguro da senha usando PBKDF2-HMAC-SHA256.
+        
+        Args:
+            senha: Senha em texto plano
+            iterations: Número de iterações (mínimo 600.000 recomendado pela OWASP)
+            
+        Returns:
+            Hash no formato: iterations$salt_hex$hash_hex
+            
+        Raises:
+            ValueError: Se senha for vazia ou iterations < 100.000
+        """
+        if not senha or not senha.strip():
+            raise ValueError("Senha não pode ser vazia")
+        
+        if iterations < 100_000:
+            raise ValueError("Número de iterações muito baixo (mínimo: 100.000)")
+        
+        salt = os.urandom(16)
         dk = hashlib.pbkdf2_hmac("sha256", senha.encode("utf-8"), salt, iterations)
         return f"{iterations}${salt.hex()}${dk.hex()}"
 
-    # Static method para verificar se uma senha corresponde ao hash armazenado
     @staticmethod
-    def validar_senha(stored, senha) -> bool:
-        # Se o hash ou senha forem inválidos, retorna False
-        if not isinstance(stored, str) or not isinstance(senha, str):
+    def validar_senha(senha_hash: str, senha: str) -> bool:
+        """
+        Valida se a senha corresponde ao hash armazenado.
+        
+        Suporta dois formatos:
+        - PBKDF2 (atual): iterations$salt$hash
+        - SHA256 (legacy): hash_simples (INSEGURO - apenas para migração)
+        
+        Args:
+            senha_hash: Hash armazenado
+            senha: Senha em texto plano para validar
+            
+        Returns:
+            True se a senha está correta, False caso contrário
+        """
+        if not isinstance(senha_hash, str) or not isinstance(senha, str):
+            return False
+
+        if not senha_hash or not senha:
             return False
 
         try:
-            # Converte bytes para string, se necessário
-            if isinstance(stored, bytes):
-                stored = stored.decode("utf-8", errors="ignore")
-
-            # Formato PBKDF2
-            if "$" in stored:
-                iterations_str, salt_hex, dk_hex = stored.split("$", 2)
+            # Formato PBKDF2 (atual)
+            if "$" in senha_hash:
+                partes = senha_hash.split("$", 2)
+                if len(partes) != 3:
+                    return False
+                
+                iterations_str, salt_hex, dk_hex = partes
                 iterations = int(iterations_str)
                 salt = bytes.fromhex(salt_hex)
                 dk_stored = bytes.fromhex(dk_hex)
-                dk_new = hashlib.pbkdf2_hmac("sha256", senha.encode(), salt, iterations)
+                
+                dk_new = hashlib.pbkdf2_hmac(
+                    "sha256", 
+                    senha.encode("utf-8"), 
+                    salt, 
+                    iterations
+                )
                 return hmac.compare_digest(dk_new, dk_stored)
 
-            # Formato SHA256 antigo
-            return hmac.compare_digest(hashlib.sha256(senha.encode()).hexdigest(), stored)
+            # Formato SHA256 antigo (INSEGURO - apenas para migração de dados legados)
+            # TODO: Remover após migração completa
+            hash_simples = hashlib.sha256(senha.encode("utf-8")).hexdigest()
+            return hmac.compare_digest(senha_hash, hash_simples)
 
-        except Exception:
+        except (ValueError, TypeError, AttributeError):
             return False
 
-    # Instance method para autenticar o usuário (verifica também se está ativo)
-    def autenticar(self, senha: str) -> bool:
-        if not self.is_ativo():
-            return False
-        return Usuario.validar_senha(self.senha_hash, senha)
+    # Métodos de Status
 
-    # Verifica se o usuário está ativo
     def is_ativo(self) -> bool:
+        """Verifica se o usuário está ativo."""
         return self.status == StatusUsuario.ATIVO
 
-    # Ativa o usuário
     def ativar(self) -> None:
+        """Ativa o usuário."""
         self.status = StatusUsuario.ATIVO
 
-    # Desativa o usuário
     def desativar(self) -> None:
+        """Desativa o usuário."""
         self.status = StatusUsuario.INATIVO
 
-    # Define explicitamente o status (aceita apenas StatusUsuario)
     def set_status(self, status: StatusUsuario) -> None:
+        """
+        Define o status do usuário.
+        
+        Args:
+            status: Novo status
+            
+        Raises:
+            ValueError: Se status não for instância de StatusUsuario
+        """
         if not isinstance(status, StatusUsuario):
             raise ValueError("status deve ser uma instância de StatusUsuario")
         self.status = status
-    
-    # Registra o último login (usa UTC atual se data_hora for None)
+
+    # Métodos de Login
+
     def registrar_ultimo_login(self, data_hora: datetime | None = None) -> None:
+        """
+        Registra o timestamp do último login.
+        
+        Args:
+            data_hora: Timestamp do login (UTC atual se None)
+            
+        Raises:
+            ValueError: Se data_hora não for datetime ou None
+        """
         if data_hora is None:
             data_hora = datetime.now(timezone.utc)
+        
         if not isinstance(data_hora, datetime):
-            raise ValueError("data_hora deve ser um datetime ou None")
+            raise ValueError("data_hora deve ser datetime ou None")
+        
+        # Garante timezone UTC
+        if data_hora.tzinfo is None:
+            data_hora = data_hora.replace(tzinfo=timezone.utc)
+        
         self.ultimo_login = data_hora
 
-    # Retorna o último login (datetime ou None)
     def get_ultimo_login(self) -> datetime | None:
+        """Retorna o timestamp do último login."""
         return self.ultimo_login
-    
-    # Instance method para verificar se o usuário tem permissão para executar uma ação
-    def pode(self, acao) -> bool:
-        # Usuários inativos nunca têm permissão
+
+    # Sistema de Permissões
+
+    def pode(self, acao: str) -> bool:
+        """
+        Verifica se o usuário tem permissão para executar uma ação.
+        
+        Args:
+            acao: Nome da ação (visualizar, criar, editar, excluir)
+            
+        Returns:
+            True se o usuário tem permissão, False caso contrário
+            
+        Notes:
+            - Usuários inativos nunca têm permissão
+            - Admin tem todas as permissões
+            - Ação é normalizada (lowercase, sem espaços)
+        """
+        # Usuários inativos não têm permissão
         if not self.is_ativo():
             return False
 
-        # A ação deve ser string não vazia
+        # Validação da ação
         if not isinstance(acao, str):
             return False
+        
         acao_limpa = acao.strip().lower()
         if not acao_limpa:
             return False
 
-        # Admin tem todas as permissões
+        # Admin tem acesso total
         if self.perfil == PerfilUsuario.ADMIN:
             return True
 
-        # Permissões do perfil
-        permissoes = self.PERMISSOES_POR_PERFIL.get(self.perfil, self.PERMISSOES_PADRAO)
+        # Verifica permissões do perfil
+        permissoes = self.PERMISSOES_POR_PERFIL.get(
+            self.perfil, 
+            self.PERMISSOES_PADRAO
+        )
         return acao_limpa in permissoes
+
+    def get_permissoes(self) -> frozenset[str]:
+        """
+        Retorna todas as permissões do usuário.
+        
+        Returns:
+            Set imutável de permissões
+        """
+        if not self.is_ativo():
+            return frozenset()
+        
+        if self.perfil == PerfilUsuario.ADMIN:
+            return frozenset({"visualizar", "criar", "editar", "excluir"})
+        
+        return self.PERMISSOES_POR_PERFIL.get(
+            self.perfil, 
+            self.PERMISSOES_PADRAO
+        )
+
+    # Métodos de Serialização
+
+    def to_dict(self) -> dict:
+        """
+        Converte o usuário para dicionário.
+        
+        Returns:
+            Dicionário com todos os dados do usuário (sem senha_hash)
+        """
+        return {
+            "uuid": self.uuid,
+            "nome": self.nome,
+            "email": self.email,
+            "perfil": self.perfil.value,
+            "status": self.status.value,
+            "ultimo_login": self.ultimo_login.isoformat() if self.ultimo_login else None,
+            "permissoes": list(self.get_permissoes())
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict, senha_hash: str) -> "Usuario":
+        """
+        Cria usuário a partir de dicionário.
+        
+        Args:
+            data: Dicionário com dados do usuário
+            senha_hash: Hash da senha (não incluído no dict por segurança)
+            
+        Returns:
+            Nova instância de Usuario
+        """
+        ultimo_login = None
+        if data.get("ultimo_login"):
+            ultimo_login = datetime.fromisoformat(data["ultimo_login"])
+        
+        # CORREÇÃO 2: Tratar perfil como string (busca por nome ou valor)
+        perfil_valor = data.get("perfil", PerfilUsuario.RECEPCIONISTA.value)
+        if isinstance(perfil_valor, str):
+            try:
+                # Tenta pelo valor primeiro
+                perfil = PerfilUsuario(perfil_valor)
+            except ValueError:
+                # Se falhar, tenta pelo nome (ex: "VETERINARIO")
+                try:
+                    perfil = PerfilUsuario[perfil_valor]
+                except KeyError:
+                    perfil = PerfilUsuario.RECEPCIONISTA
+        else:
+            perfil = perfil_valor
+        
+        # CORREÇÃO 3: Tratar status como string (busca por nome ou valor)
+        status_valor = data.get("status", StatusUsuario.ATIVO.value)
+        if isinstance(status_valor, str):
+            try:
+                # Tenta pelo valor primeiro
+                status = StatusUsuario(status_valor)
+            except ValueError:
+                # Se falhar, tenta pelo nome (ex: "ATIVO")
+                try:
+                    status = StatusUsuario[status_valor]
+                except KeyError:
+                    status = StatusUsuario.ATIVO
+        else:
+            status = status_valor
+        
+        return cls(
+            uuid=data.get("uuid"),
+            nome=data["nome"],
+            email=data["email"],
+            senha_hash=senha_hash,
+            perfil=perfil,
+            status=status,
+            ultimo_login=ultimo_login
+        )
