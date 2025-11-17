@@ -1,4 +1,3 @@
-# Importações necessárias
 import os
 import hashlib
 import hmac
@@ -7,7 +6,6 @@ from datetime import datetime, timezone
 from uuid import uuid4, UUID
 from backend.enums.perfil_usuario import PerfilUsuario
 from backend.enums.status_usuario import StatusUsuario
-
 
 class Usuario:
     """
@@ -36,16 +34,7 @@ class Usuario:
     # Padrão de validação de email (básico mas mais robusto)
     EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 
-    def __init__(
-        self, 
-        nome: str, 
-        email: str, 
-        senha_hash: str,
-        uuid: str | UUID | None = None,
-        perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA,
-        status: StatusUsuario = StatusUsuario.ATIVO,
-        ultimo_login: datetime | None = None
-    ) -> None:
+    def __init__(self, nome: str, email: str, senha_hash: str, usuario_id: UUID | None = None, perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA, status: StatusUsuario = StatusUsuario.ATIVO, ultimo_login: datetime | None = None) -> None:
         """
         Inicializa um novo usuário.
         
@@ -82,8 +71,7 @@ class Usuario:
             raise ValueError("ultimo_login deve ser datetime ou None")
         
         # Atribuições
-        self.uuid = str(uuid) if uuid is not None else str(uuid4())
-        # CORREÇÃO 1: Normalizar espaços extras no nome
+        self.usuario_id = str(usuario_id) if usuario_id is not None else str(uuid4())
         self.nome = ' '.join(nome.strip().split())
         self.email = email
         self.senha_hash = senha_hash.strip()
@@ -314,7 +302,7 @@ class Usuario:
             Dicionário com todos os dados do usuário (sem senha_hash)
         """
         return {
-            "uuid": self.uuid,
+            "usuario_id": self.usuario_id,
             "nome": self.nome,
             "email": self.email,
             "perfil": self.perfil.value,
@@ -354,7 +342,6 @@ class Usuario:
         else:
             perfil = perfil_valor
         
-        # CORREÇÃO 3: Tratar status como string (busca por nome ou valor)
         status_valor = data.get("status", StatusUsuario.ATIVO.value)
         if isinstance(status_valor, str):
             try:
@@ -370,7 +357,7 @@ class Usuario:
             status = status_valor
         
         return cls(
-            uuid=data.get("uuid"),
+            usuario_id=data.get("usuario_id"),
             nome=data["nome"],
             email=data["email"],
             senha_hash=senha_hash,

@@ -1,4 +1,4 @@
-from uuid import uuid4
+from uuid import uuid4, UUID
 from datetime import datetime
 
 
@@ -15,7 +15,7 @@ class Sala:
         ativa: Se a sala está ativa/disponível
     """
     
-    def __init__(self, nome: str, tipo: str, ativa: bool = True,uuid: str | None = None):
+    def __init__(self, nome: str, tipo: str, ativa: bool = True, sala_id: UUID | None = None):
         """
         Inicializa uma nova sala.
         
@@ -37,7 +37,7 @@ class Sala:
         if not isinstance(ativa, bool):
             raise ValueError("Ativa deve ser booleano")
         
-        self.uuid = uuid if uuid is not None else str(uuid4())
+        self.sala_id = sala_id if sala_id is not None else str(uuid4())
         self.nome = nome.strip()
         self.tipo = tipo.strip()
         self.ativa = ativa
@@ -79,7 +79,7 @@ class Sala:
     def to_dict(self) -> dict:
         """Converte a sala para dicionário."""
         return {
-            "uuid": self.uuid,
+            "sala_id": self.sala_id,
             "nome": self.nome,
             "tipo": self.tipo,
             "ativa": self.ativa
@@ -89,7 +89,7 @@ class Sala:
     def from_dict(cls, data: dict) -> "Sala":
         """Cria sala a partir de dicionário."""
         return cls(
-            uuid=data.get("uuid"),
+            sala_id=data.get("sala_id"),
             nome=data["nome"],
             tipo=data["tipo"],
             ativa=data.get("ativa", True)

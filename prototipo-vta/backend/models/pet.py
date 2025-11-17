@@ -1,4 +1,4 @@
-from uuid import uuid4
+from uuid import uuid4, UUID
 from datetime import date
 
 
@@ -15,15 +15,7 @@ class Pet:
         nascimento: Data de nascimento
     """
     
-    def __init__(
-        self, 
-        nome: str, 
-        especie: str, 
-        raca: str,
-        nascimento: date,
-        pet_uuid: str | None = None,
-        cliente_id: int | None = None
-    ):
+    def __init__(self, nome: str, especie: str, raca: str,nascimento: date, pet_id: UUID | None = None,cliente_id: int | None = None):
         if not nome or not nome.strip():
             raise ValueError("Nome do pet não pode ser vazio")
         if not especie or not especie.strip():
@@ -31,7 +23,7 @@ class Pet:
         if not isinstance(nascimento, date):
             raise ValueError("Nascimento deve ser uma data válida")
         
-        self.uuid = pet_uuid if pet_uuid is not None else str(uuid4())
+        self.pet_id = pet_id if pet_id is not None else str(uuid4())
         self.cliente_id = cliente_id
         self.nome = nome.strip()
         self.especie = especie.strip()
@@ -40,7 +32,7 @@ class Pet:
     
     def __repr__(self) -> str:
         return (
-            f"Pet(uuid={self.uuid!r}, nome={self.nome!r}, "
+            f"Pet(pet_id={self.pet_id!r}, nome={self.nome!r}, "
             f"especie={self.especie!r}, raca={self.raca!r})"
         )
     
@@ -77,7 +69,7 @@ class Pet:
             Dicionário com dados do pet incluindo idade calculada
         """
         return {
-            "uuid": self.uuid,
+            "uuid": self.pet_id,
             "cliente_id": self.cliente_id,
             "nome": self.nome,
             "especie": self.especie,

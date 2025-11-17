@@ -1,4 +1,4 @@
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 class Endereco:
     """
@@ -15,7 +15,7 @@ class Endereco:
         cep: CEP
     """
     
-    def __init__(self, rua: str, numero: str | int, bairro: str, cidade: str, uf: str, cep: str, endereco_uuid: str | None = None, cliente_id: int | None = None):
+    def __init__(self, rua: str, numero: str | int, bairro: str, cidade: str, uf: str, cep: str, endereco_id: UUID | None = None, cliente_id: int | None = None):
         if not rua or not rua.strip():
             raise ValueError("Rua não pode ser vazia")
         if not bairro or not bairro.strip():
@@ -29,7 +29,7 @@ class Endereco:
         if not cep_limpo:
             raise ValueError("CEP inválido (use formato: 00000-000 ou 00000000)")
         
-        self.uuid = endereco_uuid if endereco_uuid is not None else str(uuid4())
+        self.endereco_id = endereco_id if endereco_id is not None else str(uuid4())
         self.cliente_id = cliente_id
         self.rua = rua.strip()
         self.numero = str(numero).strip()
@@ -50,7 +50,7 @@ class Endereco:
     
     def __repr__(self) -> str:
         return (
-            f"Endereco(uuid={self.uuid!r}, rua={self.rua!r}, "
+            f"Endereco(endereco_id={self.endereco_id!r}, rua={self.rua!r}, "
             f"numero={self.numero!r}, cidade={self.cidade!r}, uf={self.uf!r})"
         )
     
@@ -63,7 +63,7 @@ class Endereco:
     
     def to_dict(self) -> dict:
         return {
-            "uuid": self.uuid,
+            "uuid": self.endereco_id,
             "cliente_id": self.cliente_id,
             "rua": self.rua,
             "numero": self.numero,
