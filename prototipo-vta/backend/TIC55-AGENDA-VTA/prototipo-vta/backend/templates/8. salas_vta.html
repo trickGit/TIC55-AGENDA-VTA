@@ -739,37 +739,37 @@
                     <h3 class="sidebar-title">Menu Principal</h3>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="{{ url_for('dashboard') }}" class="nav-link">
+                            <a href="2.%20dashboard_vta.html" class="nav-link">
                                 <i class="fas fa-chart-pie"></i>
                                 Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('agenda_page') }}" class="nav-link">
+                            <a href="3.%20agenda_vta.html" class="nav-link">
                                 <i class="fas fa-calendar"></i>
                                 Agenda
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('agendamento_page') }}" class="nav-link">
+                            <a href="4.%20agendamento_vta.html" class="nav-link">
                                 <i class="fas fa-plus-circle"></i>
                                 Novo Agendamento
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('clientes_page') }}" class="nav-link">
+                            <a href="5.%20clientes_vta.html" class="nav-link">
                                 <i class="fas fa-users"></i>
                                 Clientes
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('pets_page') }}" class="nav-link">
+                            <a href="6.%20pets_vta.html" class="nav-link">
                                 <i class="fas fa-paw"></i>
                                 Pets
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('salas_page') }}" class="nav-link active">
+                            <a href="8.%20salas_vta.html" class="nav-link active">
                                 <i class="fas fa-door-open"></i>
                                 Salas
                             </a>
@@ -778,24 +778,18 @@
                 </div>
 
                 <div class="sidebar-section">
-                    <h3 class="sidebar-title">Administração</h3>
+                    <h3 class="sidebar-title">Relatórios</h3>
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a href="{{ url_for('relatorios_dashboard') }}" class="nav-link">
+                            <a href="9.%20relatorios_dashboard.html" class="nav-link">
                                 <i class="fas fa-chart-bar"></i>
                                 Relatórios ADM
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ url_for('relatorios_pets') }}" class="nav-link">
+                            <a href="10.%20relatorios_pets.html" class="nav-link">
                                 <i class="fas fa-file-medical"></i>
                                 Histórico Pets
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url_for('usuarios_page') }}" class="nav-link">
-                                <i class="fas fa-user-cog"></i>
-                                Usuários
                             </a>
                         </li>
                     </ul>
@@ -1419,33 +1413,25 @@
             }
         }
 
-        // Navegação do menu (comportamento igual ao dashboard)
-        (function () {
-            'use strict';
-            const navLinks = document.querySelectorAll('.nav-link');
-            if (!navLinks || !navLinks.length) return;
-
-            navLinks.forEach(function (link) {
-                link.addEventListener('click', function (e) {
-                    const href = (link.getAttribute('href') || '').trim();
-
-                    // Se for rota do servidor (começa com /) ou URL externa, permite navegação nativa
-                    if (href.startsWith('/') || href.startsWith('http')) {
-                        navLinks.forEach(function (l) { l.classList.remove('active'); });
-                        link.classList.add('active');
-                        return;
-                    }
-
-                    // Se for link relativo para arquivo estático, navega explicitamente
-                    if (href && href !== '#') {
-                        e.preventDefault();
-                        navLinks.forEach(function (l) { l.classList.remove('active'); });
-                        link.classList.add('active');
-                        window.location.href = href;
-                    }
-                }, { passive: true });
+        // Navegação do menu
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                navLinks.forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                link.classList.add('active');
+                
+                // Simulate navigation
+                const linkText = link.querySelector('i').nextElementSibling.textContent.trim();
+                if (linkText !== 'Salas') {
+                    alert(`Navegando para: ${linkText}`);
+                }
             });
-        })();
+        });
 
         // Fechar modal ao clicar fora
         window.addEventListener('click', (e) => {
@@ -1492,6 +1478,6 @@
         }, 10000); // Verificar a cada 10 segundos
     </script>
     <!-- Navegação e controle de sessão -->
-    <script src="{{ url_for('static', filename='assets/js/vta-nav.js') }}" defer></script>
+    <script src="assets/js/vta-nav.js" defer></script>
 </body>
 </html>

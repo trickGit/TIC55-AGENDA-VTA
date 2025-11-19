@@ -1,0 +1,504 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Agenda VTA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset e configurações básicas */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Paleta de cores VTA */
+        :root {
+            --vta-green: #52B788;
+            --vta-green-light: #74C69D;
+            --vta-green-dark: #40916C;
+            --vta-blue: #2E86AB;
+            --vta-blue-light: #48A3C7;
+            --vta-blue-dark: #1B5E7A;
+            --vta-orange: #F77F00;
+            --vta-orange-light: #FCBF49;
+            --vta-orange-dark: #D62828;
+            --white: #FFFFFF;
+            --gray-light: #F8F9FA;
+            --gray-medium: #6C757D;
+            --gray-dark: #343A40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-blue) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        /* Lado esquerdo - Branding */
+        .login-branding {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-light) 100%);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-branding::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-20px, -20px) rotate(360deg); }
+        }
+
+        .logo {
+            background: var(--white);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo i {
+            font-size: 48px;
+            color: var(--vta-green);
+        }
+
+        .branding-title {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .branding-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pet-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 24px;
+        }
+
+        .pet-icon:nth-child(1) { top: 20%; left: 10%; animation: bounce 3s ease-in-out infinite; }
+        .pet-icon:nth-child(2) { top: 70%; right: 15%; animation: bounce 3s ease-in-out infinite 1s; }
+        .pet-icon:nth-child(3) { bottom: 20%; left: 20%; animation: bounce 3s ease-in-out infinite 2s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Lado direito - Formulário */
+        .login-form-container {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-header h2 {
+            color: var(--gray-dark);
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-header p {
+            color: var(--gray-medium);
+            font-size: 1em;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray-dark);
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: var(--gray-light);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--vta-green);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(20%);
+            color: var(--gray-medium);
+            font-size: 1.1em;
+        }
+
+        .form-group.focused i {
+            color: var(--vta-green);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            accent-color: var(--vta-green);
+        }
+
+        .remember-me label {
+            margin: 0;
+            font-size: 0.9em;
+            color: var(--gray-medium);
+        }
+
+        .forgot-password {
+            color: var(--vta-blue);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: var(--vta-blue-dark);
+        }
+
+        .login-button {
+            background: linear-gradient(135deg, var(--vta-green) 0%, var(--vta-green-dark) 100%);
+            color: var(--white);
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button.loading {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #FFE6E6;
+            color: var(--vta-orange-dark);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            border-left: 4px solid var(--vta-orange-dark);
+            display: none;
+        }
+
+        .success-message {
+            background: #E8F5E8;
+            color: var(--vta-green-dark);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            border-left: 4px solid var(--vta-green);
+            display: none;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .login-branding {
+                padding: 40px 30px;
+                min-height: 300px;
+            }
+
+            .branding-title {
+                font-size: 2em;
+            }
+
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo i {
+                font-size: 40px;
+            }
+
+            .login-form-container {
+                padding: 40px 30px;
+            }
+
+            .form-header h2 {
+                font-size: 1.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-branding {
+                padding: 30px 20px;
+            }
+
+            .login-form-container {
+                padding: 30px 20px;
+            }
+
+            .form-group input {
+                padding: 12px 16px 12px 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-branding">
+            <i class="fas fa-paw pet-icon"></i>
+            <i class="fas fa-heart pet-icon"></i>
+            <i class="fas fa-bone pet-icon"></i>
+            
+            <div class="logo">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" ... >
+            </div>
+            
+            <h1 class="branding-title">Agenda VTA</h1>
+            <p class="branding-subtitle">
+                Sistema de agendamento profissional para a Clínica Veterinária VTA. 
+                Gestão inteligente de consultas e cuidado excepcional para seus pacientes.
+            </p>
+        </div>
+
+        <div class="login-form-container">
+            <div class="form-header">
+                <h2>Bem-vindo de volta!</h2>
+                <p>Faça login para acessar o sistema</p>
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-triangle"></i>
+                Credenciais inválidas. Tente novamente.
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                Login realizado com sucesso!
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email ou Usuário</label>
+                    <i class="fas fa-user"></i>
+                    <input 
+                        type="text" 
+                        id="email" 
+                        name="email" 
+                        placeholder="Digite seu email ou usuário"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Digite sua senha"
+                        required
+                    >
+                </div>
+
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Lembrar de mim</label>
+                    </div>
+                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" class="login-button" id="loginButton">
+                    <span id="buttonText">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Entrar no Sistema
+                    </span>
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+   <script>
+    // Elementos DOM
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const buttonText = document.getElementById('buttonText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
+
+    // Funções para feedback visual
+    function showMessage(type, message) {
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        const el = (type === 'error') ? errorMessage : successMessage;
+        el.style.display = 'block';
+        el.innerHTML = `<i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'}"></i> ${message}`;
+    }
+
+    function setLoading(loading) {
+        loginButton.disabled = loading;
+        buttonText.style.display = loading ? 'none' : 'flex';
+        loadingSpinner.style.display = loading ? 'block' : 'none';
+    }
+
+    // Evento de submissão do formulário
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Impede o recarregamento da página
+        setLoading(true);
+
+        const formData = new FormData(loginForm);
+
+        try {
+            // Envia os dados para o back-end
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json(); // Lê a resposta JSON do servidor
+
+            if (response.ok) {
+                // Se o login for bem-sucedido
+                showMessage('success', result.message);
+                
+                // Redireciona para a URL enviada pelo back-end APÓS 1 SEGUNDO
+                setTimeout(() => {
+                    window.location.href = result.redirect_url;
+                }, 1000);
+
+            } else {
+                // Se houver erro de login (ex: senha errada)
+                showMessage('error', result.message || 'Erro desconhecido.');
+            }
+        } catch (error) {
+            // Se houver erro de rede (servidor fora do ar)
+            console.error('Erro de conexão:', error);
+            showMessage('error', 'Não foi possível conectar ao servidor.');
+        } finally {
+            setLoading(false);
+        }
+    });
+</script>
+    <script src="assets/js/vta-nav.js" defer></script>
+</body>
+</html>

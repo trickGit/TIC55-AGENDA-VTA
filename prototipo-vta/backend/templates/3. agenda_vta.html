@@ -1181,7 +1181,7 @@
             </div>
 
             <div class="sidebar-section">
-                <h3 class="sidebar-title">Relatórios</h3>
+                <h3 class="sidebar-title">Administração</h3>
                 <ul class="nav-menu">
                     <li class="nav-item">
                                 <a href="{{ url_for("relatorios_dashboard") }}" class="nav-link"
@@ -1195,6 +1195,13 @@
                                        onclick='window.location.href="{{ url_for("relatorios_pets") }}"; return false;'>
                             <i class="fas fa-file-medical"></i>
                             Histórico Pets
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                                <a href="{{ url_for("usuarios_page") }}" class="nav-link"
+                                       onclick='window.location.href="{{ url_for("usuarios_page") }}"; return false;'>
+                            <i class="fas fa-user-cog"></i>
+                            Usuários
                         </a>
                     </li>
                 </ul>

@@ -7,20 +7,23 @@
 // sessão usando localStorage e realiza pequenos ajustes de layout.
 
 (function () {
-// Ajuste aqui para as rotas do Flask
-const ROUTES = {
-  dashboard: '/dashboard',
-  agenda: '/agenda',
-  agendamentos: '/agendamento',
-  clientes: '/clientes',
-  pets: '/pets',
-  usuarios: '/usuarios',
-  salas: '/salas',
-  relatoriosDashboard: '/relatorios',
-  relatoriosPets: '/relatorios/pets',
-  notificacoes: '11.%20notificacoes_vta.html',
-  login: '/' // A rota de login é a raiz
-};
+  // Ajuste aqui os nomes dos arquivos se renomeá-los no futuro.
+  const ROUTES = {
+    // Note: os nomes de arquivos contêm espaços após o número. Na URL, o espaço precisa
+    // ser codificado como %20 para evitar quebra de atributos HTML. Por isso,
+    // usamos "%20" no lugar de espaço.
+    dashboard: '2.%20dashboard_vta.html',
+    agenda: '3.%20agenda_vta.html',
+    agendamentos: '4.%20agendamento_vta.html',
+    clientes: '5.%20clientes_vta.html',
+    pets: '6.%20pets_vta.html',
+    usuarios: '7.%20usuarios_vta.html',
+    salas: '8.%20salas_vta.html',
+    relatoriosDashboard: '9.%20relatorios_dashboard.html',
+    relatoriosPets: '10.%20relatorios_pets.html',
+    notificacoes: '11.%20notificacoes_vta.html',
+    login: '1.%20login_vta.html'
+  };
 
   // Usuário de demonstração (pode ser ajustado conforme necessário)
   const DEMO_USER = {

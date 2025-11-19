@@ -90,53 +90,5 @@ def agenda_page():
     # Renderiza o arquivo HTML da agenda
     return render_template('3. agenda_vta.html')
 
-# Nova rota para Agendamento (Novo / Editar)
-@app.route('/agendamento')
-def agendamento_page():
-    if 'user_id' not in session:
-        return redirect(url_for('login_page'))
-    return render_template('4. agendamento_vta.html')
-
-# Rota dos Pets
-@app.route('/pets')
-def pets_page():
-    if 'user_id' not in session:
-        return redirect(url_for('login_page'))
-    return render_template('6. pets_vta.html')
-
-# Nova rota para Clientes
-@app.route('/clientes')
-def clientes_page():
-    if 'user_id' not in session:
-        return redirect(url_for('login_page'))
-    return render_template('5. clientes_vta.html')
-
-# Nova rota para Salas
-@app.route('/salas')
-def salas_page():
-    if 'user_id' not in session:
-        return redirect(url_for('login_page'))
-    return render_template('8. salas_vta.html')
-
-# Rota para Relatórios ADM
-@app.route('/relatorios')
-def relatorios_dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login_page'))
-    return render_template('9. relatorios_dashboard.html')
-
-# Nova rota para Relatórios Pets
-@app.route('/relatorios/pets')
-def relatorios_pets():
-    if 'user_id' not in session:
-        return redirect(url_for('login_page'))
-    return render_template('10. relatorios_pets.html')
-
-# Nova rota para Usuários
-@app.route('/usuarios')
-def usuarios_page():
-    if 'user_id' not in session:
-        return redirect(url_for('login_page'))
-    return render_template('7. usuarios_vta.html')
 # Adicione aqui outras rotas para as demais páginas (clientes, pets, etc.)
 # seguindo o mesmo modelo.
