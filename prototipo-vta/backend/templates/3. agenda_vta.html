@@ -259,7 +259,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             flex-wrap: nowrap;
         }
 
@@ -271,16 +271,16 @@
         }
 
         .view-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border: none;
             background: none;
             cursor: pointer;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: all 0.3s ease;
             color: var(--gray-medium);
-            min-width: 80px;
+            min-width: 65px;
         }
 
         .view-btn.active {
@@ -292,24 +292,24 @@
         .date-navigation {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             flex-wrap: nowrap;
         }
 
         .btn-hoje {
-            padding: 0.75rem 1.5rem;
+            padding: 0.65rem 1.2rem;
             border: none;
             background: var(--gray-light);
             color: var(--gray-dark);
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
 
         .btn-hoje:hover {
@@ -337,10 +337,10 @@
         }
 
         .current-period {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             color: var(--gray-dark);
-            min-width: 220px;
+            min-width: 200px;
             text-align: center;
         }
 
@@ -352,16 +352,17 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.65rem 1.2rem;
             border: none;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -525,7 +526,7 @@
         .grid-row {
             display: grid;
             grid-template-columns: 100px repeat(4, 1fr);
-            border-bottom: 1px solid var(--gray-light);
+            border-bottom: 1px solid #c0c0c0;
         }
 
         .grid-row.dia-scroll {
@@ -543,7 +544,7 @@
 
         .appointment-cell {
             padding: 0.5rem;
-            border-right: 1px solid var(--gray-light);
+            border-right: 1px solid #c0c0c0;
             position: relative;
             min-height: 80px;
             cursor: pointer;
@@ -554,40 +555,53 @@
             max-width: 220px;
         }
 
+        /* ALTERAÇÕES PRINCIPAIS: Células expansíveis com scroll à esquerda e cards menores */
         .appointment-cell.expandable {
             overflow-y: auto;
             position: relative;
-            padding: 0.5rem 0.4rem;
+            padding: 0.2rem;
+            direction: rtl;
+            border-right: 1px solid #c0c0c0;
+            min-height: 180px;
+            max-height: 180px;
+        }
+
+        .appointment-cell.expandable > * {
+            direction: ltr;
         }
 
         .appointment-cell.expandable::-webkit-scrollbar {
-            width: 4px;
+            width: 8px;
         }
 
         .appointment-cell.expandable::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.05);
-            border-radius: 2px;
+            border-radius: 4px;
         }
 
         .appointment-cell.expandable::-webkit-scrollbar-thumb {
             background: var(--vta-green);
-            border-radius: 2px;
+            border-radius: 4px;
         }
 
-        /* Lista de horários diretamente na célula */
+        .appointment-cell.expandable::-webkit-scrollbar-thumb:hover {
+            background: var(--vta-green-dark);
+        }
+
+        /* Lista de horários diretamente na célula - CARDS MENORES */
         .horarios-lista-semana {
             display: flex;
             flex-direction: column;
-            gap: 0.35rem;
+            gap: 0.25rem;
             width: 100%;
         }
 
         .horario-item-semana {
             display: flex;
             flex-direction: column;
-            padding: 0.4rem 0.5rem;
+            padding: 0.25rem 0.3rem;
             background: var(--white);
-            border-radius: 5px;
+            border-radius: 4px;
             border-left: 3px solid;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             cursor: pointer;
@@ -603,39 +617,39 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.15rem;
         }
 
         .horario-item-tempo {
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--gray-dark);
         }
 
         .horario-item-pet {
             font-weight: 600;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: var(--gray-dark);
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .horario-item-cliente {
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             color: var(--gray-medium);
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .horario-livre-item-semana {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.4rem 0.5rem;
+            padding: 0.25rem 0.3rem;
             background: rgba(82, 183, 136, 0.1);
-            border-radius: 5px;
+            border-radius: 4px;
             border: 1px dashed var(--vta-green);
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
         }
 
         .horario-livre-item-semana:hover {
@@ -814,18 +828,26 @@
             overflow: hidden;
         }
 
+        .week-grid-header .grid-cell {
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
         .week-grid-header .grid-cell:first-child {
             border-radius: 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .week-grid-header .grid-cell:last-child {
             border-radius: 0;
+            border-right: none;
         }
 
         .week-grid-header .time-label {
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100px;
+            min-width: 100px;
             max-width: 100px;
             overflow: hidden;
             white-space: nowrap;
@@ -834,7 +856,7 @@
         .week-grid-row {
             display: grid;
             grid-template-columns: 100px repeat(5, 1fr);
-            border-bottom: 1px solid var(--gray-light);
+            border-bottom: 1px solid #c0c0c0;
         }
 
         .week-grid-row .time-cell {
@@ -843,8 +865,10 @@
             align-items: center;
             justify-content: center;
             gap: 0.25rem;
-            border-right: 2px solid var(--gray-light);
+            border-right: 1px solid #c0c0c0;
             background: var(--gray-light);
+            width: 100px;
+            min-width: 100px;
             max-width: 100px;
             overflow: hidden;
             white-space: nowrap;
@@ -1326,7 +1350,7 @@
                         </a>
                     </li>
                     <li class="sidebar-menu-item">
-                        <a href="#" class="sidebar-menu-link">
+                        <a href="#" class="sidebar-menu-link" onclick="gerenciarSalas(); return false;">
                             <i class="fas fa-door-open"></i>
                             <span>Salas</span>
                         </a>
@@ -1383,9 +1407,9 @@
                             <i class="fas fa-plus"></i>
                             Novo
                         </button>
-                        <button class="btn btn-secondary" onclick="gerenciarSalas()">
-                            <i class="fas fa-cog"></i>
-                            Salas
+                        <button class="btn btn-secondary" onclick="abrirBusca()">
+                            <i class="fas fa-search"></i>
+                            Buscar
                         </button>
                         <button class="btn btn-secondary" id="btnVisualizacaoSemana"
                             onclick="alternarVisualizacaoSemana()" style="display: none; min-width: 180px;">
@@ -1425,6 +1449,10 @@
                 <div class="form-group">
                     <label for="salaSelect">Sala</label>
                     <select id="salaSelect" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="veterinarioInput">Veterinário(a)</label>
+                    <input type="text" id="veterinarioInput" placeholder="Dr(a). Nome">
                 </div>
                 <div class="form-group">
                     <label for="dataHoraInput">Data e Hora</label>
@@ -1522,6 +1550,28 @@
         </div>
     </div>
 
+    <!-- Modal de Busca -->
+    <div class="modal" id="modalBusca">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Buscar Agendamentos</h2>
+                <button class="close-btn" onclick="fecharBusca()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="buscaInput">Digite sua busca</label>
+                <input type="text" id="buscaInput" placeholder="Cliente, Pet, Sala..." oninput="realizarBusca()">
+            </div>
+            <div id="resultadosBusca" style="margin-top: 1rem;">
+                <p style="text-align: center; color: var(--gray-medium); padding: 2rem;">
+                    Digite algo para buscar agendamentos...
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharBusca()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Estado global
         const estadoAtual = {
@@ -1581,7 +1631,6 @@
             const salvos = localStorage.getItem('salas_config_vta');
             if (salvos) {
                 const salasCarregadas = JSON.parse(salvos);
-                // Garantir que todas as salas tenham cor e veterinário
                 salas = salasCarregadas.map(sala => ({
                     ...sala,
                     cor: sala.cor || '#52B788',
@@ -1615,6 +1664,33 @@
                 }
             }
             return horarios;
+        }
+
+        // Normalizar horários fracionados para o bloco base (ex: 11:10, 11:20 -> 11:00)
+        function normalizarHorario(horario) {
+            const [hora, minuto] = horario.split(':').map(Number);
+            if (minuto < 30) {
+                return `${String(hora).padStart(2, '0')}:00`;
+            } else {
+                return `${String(hora).padStart(2, '0')}:30`;
+            }
+        }
+
+        // Verificar conflito de horário
+        function verificarConflito(sala, horario, data, agendamentoEditandoId = null) {
+            const horarioNormalizado = normalizarHorario(horario);
+
+            return agendamentos.some(a => {
+                if (agendamentoEditandoId && a.id === agendamentoEditandoId) {
+                    return false; // Ignorar o próprio agendamento sendo editado
+                }
+
+                const horarioAgendamentoNormalizado = normalizarHorario(a.horario);
+
+                return a.sala === sala &&
+                       mesmaData(a.data, data) &&
+                       horarioAgendamentoNormalizado === horarioNormalizado;
+            });
         }
 
         function mesmaData(data1, data2) {
@@ -1815,11 +1891,10 @@
             appointmentDiv.className = `appointment`;
             appointmentDiv.draggable = true;
             appointmentDiv.dataset.id = agendamento.id;
-            
-            // Buscar cor e veterinário da sala
+
             const sala = salas.find(s => s.id === agendamento.sala);
             const corSala = sala && sala.cor ? sala.cor : '#52B788';
-            const veterinario = sala && sala.veterinario ? sala.veterinario : 'Dr(a).';
+            const veterinario = agendamento.veterinario || (sala && sala.veterinario ? sala.veterinario : 'Dr(a).');
             appointmentDiv.style.background = corSala;
 
             appointmentDiv.innerHTML = `
@@ -1850,7 +1925,6 @@
             const gridWrapper = document.querySelector('.grid-wrapper');
             const horarios = gerarHorarios();
 
-            // Ativar scroll no wrapper para aba dia
             gridWrapper.className = 'grid-wrapper dia-scroll';
             gridBody.className = 'grid-body dia-scroll';
 
@@ -1918,13 +1992,12 @@
             });
         }
 
-        // Renderizar grade SEMANA
+        // Renderizar grade SEMANA - COM ALTERAÇÕES PARA SCROLL À ESQUERDA E CARDS MENORES
         function renderizarGradeSemana() {
             const gridHeader = document.getElementById('gridHeader');
             const gridBody = document.getElementById('agendaGridBody');
             const gridWrapper = document.querySelector('.grid-wrapper');
 
-            // Desativar scroll no wrapper
             gridWrapper.className = 'grid-wrapper';
 
             gridBody.className = 'grid-body';
@@ -1973,7 +2046,6 @@
                     appointmentCell.className = 'appointment-cell expandable';
                     appointmentCell.dataset.data = dia.toISOString();
                     appointmentCell.dataset.sala = sala.id;
-                    appointmentCell.style.minHeight = '120px';
 
                     appointmentCell.addEventListener('dragover', handleDragOver);
                     appointmentCell.addEventListener('drop', handleDrop);
@@ -1991,38 +2063,24 @@
 
                     if (visualizacaoSemana === 'agendados') {
                         if (agendamentosDaSala.length > 0) {
-                            // Adicionar badge de contagem com cor da sala
-                            const corSala = sala.cor || '#52B788';
-                            const badgeContador = document.createElement('div');
-                            badgeContador.className = 'contador-badge';
-                            badgeContador.style.backgroundColor = corSala;
-                            badgeContador.textContent = agendamentosDaSala.length;
-                            appointmentCell.appendChild(badgeContador);
-
-                            const resumoDiv = document.createElement('div');
-                            resumoDiv.className = 'horarios-resumo';
-                            resumoDiv.innerHTML = `
-                                <div class="contador-agendamentos">${agendamentosDaSala.length}</div>
-                                <div class="icone-expandir">
-                                    <i class="fas fa-chevron-down"></i>
-                                </div>
-                            `;
-                            appointmentCell.appendChild(resumoDiv);
-
-                            const expandidoDiv = document.createElement('div');
-                            expandidoDiv.className = 'horarios-expandidos';
+                            const listaDiv = document.createElement('div');
+                            listaDiv.className = 'horarios-lista-semana';
 
                             agendamentosDaSala.forEach(agendamento => {
                                 const corSala = sala.cor || '#52B788';
-                                
+                                const veterinario = agendamento.veterinario || sala.veterinario || 'Dr(a).';
+
                                 const horarioItem = document.createElement('div');
-                                horarioItem.className = `horario-item`;
-                                horarioItem.style.borderLeftColor = corSala;
+                                horarioItem.className = 'appointment';
+                                horarioItem.style.background = corSala;
                                 horarioItem.innerHTML = `
-                                    <div class="horario-tempo">${agendamento.horario}</div>
-                                    <div class="horario-info">
-                                        <div class="horario-pet">${agendamento.pet}</div>
-                                        <div class="horario-cliente">${agendamento.cliente}</div>
+                                    <div class="appointment-header">
+                                        <div class="appointment-cliente">${agendamento.cliente}</div>
+                                        <div class="appointment-veterinario">${veterinario}</div>
+                                    </div>
+                                    <div class="appointment-footer">
+                                        <div class="appointment-pet">${agendamento.pet}</div>
+                                        <div class="appointment-horario">${agendamento.horario}</div>
                                     </div>
                                 `;
 
@@ -2031,40 +2089,24 @@
                                     mostrarDetalhesAgendamento(agendamento);
                                 };
 
-                                expandidoDiv.appendChild(horarioItem);
+                                listaDiv.appendChild(horarioItem);
                             });
 
-                            appointmentCell.appendChild(expandidoDiv);
-
-                            appointmentCell.addEventListener('mouseenter', function (e) {
-                                const rect = this.getBoundingClientRect();
-                                expandidoDiv.style.top = `${rect.bottom + window.scrollY}px`;
-                                expandidoDiv.style.left = `${rect.left + window.scrollX}px`;
-                                expandidoDiv.style.width = `${rect.width}px`;
-                            });
+                            appointmentCell.appendChild(listaDiv);
                         }
                     } else {
                         if (horariosLivres.length > 0) {
-                            const resumoDiv = document.createElement('div');
-                            resumoDiv.className = 'horarios-resumo';
-                            resumoDiv.innerHTML = `
-                                <div class="icone-expandir">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                            `;
-                            appointmentCell.appendChild(resumoDiv);
-
-                            const expandidoDiv = document.createElement('div');
-                            expandidoDiv.className = 'horarios-livres-lista';
+                            const listaDiv = document.createElement('div');
+                            listaDiv.className = 'horarios-lista-semana';
 
                             horariosLivres.forEach(horario => {
                                 const horarioItem = document.createElement('div');
-                                horarioItem.className = 'horario-livre-item';
+                                horarioItem.className = 'horario-livre-item-semana';
                                 horarioItem.innerHTML = `
-                                    <div class="horario-livre-tempo">${horario}</div>
-                                    <div class="horario-livre-status">
+                                    <div class="horario-livre-tempo" style="font-weight: 700; font-size: 0.6rem;">${horario}</div>
+                                    <div class="horario-livre-status" style="font-size: 0.55rem; color: var(--vta-green);">
                                         <i class="fas fa-check-circle"></i>
-                                        Disponível
+                                        Livre
                                     </div>
                                 `;
 
@@ -2074,25 +2116,14 @@
                                     selecionarHorario(sala.id, horario);
                                 };
 
-                                expandidoDiv.appendChild(horarioItem);
+                                listaDiv.appendChild(horarioItem);
                             });
 
-                            appointmentCell.appendChild(expandidoDiv);
-
-                            appointmentCell.addEventListener('mouseenter', function (e) {
-                                const rect = this.getBoundingClientRect();
-                                expandidoDiv.style.top = `${rect.bottom + window.scrollY}px`;
-                                expandidoDiv.style.left = `${rect.left + window.scrollX}px`;
-                                expandidoDiv.style.width = `${rect.width}px`;
-                            });
+                            appointmentCell.appendChild(listaDiv);
                         } else {
                             const vazioDiv = document.createElement('div');
-                            vazioDiv.className = 'horarios-resumo';
-                            vazioDiv.innerHTML = `
-                                <div style="font-size: 0.8rem; opacity: 0.5;">
-                                    <i class="fas fa-ban"></i>
-                                </div>
-                            `;
+                            vazioDiv.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; font-size: 0.7rem; opacity: 0.5; color: var(--gray-medium);';
+                            vazioDiv.innerHTML = '<i class="fas fa-ban"></i>';
                             appointmentCell.appendChild(vazioDiv);
                         }
                     }
@@ -2117,7 +2148,6 @@
             const gridBody = document.getElementById('agendaGridBody');
             const gridWrapper = document.querySelector('.grid-wrapper');
 
-            // Desativar scroll no wrapper
             gridWrapper.className = 'grid-wrapper';
 
             gridHeader.className = 'grid-header';
@@ -2144,7 +2174,6 @@
             let dataAtual = new Date(primeiroDia);
             dataAtual.setDate(dataAtual.getDate() - diaSemanaInicio);
 
-            // Sempre exibir exatamente 5 semanas para caber na tela
             const semanasExibir = 5;
 
             for (let semana = 0; semana < semanasExibir; semana++) {
@@ -2232,7 +2261,6 @@
             salasLista.innerHTML = '';
 
             salasTemporarias.forEach((sala, index) => {
-                // Garantir que a sala tenha cor e veterinário
                 if (!sala.cor) sala.cor = '#52B788';
                 if (!sala.veterinario) sala.veterinario = 'Dr(a).';
 
@@ -2249,7 +2277,7 @@
                             <input type="text" placeholder="Tipo (ex: Consulta)" value="${sala.tipo}" id="salaTipo${index}" required>
                         </div>
                         <div class="sala-inputs-row">
-                            <input type="text" placeholder="Dr(a)." value="${sala.veterinario}" id="salaVet${index}">
+                            <input type="text" placeholder="Dr(a). Exemplo: Dr. João" value="${sala.veterinario}" id="salaVet${index}" class="sala-vet-input">
                         </div>
                     </div>
                     ${salasTemporarias.length > 1 ? `
@@ -2289,13 +2317,10 @@
         function adicionarNovaSala() {
             const coresDisponiveis = ['#52B788', '#2E86AB', '#F77F00', '#9D4EDD', '#E63946', '#06FFA5', '#FFB703', '#8338EC', '#FF006E', '#8AC926', '#1982C4', '#6A4C93'];
             
-            // Pegar cores já usadas
             const coresUsadas = salasTemporarias.map(s => s.cor.toUpperCase());
             
-            // Encontrar primeira cor disponível que não está sendo usada
             let corSelecionada = coresDisponiveis.find(cor => !coresUsadas.includes(cor.toUpperCase()));
             
-            // Se todas as cores estão em uso, usar uma aleatória
             if (!corSelecionada) {
                 corSelecionada = coresDisponiveis[Math.floor(Math.random() * coresDisponiveis.length)];
             }
@@ -2375,6 +2400,142 @@
             salasTemporarias = [];
         }
 
+        // Funções de Busca
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function abrirBusca() {
+            document.getElementById('modalBusca').classList.add('show');
+            document.getElementById('buscaInput').value = '';
+            document.getElementById('resultadosBusca').innerHTML = `
+                <p style="text-align: center; color: var(--gray-medium); padding: 2rem;">
+                    Digite algo para buscar agendamentos...
+                </p>
+            `;
+            setTimeout(() => {
+                document.getElementById('buscaInput').focus();
+            }, 100);
+        }
+
+        function fecharBusca() {
+            document.getElementById('modalBusca').classList.remove('show');
+        }
+
+        function realizarBusca() {
+            const termoBusca = document.getElementById('buscaInput').value.toLowerCase().trim();
+            const resultadosDiv = document.getElementById('resultadosBusca');
+
+            if (termoBusca.length === 0) {
+                resultadosDiv.innerHTML = `
+                    <p style="text-align: center; color: var(--gray-medium); padding: 2rem;">
+                        Digite algo para buscar agendamentos...
+                    </p>
+                `;
+                return;
+            }
+
+            const resultados = agendamentos.filter(agendamento => {
+                const cliente = agendamento.cliente.toLowerCase();
+                const pet = agendamento.pet.toLowerCase();
+                const nomeSala = getNomeSala(agendamento.sala).toLowerCase();
+                const tipoSala = getTipoSala(agendamento.sala).toLowerCase();
+                const veterinario = (agendamento.veterinario || '').toLowerCase();
+                const obs = (agendamento.obs || '').toLowerCase();
+
+                return cliente.includes(termoBusca) ||
+                       pet.includes(termoBusca) ||
+                       nomeSala.includes(termoBusca) ||
+                       tipoSala.includes(termoBusca) ||
+                       veterinario.includes(termoBusca) ||
+                       obs.includes(termoBusca) ||
+                       agendamento.horario.includes(termoBusca);
+            });
+
+            if (resultados.length === 0) {
+                resultadosDiv.innerHTML = `
+                    <p style="text-align: center; color: var(--gray-medium); padding: 2rem;">
+                        <i class="fas fa-search" style="font-size: 2rem; opacity: 0.5; margin-bottom: 1rem; display: block;"></i>
+                        Nenhum resultado encontrado para "${termoBusca}"
+                    </p>
+                `;
+                return;
+            }
+
+            // Ordenar por data mais próxima
+            resultados.sort((a, b) => a.data - b.data);
+
+            let html = `<div style="display: flex; flex-direction: column; gap: 0.75rem;">`;
+
+            resultados.forEach(agendamento => {
+                const corSala = salas.find(s => s.id === agendamento.sala)?.cor || '#52B788';
+                const corFundo = hexToRgba(corSala, 0.15);
+                const dataFormatada = agendamento.data.toLocaleDateString('pt-BR');
+                const diaSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][agendamento.data.getDay()];
+
+                html += `
+                    <div class="resultado-busca" onclick="mostrarDetalhesAgendamento({
+                        id: ${agendamento.id},
+                        cliente: '${agendamento.cliente.replace(/'/g, "\\'")}',
+                        pet: '${agendamento.pet.replace(/'/g, "\\'")}',
+                        sala: '${agendamento.sala}',
+                        veterinario: '${(agendamento.veterinario || '').replace(/'/g, "\\'")}',
+                        horario: '${agendamento.horario}',
+                        data: new Date('${agendamento.data.toISOString()}'),
+                        obs: '${(agendamento.obs || '').replace(/'/g, "\\'")}'
+                    }); fecharBusca();" style="
+                        background: ${corFundo};
+                        border-left: 4px solid ${corSala};
+                        padding: 1rem;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    " onmouseover="this.style.transform='translateX(5px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)';"
+                       onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)';">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <div>
+                                <div style="font-weight: 700; font-size: 1.1rem; color: var(--gray-dark); margin-bottom: 0.25rem;">
+                                    ${agendamento.cliente}
+                                </div>
+                                <div style="color: var(--gray-medium); font-size: 0.9rem;">
+                                    <i class="fas fa-paw"></i> ${agendamento.pet}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: 600; color: ${corSala}; font-size: 1rem;">
+                                    ${agendamento.horario}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--gray-medium);">
+                                    ${diaSemana}, ${dataFormatada}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--gray-medium);">
+                            <div>
+                                <i class="fas fa-door-open"></i> ${getNomeSala(agendamento.sala)}
+                            </div>
+                            ${agendamento.veterinario ? `
+                                <div>
+                                    <i class="fas fa-user-md"></i> ${agendamento.veterinario}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            html += `<p style="text-align: center; color: var(--gray-medium); margin-top: 1rem; font-size: 0.9rem;">
+                ${resultados.length} resultado${resultados.length > 1 ? 's' : ''} encontrado${resultados.length > 1 ? 's' : ''}
+            </p>`;
+
+            resultadosDiv.innerHTML = html;
+        }
+
         function atualizarSelectSalas() {
             const salaSelect = document.getElementById('salaSelect');
             salaSelect.innerHTML = '';
@@ -2440,7 +2601,7 @@
                 </div>
                 <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light);">
                     <div style="font-size: 0.85rem; color: var(--gray-medium); font-weight: 600; margin-bottom: 0.5rem;">VETERINÁRIO</div>
-                    <div style="font-size: 1.1rem; color: var(--gray-dark); font-weight: 500;">${getVeterinarioSala(agendamento.sala)}</div>
+                    <div style="font-size: 1.1rem; color: var(--gray-dark); font-weight: 500;">${agendamento.veterinario || getVeterinarioSala(agendamento.sala)}</div>
                 </div>
                 <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light);">
                     <div style="font-size: 0.85rem; color: var(--gray-medium); font-weight: 600; margin-bottom: 0.5rem;">DATA E HORÁRIO</div>
@@ -2471,6 +2632,10 @@
             document.getElementById('petInput').value = agendamentoEditando.pet;
             document.getElementById('salaSelect').value = agendamentoEditando.sala;
             document.getElementById('obsTextarea').value = agendamentoEditando.obs || '';
+
+            // Preencher veterinário (do agendamento ou da sala)
+            const veterinario = agendamentoEditando.veterinario || getVeterinarioSala(agendamentoEditando.sala);
+            document.getElementById('veterinarioInput').value = veterinario;
 
             const dataHora = new Date(agendamentoEditando.data);
             const [horas, minutos] = agendamentoEditando.horario.split(':');
@@ -2524,18 +2689,32 @@
             const clienteInput = document.getElementById('clienteInput');
             const petInput = document.getElementById('petInput');
             const salaSelect = document.getElementById('salaSelect');
+            const veterinarioInput = document.getElementById('veterinarioInput');
             const dataHoraInput = document.getElementById('dataHoraInput');
             const obsTextarea = document.getElementById('obsTextarea');
 
             const dataHora = new Date(dataHoraInput.value);
             const horario = dataHoraInput.value.split('T')[1];
 
+            // Verificar conflito de horário
+            const agendamentoId = agendamentoEditando ? agendamentoEditando.id : null;
+            if (verificarConflito(salaSelect.value, horario, dataHora, agendamentoId)) {
+                const horarioNormalizado = normalizarHorario(horario);
+                const nomeSala = getNomeSala(salaSelect.value);
+                mostrarToast(`Não é permitido marcar agendamento! Já existe um agendamento na ${nomeSala} às ${horarioNormalizado}.`, 'error');
+                return;
+            }
+
+            // Normalizar horário para o bloco base
+            const horarioNormalizado = normalizarHorario(horario);
+
             if (agendamentoEditando) {
                 agendamentoEditando.cliente = clienteInput.value;
                 agendamentoEditando.pet = petInput.value;
                 agendamentoEditando.sala = salaSelect.value;
+                agendamentoEditando.veterinario = veterinarioInput.value;
                 agendamentoEditando.data = dataHora;
-                agendamentoEditando.horario = horario;
+                agendamentoEditando.horario = horarioNormalizado;
                 agendamentoEditando.obs = obsTextarea.value;
 
                 salvarAgendamentos();
@@ -2546,8 +2725,9 @@
                     cliente: clienteInput.value,
                     pet: petInput.value,
                     sala: salaSelect.value,
+                    veterinario: veterinarioInput.value,
                     data: dataHora,
-                    horario: horario,
+                    horario: horarioNormalizado,
                     duracao: 30,
                     status: "agendado",
                     tipo: getTipoSala(salaSelect.value),
