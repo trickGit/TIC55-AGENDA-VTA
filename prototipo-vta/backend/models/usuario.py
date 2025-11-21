@@ -34,7 +34,7 @@ class Usuario:
     # Padrão de validação de email (básico mas mais robusto)
     EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 
-    def __init__(self, nome: str, email: str, senha_hash: str, usuario_id: UUID | None = None, perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA, status: StatusUsuario = StatusUsuario.ATIVO, ultimo_login: datetime | None = None) -> None:
+    def __init__(self, nome: str, email: str, telefone: int, senha_hash: str, usuario_id: UUID | None = None, perfil: PerfilUsuario = PerfilUsuario.RECEPCIONISTA, status: StatusUsuario = StatusUsuario.ATIVO, ultimo_login: datetime | None = None) -> None:
         """
         Inicializa um novo usuário.
         
@@ -74,6 +74,7 @@ class Usuario:
         self.usuario_id = str(usuario_id) if usuario_id is not None else str(uuid4())
         self.nome = ' '.join(nome.strip().split())
         self.email = email
+        self.telefone = telefone  
         self.senha_hash = senha_hash.strip()
         self.perfil = perfil
         self.status = status
